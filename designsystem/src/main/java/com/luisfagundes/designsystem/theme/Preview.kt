@@ -14,12 +14,20 @@ fun RedknotThemePreview(content: @Composable () -> Unit) {
     }
 }
 
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview(
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+    backgroundColor = 0xFF1C110F,
+    showBackground = true,
+)
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.RUNTIME)
 internal annotation class DarkPreview
 
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(
+    uiMode = Configuration.UI_MODE_NIGHT_NO,
+    backgroundColor = 0xFFFFF8F7,
+    showBackground = true
+)
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.RUNTIME)
 internal annotation class LightPreview
