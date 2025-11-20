@@ -135,11 +135,13 @@ private fun TripListContent(
     ) {
         tripSection(
             titleResId = R.string.upcoming,
-            trips = upcomingTrips
+            trips = upcomingTrips,
+            onTripClick = {}
         )
         tripSection(
             titleResId = R.string.past,
-            trips = pastTrips
+            trips = pastTrips,
+            onTripClick = {}
         )
     }
 }
@@ -147,7 +149,7 @@ private fun TripListContent(
 private fun LazyListScope.tripSection(
     @StringRes titleResId: Int,
     trips: List<Trip>,
-    onTripClick: (Trip) -> Unit = {}
+    onTripClick: (Trip) -> Unit
 ) {
     if (trips.isEmpty()) {
         return
