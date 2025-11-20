@@ -5,10 +5,12 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.jetbrains.kotlin.serialization)
+    alias(libs.plugins.hilt)
+    alias(libs.plugins.ksp)
 }
 
 android {
-    namespace = "com.luisfagundes.itinerary"
+    namespace = "com.luisfagundes.trip"
     compileSdk {
         version = release(36)
     }
@@ -47,6 +49,11 @@ dependencies {
     // Navigation
     implementation(libs.androidx.navigation3.runtime)
     implementation(libs.androidx.navigation3.ui)
+
+    // Hilt
+    implementation(libs.hilt.android)
+    implementation(libs.androidx.hilt.navigation.compose)
+    ksp(libs.hilt.compiler)
 
     // Compose
     implementation(libs.androidx.compose.ui)

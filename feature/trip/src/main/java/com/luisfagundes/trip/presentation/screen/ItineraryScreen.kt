@@ -1,4 +1,4 @@
-package com.luisfagundes.itinerary.presentation.ui
+package com.luisfagundes.trip.presentation.screen
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

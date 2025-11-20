@@ -20,7 +20,9 @@ import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import com.luisfagundes.redknot.navigation.AppNavigation
 import com.luisfagundes.redknot.navigation.TopLevelDestinations
 import com.luisfagundes.redknot.ui.theme.RedknotTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,7 +39,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun RedknotApp() {
     var currentDestination by rememberSaveable {
-        mutableStateOf(TopLevelDestinations.ITINERARY)
+        mutableStateOf(TopLevelDestinations.TRIP_LIST)
     }
     NavigationSuiteScaffold(
         navigationSuiteItems = {
