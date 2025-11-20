@@ -18,6 +18,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -28,6 +29,7 @@ import coil3.request.crossfade
 import com.luisfagundes.designsystem.theme.RedknotPreview
 import com.luisfagundes.designsystem.theme.RedknotThemePreview
 import com.luisfagundes.designsystem.theme.spacing
+import com.luisfagundes.trip.R
 import com.luisfagundes.trip.domain.model.Trip
 import com.luisfagundes.trip.presentation.provider.TripListPreviewParameterProvider
 import com.luisfagundes.trip.presentation.state.TripListUiState
@@ -49,8 +51,9 @@ internal fun TripListScreen(
         )
 
         is TripListUiState.Content -> TripListContent(
-            modifier = Modifier.fillMaxWidth(),
-            trips = state.trips
+            upcomingTrips = state.upcomingTrips,
+            pastTrips = state.pastTrips,
+            modifier = Modifier.fillMaxWidth()
         )
     }
 }
@@ -81,44 +84,97 @@ private fun TripListEmptyContent(
 
 @Composable
 private fun TripListContent(
-    modifier: Modifier,
-    trips: List<Trip>
+    upcomingTrips: List<Trip>,
+    pastTrips: List<Trip>,
+    modifier: Modifier = Modifier
 ) {
     LazyColumn(
         modifier = modifier,
         contentPadding = PaddingValues(MaterialTheme.spacing.default),
         verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.default)
     ) {
-        items(trips) { trip ->
-            Card(
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                AsyncImage(
-                    model = ImageRequest.Builder(LocalContext.current)
-                        .data(trip.imageUrl)
-                        .crossfade(true)
-                        .build(),
-                    contentDescription = trip.location
+        if (upcomingTrips.isNotEmpty()) {
+            item {
+                SectionTitle(
+                    modifier = Modifier.padding(MaterialTheme.spacing.default),
+                    title = stringResource(R.string.upcoming),
                 )
-                Column(
-                    modifier = Modifier.padding(MaterialTheme.spacing.default)
-                ) {
-                    Text(
-                        text = trip.period,
-                        color = MaterialTheme.colorScheme.primary,
-                        style = MaterialTheme.typography.titleMedium
-                    )
-                    Text(
-                        text = trip.title,
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.Bold
-                    )
-                    Text(
-                        text = trip.location,
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                }
             }
+            items(
+                items = upcomingTrips,
+                key = { trip -> trip.id }
+            ) { trip ->
+                TripContent(
+                    modifier = Modifier.fillMaxWidth(),
+                    trip = trip
+                )
+            }
+        }
+        if (pastTrips.isNotEmpty()) {
+            item {
+                SectionTitle(
+                    modifier = Modifier.padding(MaterialTheme.spacing.default),
+                    title = stringResource(R.string.past)
+                )
+            }
+            items(
+                items = pastTrips,
+                key = { trip -> trip.id }
+            ) { trip ->
+                TripContent(
+                    modifier = Modifier.fillMaxWidth(),
+                    trip = trip
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun SectionTitle(
+    title: String,
+    modifier: Modifier
+) {
+    Text(
+        text = title,
+        style = MaterialTheme.typography.titleLarge,
+        color = MaterialTheme.colorScheme.onSurface,
+        fontWeight = FontWeight.Bold,
+        modifier = modifier
+    )
+}
+
+@Composable
+private fun TripContent(
+    trip: Trip,
+    modifier: Modifier = Modifier
+) {
+    Card(
+        modifier = modifier
+    ) {
+        AsyncImage(
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(trip.imageUrl)
+                .crossfade(true)
+                .build(),
+            contentDescription = trip.location
+        )
+        Column(
+            modifier = Modifier.padding(MaterialTheme.spacing.default)
+        ) {
+            Text(
+                text = trip.period,
+                color = MaterialTheme.colorScheme.primary,
+                style = MaterialTheme.typography.titleMedium
+            )
+            Text(
+                text = trip.title,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold
+            )
+            Text(
+                text = trip.location
+            )
         }
     }
 }
@@ -132,7 +188,8 @@ private fun TripListContentPreview(
     RedknotThemePreview {
         TripListContent(
             modifier = Modifier.fillMaxWidth(),
-            trips = uiState.trips
+            upcomingTrips = uiState.upcomingTrips,
+            pastTrips = uiState.pastTrips
         )
     }
 }

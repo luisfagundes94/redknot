@@ -23,3 +23,4 @@ rootProject.name = "redknot"
 include(":app")
 include(":feature:trip")
 include(":designsystem")
+include(":core")
