@@ -22,3 +22,4 @@ dependencyResolutionManagement {
 rootProject.name = "redknot"
 include(":app")
 include(":feature:trip")
+include(":designsystem")

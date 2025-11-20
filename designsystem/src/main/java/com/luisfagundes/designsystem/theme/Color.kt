@@ -1,4 +1,4 @@
-package com.luisfagundes.redknot.ui.theme
+package com.luisfagundes.designsystem.theme
 
 import androidx.compose.ui.graphics.Color
 

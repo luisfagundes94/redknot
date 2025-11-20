@@ -17,9 +17,9 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
+import com.luisfagundes.designsystem.theme.RedknotTheme
 import com.luisfagundes.redknot.navigation.AppNavigation
 import com.luisfagundes.redknot.navigation.TopLevelDestinations
-import com.luisfagundes.redknot.ui.theme.RedknotTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

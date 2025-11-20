@@ -49,6 +49,7 @@ android {
 }
 
 dependencies {
+    implementation(project(":designsystem"))
     implementation(project(":feature:trip"))
 
     // Navigation
