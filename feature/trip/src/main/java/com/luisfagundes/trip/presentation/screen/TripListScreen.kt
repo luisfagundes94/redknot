@@ -116,7 +116,7 @@ private fun TripListEmptyContent(
             )
             Spacer(Modifier.width(MaterialTheme.spacing.small))
             Text(
-                text = "Create new trip"
+                text = stringResource(R.string.create_new_trip)
             )
         }
     }
