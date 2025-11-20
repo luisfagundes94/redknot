@@ -1,5 +1,7 @@
 package com.luisfagundes.trip.presentation.screen
 
+import androidx.annotation.StringRes
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,6 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -130,51 +133,44 @@ private fun TripListContent(
         contentPadding = PaddingValues(MaterialTheme.spacing.default),
         verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.default)
     ) {
-        if (upcomingTrips.isNotEmpty()) {
-            item {
-                SectionTitle(
-                    title = stringResource(R.string.upcoming),
-                )
-            }
-            items(
-                items = upcomingTrips,
-                key = { trip -> trip.id }
-            ) { trip ->
-                TripContent(
-                    modifier = Modifier.fillMaxWidth(),
-                    trip = trip
-                )
-            }
-        }
-        if (pastTrips.isNotEmpty()) {
-            item {
-                SectionTitle(
-                    title = stringResource(R.string.past)
-                )
-            }
-            items(
-                items = pastTrips,
-                key = { trip -> trip.id }
-            ) { trip ->
-                TripContent(
-                    modifier = Modifier.fillMaxWidth(),
-                    trip = trip
-                )
-            }
-        }
+        tripSection(
+            titleResId = R.string.upcoming,
+            trips = upcomingTrips
+        )
+        tripSection(
+            titleResId = R.string.past,
+            trips = pastTrips
+        )
     }
 }
 
-@Composable
-private fun SectionTitle(
-    title: String
+private fun LazyListScope.tripSection(
+    @StringRes titleResId: Int,
+    trips: List<Trip>,
+    onTripClick: (Trip) -> Unit = {}
 ) {
-    Text(
-        text = title,
-        style = MaterialTheme.typography.titleLarge,
-        color = MaterialTheme.colorScheme.onSurface,
-        fontWeight = FontWeight.Bold
-    )
+    if (trips.isEmpty()) {
+        return
+    }
+    item {
+        Text(
+            text = stringResource(titleResId),
+            style = MaterialTheme.typography.titleLarge,
+            color = MaterialTheme.colorScheme.onSurface,
+            fontWeight = FontWeight.Bold
+        )
+    }
+    items(
+        items = trips,
+        key = { it.id }
+    ) { trip ->
+        TripContent(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable { onTripClick(trip) },
+            trip = trip,
+        )
+    }
 }
 
 @Composable
