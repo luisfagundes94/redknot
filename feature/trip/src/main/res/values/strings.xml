@@ -2,4 +2,7 @@
 <resources>
     <string name="upcoming">Upcoming</string>
     <string name="past">Past</string>
+    <string name="redknot_walking">red knot walking</string>
+    <string name="no_trips_found_description">No trips yet? Let\'s plan your next adventure!</string>
+    <string name="create_new_trip">Create new trip</string>
 </resources>
