@@ -110,11 +110,12 @@ private fun TripListContent(
                     )
                     Text(
                         text = trip.title,
-                        style = MaterialTheme.typography.titleMedium,
+                        style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold
                     )
                     Text(
-                        text = trip.location
+                        text = trip.location,
+                        style = MaterialTheme.typography.bodyMedium
                     )
                 }
             }
