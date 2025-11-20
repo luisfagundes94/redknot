@@ -96,7 +96,6 @@ private fun TripListContent(
         if (upcomingTrips.isNotEmpty()) {
             item {
                 SectionTitle(
-                    modifier = Modifier.padding(MaterialTheme.spacing.default),
                     title = stringResource(R.string.upcoming),
                 )
             }
@@ -113,7 +112,6 @@ private fun TripListContent(
         if (pastTrips.isNotEmpty()) {
             item {
                 SectionTitle(
-                    modifier = Modifier.padding(MaterialTheme.spacing.default),
                     title = stringResource(R.string.past)
                 )
             }
@@ -132,15 +130,13 @@ private fun TripListContent(
 
 @Composable
 private fun SectionTitle(
-    title: String,
-    modifier: Modifier
+    title: String
 ) {
     Text(
         text = title,
         style = MaterialTheme.typography.titleLarge,
         color = MaterialTheme.colorScheme.onSurface,
-        fontWeight = FontWeight.Bold,
-        modifier = modifier
+        fontWeight = FontWeight.Bold
     )
 }
 
