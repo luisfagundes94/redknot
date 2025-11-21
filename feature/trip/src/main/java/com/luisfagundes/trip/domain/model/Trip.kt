@@ -1,8 +1,11 @@
 package com.luisfagundes.trip.domain.model
 
+import java.time.LocalDate
+
 internal data class Trip(
     val id: Int,
-    val period: String,
+    val startDate: LocalDate,
+    val endDate: LocalDate,
     val imageUrl: String,
     val title: String,
     val location: String,

@@ -32,6 +32,7 @@ android {
         }
     }
     compileOptions {
+        isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
@@ -48,6 +49,9 @@ android {
 dependencies {
     implementation(project(":core"))
     implementation(project(":designsystem"))
+
+    // Desugaring
+    coreLibraryDesugaring(libs.desugarJdkLibs)
 
     // Navigation
     implementation(libs.androidx.navigation3.runtime)

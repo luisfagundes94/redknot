@@ -7,8 +7,7 @@ import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
-import com.luisfagundes.trip.presentation.navigation.TripListRoute
-import com.luisfagundes.trip.presentation.navigation.TripListScreen
+import com.luisfagundes.trip.presentation.navigation.tripSection
 
 @Composable
 fun RootAppNavigation(
@@ -25,9 +24,7 @@ fun RootAppNavigation(
             rememberViewModelStoreNavEntryDecorator()
         ),
         entryProvider = entryProvider {
-            entry<TripListRoute> {
-                TripListScreen()
-            }
+            tripSection(backStack = backStack)
         }
     )
 }

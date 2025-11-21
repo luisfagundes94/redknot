@@ -46,11 +46,14 @@ import com.luisfagundes.trip.R
 import com.luisfagundes.trip.domain.model.Trip
 import com.luisfagundes.trip.presentation.provider.TripListPreviewParameterProvider
 import com.luisfagundes.trip.presentation.state.TripListUiState
+import com.luisfagundes.trip.presentation.tools.formatTripPeriod
 import com.luisfagundes.trip.presentation.viewmodel.TripListViewModel
 
 @Composable
 internal fun TripListScreen(
-    viewModel: TripListViewModel = hiltViewModel()
+    viewModel: TripListViewModel = hiltViewModel(),
+    onTripClick: (Trip) -> Unit,
+    onTripCreationClick: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -60,6 +63,7 @@ internal fun TripListScreen(
         )
 
         is TripListUiState.Empty -> TripListEmptyContent(
+            onTripCreationClick = onTripCreationClick,
             modifier = Modifier
                 .padding(MaterialTheme.spacing.default)
                 .fillMaxSize()
@@ -68,6 +72,7 @@ internal fun TripListScreen(
         is TripListUiState.Content -> TripListContent(
             upcomingTrips = state.upcomingTrips,
             pastTrips = state.pastTrips,
+            onTripClick = onTripClick,
             modifier = Modifier.fillMaxWidth()
         )
     }
@@ -87,6 +92,7 @@ private fun TripListLoadingContent(
 
 @Composable
 private fun TripListEmptyContent(
+    onTripCreationClick: () -> Unit,
     modifier: Modifier
 ) {
     Column(
@@ -108,7 +114,7 @@ private fun TripListEmptyContent(
             modifier = Modifier.height(MaterialTheme.spacing.default)
         )
         Button(
-            onClick = {},
+            onClick = onTripCreationClick,
         ) {
             Icon(
                 painter = rememberVectorPainter(Icons.Default.Add),
@@ -126,6 +132,7 @@ private fun TripListEmptyContent(
 private fun TripListContent(
     upcomingTrips: List<Trip>,
     pastTrips: List<Trip>,
+    onTripClick: (Trip) -> Unit,
     modifier: Modifier = Modifier
 ) {
     LazyColumn(
@@ -136,12 +143,12 @@ private fun TripListContent(
         tripSection(
             titleResId = R.string.upcoming,
             trips = upcomingTrips,
-            onTripClick = {}
+            onTripClick = onTripClick
         )
         tripSection(
             titleResId = R.string.past,
             trips = pastTrips,
-            onTripClick = {}
+            onTripClick = onTripClick
         )
     }
 }
@@ -194,7 +201,7 @@ private fun TripContent(
             modifier = Modifier.padding(MaterialTheme.spacing.default)
         ) {
             Text(
-                text = trip.period,
+                text = formatTripPeriod(trip.startDate, trip.endDate),
                 color = MaterialTheme.colorScheme.primary,
                 style = MaterialTheme.typography.titleMedium
             )
@@ -218,9 +225,10 @@ private fun TripListContentPreview(
 ) {
     RedknotThemePreview {
         TripListContent(
-            modifier = Modifier.fillMaxWidth(),
             upcomingTrips = uiState.upcomingTrips,
-            pastTrips = uiState.pastTrips
+            pastTrips = uiState.pastTrips,
+            onTripClick = {},
+            modifier = Modifier.fillMaxWidth()
         )
     }
 }
