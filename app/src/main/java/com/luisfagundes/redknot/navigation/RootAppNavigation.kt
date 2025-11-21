@@ -9,7 +9,7 @@ import com.luisfagundes.trip.presentation.navigation.TripListRoute
 import com.luisfagundes.trip.presentation.navigation.TripListScreen
 
 @Composable
-fun AppNavigation(
+fun RootAppNavigation(
     modifier: Modifier
 ) {
     val backStack = rememberNavBackStack(TopLevelDestinations.TRIP_LIST.route)

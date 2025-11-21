@@ -18,7 +18,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import com.luisfagundes.designsystem.theme.RedknotTheme
-import com.luisfagundes.redknot.navigation.AppNavigation
+import com.luisfagundes.redknot.navigation.RootAppNavigation
 import com.luisfagundes.redknot.navigation.TopLevelDestinations
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -59,7 +59,7 @@ fun RedknotApp() {
         }
     ) {
         Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-            AppNavigation(
+            RootAppNavigation(
                 modifier = Modifier.padding(innerPadding)
             )
         }
