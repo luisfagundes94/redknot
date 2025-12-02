@@ -29,8 +29,7 @@ internal class TripListViewModel @Inject constructor(
     fun getTripList() = viewModelScope.launch(dispatcher) {
         repository.getTripList().fold(
             onSuccess = { trips ->
-                val upcomingTrips = trips.filter { !it.done }
-                val pastTrips = trips.filter { it.done }
+                val (upcomingTrips, pastTrips) = trips.partition { !it.done }
 
                 if (upcomingTrips.isEmpty() && pastTrips.isEmpty()) {
                     _uiState.update { TripListUiState.Empty }
