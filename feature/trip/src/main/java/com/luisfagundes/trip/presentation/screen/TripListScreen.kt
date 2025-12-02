@@ -46,7 +46,7 @@ import com.luisfagundes.trip.R
 import com.luisfagundes.trip.domain.model.Trip
 import com.luisfagundes.trip.presentation.provider.TripListPreviewParameterProvider
 import com.luisfagundes.trip.presentation.state.TripListUiState
-import com.luisfagundes.trip.presentation.tools.formatTripPeriod
+import com.luisfagundes.trip.extensions.formatTripPeriod
 import com.luisfagundes.trip.presentation.viewmodel.TripListViewModel
 
 @Composable

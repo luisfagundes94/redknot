@@ -1,4 +1,4 @@
-package com.luisfagundes.trip.presentation.tools
+package com.luisfagundes.trip.extensions
 
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter

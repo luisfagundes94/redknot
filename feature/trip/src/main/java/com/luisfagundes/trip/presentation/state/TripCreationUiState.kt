@@ -1,7 +1,15 @@
 package com.luisfagundes.trip.presentation.state
 
-import com.luisfagundes.trip.domain.model.Trip
-
 internal data class TripCreationUiState(
-    val trip: Trip? = null
-)
+    val name: String = "",
+    val startDate: Long? = null,
+    val endDate: Long? = null,
+    val destination: String = "",
+) {
+    fun isFormValid(): Boolean = listOf(
+        name.isNotBlank(),
+        startDate != null,
+        endDate != null,
+        destination.isNotBlank()
+    ).all { it }
+}
