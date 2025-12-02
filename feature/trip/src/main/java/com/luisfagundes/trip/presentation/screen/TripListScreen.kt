@@ -176,7 +176,8 @@ private fun LazyListScope.tripSection(
         TripContent(
             modifier = Modifier
                 .fillMaxWidth()
-                .clickable { onTripClick(trip) },
+                .clickable { onTripClick(trip) }
+                .animateItem(),
             trip = trip,
         )
     }
