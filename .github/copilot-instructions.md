@@ -50,7 +50,6 @@
 - Keep functions small and focused on single responsibilities
 - Use meaningful variable and function names
 - Add KDoc comments for public APIs
-- Avoid deep nesting with early returns and guard clauses
 - Apply SOLID principles consistently
 - Apply design patterns where appropriate
 
