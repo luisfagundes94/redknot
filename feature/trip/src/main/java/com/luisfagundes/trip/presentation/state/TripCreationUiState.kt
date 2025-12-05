@@ -1,9 +1,11 @@
 package com.luisfagundes.trip.presentation.state
 
+import java.time.LocalDate
+
 internal data class TripCreationUiState(
     val name: String = "",
-    val startDate: Long? = null,
-    val endDate: Long? = null,
+    val startDate: LocalDate? = null,
+    val endDate: LocalDate? = null,
     val destination: String = "",
 ) {
     fun isFormValid(): Boolean = listOf(

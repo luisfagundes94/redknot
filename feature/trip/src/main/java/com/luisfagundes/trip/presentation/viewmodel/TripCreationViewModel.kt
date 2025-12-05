@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 import javax.inject.Inject
 
 @HiltViewModel
@@ -25,11 +26,11 @@ internal class TripCreationViewModel @Inject constructor(
         _uiState.update { it.copy(name = name) }
     }
 
-    fun onStartDateChange(date: Long?) {
+    fun onStartDateChange(date: LocalDate?) {
         _uiState.update { it.copy(startDate = date) }
     }
 
-    fun onEndDateChange(date: Long?) {
+    fun onEndDateChange(date: LocalDate?) {
         _uiState.update { it.copy(endDate = date) }
     }
 

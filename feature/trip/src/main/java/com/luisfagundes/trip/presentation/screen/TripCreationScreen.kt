@@ -38,9 +38,11 @@ import com.luisfagundes.designsystem.theme.RedknotPreview
 import com.luisfagundes.designsystem.theme.RedknotThemePreview
 import com.luisfagundes.designsystem.theme.spacing
 import com.luisfagundes.trip.R
-import com.luisfagundes.trip.extensions.convertMillisToDate
+import com.luisfagundes.trip.extensions.convertMillisToLocalDate
+import com.luisfagundes.trip.extensions.toFormattedString
 import com.luisfagundes.trip.presentation.state.TripCreationUiState
 import com.luisfagundes.trip.presentation.viewmodel.TripCreationViewModel
+import java.time.LocalDate
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -66,8 +68,8 @@ private fun TripCreationContent(
     uiState: TripCreationUiState,
     onNameChange: (String) -> Unit,
     onDestinationChange: (String) -> Unit,
-    onStartDateChange: (Long?) -> Unit,
-    onEndDateChange: (Long?) -> Unit,
+    onStartDateChange: (LocalDate?) -> Unit,
+    onEndDateChange: (LocalDate?) -> Unit,
     onSubmitForm: () -> Unit,
     onBackClick: () -> Unit
 ) {
@@ -140,16 +142,16 @@ private fun TripCreationContent(
 
 @Composable
 private fun DateSelectionField(
-    value: Long?,
+    value: LocalDate?,
     label: String,
     placeholder: String,
-    onDateSelected: (Long?) -> Unit,
+    onDateSelected: (LocalDate?) -> Unit,
     modifier: Modifier = Modifier
 ) {
     var showDatePicker by remember { mutableStateOf(false) }
 
     OutlinedTextField(
-        value = value.convertMillisToDate(),
+        value = value.toFormattedString(),
         onValueChange = { },
         label = { Text(label) },
         placeholder = { Text(placeholder) },
@@ -179,7 +181,7 @@ private fun DateSelectionField(
 
 @Composable
 fun DatePickerModal(
-    onDateSelected: (Long?) -> Unit,
+    onDateSelected: (LocalDate?) -> Unit,
     onDismiss: () -> Unit
 ) {
     val datePickerState = rememberDatePickerState()
@@ -188,7 +190,7 @@ fun DatePickerModal(
         onDismissRequest = onDismiss,
         confirmButton = {
             TextButton(onClick = {
-                onDateSelected(datePickerState.selectedDateMillis)
+                onDateSelected(datePickerState.selectedDateMillis.convertMillisToLocalDate())
                 onDismiss()
             }) {
                 Text(stringResource(R.string.ok))

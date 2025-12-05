@@ -1,5 +1,7 @@
 package com.luisfagundes.trip.extensions
 
+import com.luisfagundes.trip.tools.constants.DEFAULT_DATE_PATTERN
+import com.luisfagundes.trip.tools.constants.DEFAULT_TIMEZONE
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -12,4 +14,20 @@ fun formatTripPeriod(startDate: LocalDate, endDate: LocalDate): String {
     } else {
         "${startDate.format(fullFormatter)} - ${endDate.format(fullFormatter)}"
     }
+}
+
+fun LocalDate.toTimestampMillis(): Long {
+    return this.atStartOfDay()
+        .atZone(java.time.ZoneId.of(DEFAULT_TIMEZONE))
+        .toInstant()
+        .toEpochMilli()
+}
+
+fun LocalDate?.toFormattedString(
+    fallback: String = "",
+    pattern: String = DEFAULT_DATE_PATTERN
+): String {
+    if (this == null) return fallback
+    val formatter = DateTimeFormatter.ofPattern(pattern)
+    return this.format(formatter)
 }

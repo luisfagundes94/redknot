@@ -2,6 +2,7 @@ package com.luisfagundes.trip.presentation.provider
 
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import com.luisfagundes.trip.domain.model.Trip
+import com.luisfagundes.trip.extensions.toTimestampMillis
 import com.luisfagundes.trip.presentation.state.TripListUiState
 import java.time.LocalDate
 import java.time.Month
