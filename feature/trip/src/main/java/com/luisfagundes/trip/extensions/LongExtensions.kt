@@ -8,3 +8,9 @@ fun Long?.convertMillisToLocalDate(): java.time.LocalDate? {
         .atZone(java.time.ZoneId.of(DEFAULT_TIMEZONE))
         .toLocalDate()
 }
+
+fun Long.convertMillisToLocalDate(): java.time.LocalDate {
+    return java.time.Instant.ofEpochMilli(this)
+        .atZone(java.time.ZoneId.of(DEFAULT_TIMEZONE))
+        .toLocalDate()
+}
