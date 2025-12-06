@@ -66,6 +66,10 @@ dependencies {
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)
 
+    // Room
+    implementation(libs.androidx.room.runtime)
+    ksp(libs.androidx.room.compiler)
+
     // Compose
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.foundation)
