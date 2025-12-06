@@ -12,4 +12,21 @@ internal data class TripFormUiState(
     val endDateError: ValidationError? = null,
     val destination: String = "",
     val destinationError: ValidationError? = null,
-)
+) {
+    val isFormValid: Boolean
+        get() {
+            val hasNoErrors = listOf(
+                titleError,
+                startDateError,
+                endDateError,
+                destinationError
+            ).all { it == null }
+
+            val hasAllRequiredFields = title.isNotBlank() &&
+                    startDate != null &&
+                    endDate != null &&
+                    destination.isNotBlank()
+
+            return hasNoErrors && hasAllRequiredFields
+        }
+}

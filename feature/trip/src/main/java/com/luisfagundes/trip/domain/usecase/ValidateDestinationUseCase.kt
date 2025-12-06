@@ -7,20 +7,11 @@ import javax.inject.Inject
 internal class ValidateDestinationUseCase @Inject constructor() {
     operator fun invoke(destination: String): ValidationResult {
         if (destination.isBlank()) {
-            return ValidationResult(
-                isValid = false,
-                error = ValidationError.EMPTY_DESTINATION
-            )
+            return ValidationResult.Invalid(ValidationError.EMPTY_DESTINATION)
         }
         if (destination.any { it.isDigit() }) {
-            return ValidationResult(
-                isValid = false,
-                error = ValidationError.INVALID_DESTINATION_FORMAT
-            )
+            return ValidationResult.Invalid(ValidationError.INVALID_DESTINATION_FORMAT)
         }
-        return ValidationResult(
-            isValid = true,
-            error = null
-        )
+        return ValidationResult.Valid
     }
 }

@@ -4,10 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.luisfagundes.core.di.IoDispatcher
 import com.luisfagundes.trip.domain.model.Trip
+import com.luisfagundes.trip.domain.model.errorOrNull
 import com.luisfagundes.trip.domain.usecase.CreateTripUseCase
 import com.luisfagundes.trip.domain.usecase.ValidateDestinationUseCase
-import com.luisfagundes.trip.domain.usecase.ValidateEndDateUseCase
-import com.luisfagundes.trip.domain.usecase.ValidateStartDateUseCase
+import com.luisfagundes.trip.domain.usecase.ValidateDateUseCase
 import com.luisfagundes.trip.domain.usecase.ValidateTitleUseCase
 import com.luisfagundes.trip.presentation.effect.TripFormUiEffect
 import com.luisfagundes.trip.presentation.state.TripFormUiState
@@ -25,8 +25,7 @@ import javax.inject.Inject
 @HiltViewModel
 internal class TripFormViewModel @Inject constructor(
     private val validateTitleUseCase: ValidateTitleUseCase,
-    private val validateStartDateUseCase: ValidateStartDateUseCase,
-    private val validateEndDateUseCase: ValidateEndDateUseCase,
+    private val validateDateUseCase: ValidateDateUseCase,
     private val validateDestinationUseCase: ValidateDestinationUseCase,
     private val createTripUseCase: CreateTripUseCase,
     @param:IoDispatcher private val dispatcher: CoroutineDispatcher
@@ -37,48 +36,44 @@ internal class TripFormViewModel @Inject constructor(
     private val _uiEffect = Channel<TripFormUiEffect>()
     val uiEffect = _uiEffect.receiveAsFlow()
 
-    fun onNameChange(name: String) {
-        _uiState.update { it.copy(title = name) }
+    fun onTitleChange(title: String) {
+        _uiState.update { state ->
+            state.copy(
+                title = title,
+                titleError = validateTitleUseCase(title).errorOrNull()
+            )
+        }
     }
 
-    fun onStartDateChange(date: LocalDate?) {
-        _uiState.update { it.copy(startDate = date) }
+    fun onStartDateChange(startDate: LocalDate?) {
+        _uiState.update { state ->
+            state.copy(
+                startDate = startDate,
+                startDateError = validateDateUseCase(startDate).errorOrNull()
+            )
+        }
     }
 
-    fun onEndDateChange(date: LocalDate?) {
-        _uiState.update { it.copy(endDate = date) }
+    fun onEndDateChange(endDate: LocalDate?) {
+        _uiState.update { state ->
+            state.copy(
+                endDate = endDate,
+                endDateError = validateDateUseCase(endDate).errorOrNull()
+            )
+        }
     }
 
     fun onDestinationChange(destination: String) {
-        _uiState.update { it.copy(destination = destination) }
+        _uiState.update { state ->
+            state.copy(
+                destination = destination,
+                destinationError = validateDestinationUseCase(destination).errorOrNull()
+            )
+        }
     }
 
     fun onSubmit() {
         val state = _uiState.value
-
-        val titleResult = validateTitleUseCase.invoke(state.title)
-        val startDateResult = validateStartDateUseCase.invoke(state.startDate, state.endDate)
-        val endDateResult = validateEndDateUseCase.invoke(state.startDate, state.endDate)
-        val destinationResult = validateDestinationUseCase.invoke(state.destination)
-
-        val hasError = listOf(
-            titleResult,
-            startDateResult,
-            endDateResult,
-            destinationResult
-        ).any { !it.isValid }
-
-        if (hasError) {
-            _uiState.update { state ->
-                state.copy(
-                    titleError = titleResult.error,
-                    destinationError = destinationResult.error,
-                    startDateError = startDateResult.error,
-                    endDateError = endDateResult.error
-                )
-            }
-            return
-        }
 
         viewModelScope.launch(dispatcher) {
             createTripUseCase.invoke(

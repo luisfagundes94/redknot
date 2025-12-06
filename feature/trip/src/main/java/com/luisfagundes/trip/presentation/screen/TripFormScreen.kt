@@ -75,7 +75,7 @@ internal fun TripFormScreen(
 
     TripCreationContent(
         uiState = uiState,
-        onNameChange = viewModel::onNameChange,
+        onTitleChange = viewModel::onTitleChange,
         onDestinationChange = viewModel::onDestinationChange,
         onStartDateChange = viewModel::onStartDateChange,
         onEndDateChange = viewModel::onEndDateChange,
@@ -87,7 +87,7 @@ internal fun TripFormScreen(
 @Composable
 private fun TripCreationContent(
     uiState: TripFormUiState,
-    onNameChange: (String) -> Unit,
+    onTitleChange: (String) -> Unit,
     onDestinationChange: (String) -> Unit,
     onStartDateChange: (LocalDate?) -> Unit,
     onEndDateChange: (LocalDate?) -> Unit,
@@ -112,7 +112,7 @@ private fun TripCreationContent(
         ) {
             OutlinedTextField(
                 value = uiState.title,
-                onValueChange = { onNameChange.invoke(it.capitalizeEveryWord()) },
+                onValueChange = { onTitleChange.invoke(it.capitalizeEveryWord()) },
                 label = { Text(stringResource(R.string.trip_name_label)) },
                 placeholder = { Text(stringResource(R.string.trip_name_placeholder)) },
                 singleLine = true,
@@ -166,6 +166,7 @@ private fun TripCreationContent(
             )
             Button(
                 onClick = onSubmitForm,
+                enabled = uiState.isFormValid,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = MaterialTheme.spacing.default)
@@ -265,7 +266,7 @@ private fun TripCreationScreenPreview() {
     RedknotThemePreview {
         TripCreationContent(
             uiState = TripFormUiState(),
-            onNameChange = {},
+            onTitleChange = {},
             onDestinationChange = {},
             onStartDateChange = {},
             onEndDateChange = {},
