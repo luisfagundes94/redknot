@@ -2,6 +2,8 @@ package com.luisfagundes.trip.presentation.provider
 
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import com.luisfagundes.trip.domain.model.Trip
+import com.luisfagundes.trip.domain.model.TripSection
+import com.luisfagundes.trip.domain.model.TripSectionType
 import com.luisfagundes.trip.presentation.state.TripListUiState
 import java.time.LocalDate
 import java.time.Month
@@ -40,10 +42,20 @@ internal class TripListPreviewParameterProvider : PreviewParameterProvider<TripL
         )
     )
 
+    private val tripSectionList = listOf(
+        TripSection(
+            type = TripSectionType.UPCOMING,
+            trips = upcomingTrips
+        ),
+        TripSection(
+            type = TripSectionType.PAST,
+            trips = pastTrips
+        )
+    )
+
     override val values = sequenceOf(
         TripListUiState.Content(
-            upcomingTrips = upcomingTrips,
-            pastTrips = pastTrips
+            tripSectionList = tripSectionList
         )
     )
 }

@@ -27,19 +27,9 @@ internal class TripListViewModel @Inject constructor(
         _uiState.update { TripListUiState.Loading }
 
         getTripListUseCase.invoke().fold(
-            onSuccess = { trips ->
-                val (upcomingTrips, pastTrips) = trips.partition { !it.done }
-
-                if (upcomingTrips.isEmpty() && pastTrips.isEmpty()) {
-                    _uiState.update { TripListUiState.Empty }
-                    return@launch
-                }
-
+            onSuccess = { tripSectionList ->
                 _uiState.update {
-                    TripListUiState.Content(
-                        upcomingTrips = upcomingTrips,
-                        pastTrips = pastTrips
-                    )
+                    TripListUiState.Content(tripSectionList)
                 }
             },
             onFailure = {
