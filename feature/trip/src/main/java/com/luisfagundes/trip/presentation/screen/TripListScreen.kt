@@ -24,6 +24,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,7 +34,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewParameter
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
@@ -46,7 +47,7 @@ import com.luisfagundes.trip.R
 import com.luisfagundes.trip.domain.model.Trip
 import com.luisfagundes.trip.presentation.provider.TripListPreviewParameterProvider
 import com.luisfagundes.trip.presentation.state.TripListUiState
-import com.luisfagundes.trip.extensions.formatTripPeriod
+import com.luisfagundes.trip.tools.extensions.formatTripPeriod
 import com.luisfagundes.trip.presentation.viewmodel.TripListViewModel
 
 @Composable
@@ -56,6 +57,10 @@ internal fun TripListScreen(
     onTripCreationClick: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) {
+        viewModel.getTripList()
+    }
 
     when (val state = uiState) {
         is TripListUiState.Loading -> TripListLoadingContent(

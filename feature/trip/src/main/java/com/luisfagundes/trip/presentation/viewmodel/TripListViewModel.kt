@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.luisfagundes.core.di.IoDispatcher
 import com.luisfagundes.trip.domain.repository.TripRepository
+import com.luisfagundes.trip.domain.usecase.GetTripListUseCase
 import com.luisfagundes.trip.presentation.state.TripListUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -16,20 +17,16 @@ import javax.inject.Inject
 
 @HiltViewModel
 internal class TripListViewModel @Inject constructor(
-    private val repository: TripRepository,
+    private val getTripListUseCase: GetTripListUseCase,
     @param:IoDispatcher private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : ViewModel() {
     private val _uiState = MutableStateFlow<TripListUiState>(TripListUiState.Loading)
     val uiState = _uiState.asStateFlow()
 
-    init {
-        getTripList()
-    }
-
     fun getTripList() = viewModelScope.launch(dispatcher) {
         _uiState.update { TripListUiState.Loading }
 
-        repository.getTripList().fold(
+        getTripListUseCase.invoke().fold(
             onSuccess = { trips ->
                 val (upcomingTrips, pastTrips) = trips.partition { !it.done }
 

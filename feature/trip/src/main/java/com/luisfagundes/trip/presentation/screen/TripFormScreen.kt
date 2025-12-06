@@ -1,5 +1,6 @@
 package com.luisfagundes.trip.presentation.screen
 
+import android.widget.Toast
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.layout.Arrangement
@@ -22,6 +23,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -30,27 +32,46 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.luisfagundes.designsystem.components.RedknotTopBar
 import com.luisfagundes.designsystem.theme.RedknotPreview
 import com.luisfagundes.designsystem.theme.RedknotThemePreview
 import com.luisfagundes.designsystem.theme.spacing
 import com.luisfagundes.trip.R
-import com.luisfagundes.trip.extensions.convertMillisToLocalDate
-import com.luisfagundes.trip.extensions.toFormattedString
-import com.luisfagundes.trip.presentation.state.TripCreationUiState
-import com.luisfagundes.trip.presentation.viewmodel.TripCreationViewModel
+import com.luisfagundes.trip.presentation.effect.TripFormUiEffect
+import com.luisfagundes.trip.presentation.mapper.toErrorMessage
+import com.luisfagundes.trip.presentation.state.TripFormUiState
+import com.luisfagundes.trip.presentation.viewmodel.TripFormViewModel
+import com.luisfagundes.trip.tools.extensions.capitalizeEveryWord
+import com.luisfagundes.trip.tools.extensions.convertMillisToLocalDate
+import com.luisfagundes.trip.tools.extensions.toFormattedString
 import java.time.LocalDate
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun TripCreationScreen(
-    viewModel: TripCreationViewModel = hiltViewModel(),
+internal fun TripFormScreen(
+    viewModel: TripFormViewModel = hiltViewModel(),
     onBackClick: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val context = LocalContext.current
+
+    LaunchedEffect(Unit) {
+        viewModel.uiEffect.collect { effect ->
+            when (effect) {
+                is TripFormUiEffect.NavigateBack -> {
+                    onBackClick()
+                }
+
+                is TripFormUiEffect.ShowErrorToast -> {
+                    Toast.makeText(context, effect.error, Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+    }
 
     TripCreationContent(
         uiState = uiState,
@@ -65,7 +86,7 @@ internal fun TripCreationScreen(
 
 @Composable
 private fun TripCreationContent(
-    uiState: TripCreationUiState,
+    uiState: TripFormUiState,
     onNameChange: (String) -> Unit,
     onDestinationChange: (String) -> Unit,
     onStartDateChange: (LocalDate?) -> Unit,
@@ -73,6 +94,8 @@ private fun TripCreationContent(
     onSubmitForm: () -> Unit,
     onBackClick: () -> Unit
 ) {
+    val context = LocalContext.current
+
     Scaffold(
         topBar = {
             RedknotTopBar(
@@ -82,32 +105,49 @@ private fun TripCreationContent(
         }
     ) { innerPadding ->
         Column(
-            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.default),
             modifier = Modifier
                 .padding(innerPadding)
-                .padding(MaterialTheme.spacing.default)
+                .padding(horizontal = MaterialTheme.spacing.default)
                 .fillMaxWidth()
         ) {
             OutlinedTextField(
-                value = uiState.name,
-                onValueChange = onNameChange,
+                value = uiState.title,
+                onValueChange = { onNameChange.invoke(it.capitalizeEveryWord()) },
                 label = { Text(stringResource(R.string.trip_name_label)) },
                 placeholder = { Text(stringResource(R.string.trip_name_placeholder)) },
                 singleLine = true,
+                isError = uiState.titleError != null,
+                supportingText = {
+                    uiState.titleError?.let {
+                        Text(it.toErrorMessage(context))
+                    }
+                },
                 modifier = Modifier.fillMaxWidth()
             )
             OutlinedTextField(
                 value = uiState.destination,
-                onValueChange = onDestinationChange,
+                onValueChange = { onDestinationChange.invoke(it.capitalizeEveryWord()) },
                 label = { Text(stringResource(R.string.trip_destination_label)) },
                 placeholder = { Text(stringResource(R.string.trip_destination_placeholder)) },
                 singleLine = true,
+                isError = uiState.destinationError != null,
+                supportingText = {
+                    uiState.destinationError?.let {
+                        Text(it.toErrorMessage(context))
+                    }
+                },
                 modifier = Modifier.fillMaxWidth()
             )
             DateSelectionField(
                 value = uiState.startDate,
                 label = stringResource(R.string.start_date_label),
                 placeholder = stringResource(R.string.start_date_placeholder),
+                hasError = uiState.startDateError != null,
+                supportingText = {
+                    uiState.startDateError?.let { error ->
+                        Text(error.toErrorMessage(context))
+                    }
+                },
                 onDateSelected = onStartDateChange,
                 modifier = Modifier.fillMaxWidth()
             )
@@ -115,12 +155,20 @@ private fun TripCreationContent(
                 value = uiState.endDate,
                 label = stringResource(R.string.end_date_label),
                 placeholder = stringResource(R.string.end_date_placeholder),
+                hasError = uiState.endDateError != null,
+                supportingText = {
+                    uiState.endDateError?.let { error ->
+                        Text(error.toErrorMessage(context))
+                    }
+                },
                 onDateSelected = onEndDateChange,
                 modifier = Modifier.fillMaxWidth()
             )
             Button(
                 onClick = onSubmitForm,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = MaterialTheme.spacing.default)
             ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
@@ -145,10 +193,13 @@ private fun DateSelectionField(
     value: LocalDate?,
     label: String,
     placeholder: String,
+    hasError: Boolean,
     onDateSelected: (LocalDate?) -> Unit,
+    supportingText: @Composable (() -> Unit)?,
     modifier: Modifier = Modifier
 ) {
     var showDatePicker by remember { mutableStateOf(false) }
+    val dismissPicker = remember { { showDatePicker = false } }
 
     OutlinedTextField(
         value = value.toFormattedString(),
@@ -162,6 +213,8 @@ private fun DateSelectionField(
             )
         },
         readOnly = true,
+        isError = hasError,
+        supportingText = supportingText,
         modifier = modifier
             .pointerInput(Unit) {
                 awaitEachGesture {
@@ -174,7 +227,7 @@ private fun DateSelectionField(
     if (showDatePicker) {
         DatePickerModal(
             onDateSelected = onDateSelected,
-            onDismiss = { showDatePicker = false }
+            onDismiss = dismissPicker
         )
     }
 }
@@ -211,7 +264,7 @@ fun DatePickerModal(
 private fun TripCreationScreenPreview() {
     RedknotThemePreview {
         TripCreationContent(
-            uiState = TripCreationUiState(),
+            uiState = TripFormUiState(),
             onNameChange = {},
             onDestinationChange = {},
             onStartDateChange = {},

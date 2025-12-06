@@ -1,8 +1,9 @@
-package com.luisfagundes.trip.extensions
+package com.luisfagundes.trip.tools.extensions
 
 import com.luisfagundes.trip.tools.constants.DEFAULT_DATE_PATTERN
 import com.luisfagundes.trip.tools.constants.DEFAULT_TIMEZONE
 import java.time.LocalDate
+import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
 fun formatTripPeriod(startDate: LocalDate, endDate: LocalDate): String {
@@ -18,7 +19,7 @@ fun formatTripPeriod(startDate: LocalDate, endDate: LocalDate): String {
 
 fun LocalDate.toTimestampMillis(): Long {
     return this.atStartOfDay()
-        .atZone(java.time.ZoneId.of(DEFAULT_TIMEZONE))
+        .atZone(ZoneId.of(DEFAULT_TIMEZONE))
         .toInstant()
         .toEpochMilli()
 }

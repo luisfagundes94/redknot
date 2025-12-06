@@ -2,8 +2,8 @@ package com.luisfagundes.trip.data.mapper
 
 import com.luisfagundes.trip.data.model.TripEntity
 import com.luisfagundes.trip.domain.model.Trip
-import com.luisfagundes.trip.extensions.convertMillisToLocalDate
-import com.luisfagundes.trip.extensions.toTimestampMillis
+import com.luisfagundes.trip.tools.extensions.convertMillisToLocalDate
+import com.luisfagundes.trip.tools.extensions.toTimestampMillis
 
 internal class TripMapper {
     fun mapToEntity(trip: Trip): TripEntity {

@@ -19,4 +19,10 @@
     <string name="create_trip">Create Trip</string>
     <string name="error_occurred_try_again">Something wrong happened. Would you like to try again?</string>
     <string name="try_again">Try Again</string>
+    <string name="empty_title_error_message">Title cannot be empty</string>
+    <string name="empty_destination_error_message">Destination cannot be empty</string>
+    <string name="missing_start_date_error_message">Start date must be selected</string>
+    <string name="missing_end_date_error_message">End date must be selected</string>
+    <string name="invalid_date_range_error_message">Start date cannot be after end date</string>
+    <string name="invalid_destination_error_message">Destination can only contain letters</string>
 </resources>
