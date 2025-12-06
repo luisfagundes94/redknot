@@ -69,6 +69,11 @@ internal fun TripListScreen(
                 .fillMaxSize()
         )
 
+        is TripListUiState.Error -> TripListErrorContent(
+            onTryAgainClick = { viewModel.getTripList() },
+            modifier = Modifier.fillMaxSize()
+        )
+
         is TripListUiState.Content -> TripListContent(
             upcomingTrips = state.upcomingTrips,
             pastTrips = state.pastTrips,
@@ -80,7 +85,7 @@ internal fun TripListScreen(
 
 @Composable
 private fun TripListLoadingContent(
-    modifier: Modifier
+    modifier: Modifier = Modifier
 ) {
     Box(
         modifier = modifier,
@@ -93,7 +98,7 @@ private fun TripListLoadingContent(
 @Composable
 private fun TripListEmptyContent(
     onTripCreationClick: () -> Unit,
-    modifier: Modifier
+    modifier: Modifier = Modifier
 ) {
     Column(
         modifier = modifier,
@@ -123,6 +128,29 @@ private fun TripListEmptyContent(
             Spacer(Modifier.width(MaterialTheme.spacing.small))
             Text(
                 text = stringResource(R.string.create_new_trip)
+            )
+        }
+    }
+}
+
+@Composable
+private fun TripListErrorContent(
+    onTryAgainClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Box(
+        modifier = modifier,
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = stringResource(R.string.error_occurred_try_again),
+            textAlign = TextAlign.Center,
+        )
+        Button(
+            onClick = onTryAgainClick
+        ) {
+            Text(
+                text = stringResource(R.string.try_again)
             )
         }
     }

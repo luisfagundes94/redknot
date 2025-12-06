@@ -27,6 +27,8 @@ internal class TripListViewModel @Inject constructor(
     }
 
     fun getTripList() = viewModelScope.launch(dispatcher) {
+        _uiState.update { TripListUiState.Loading }
+
         repository.getTripList().fold(
             onSuccess = { trips ->
                 val (upcomingTrips, pastTrips) = trips.partition { !it.done }
@@ -43,7 +45,9 @@ internal class TripListViewModel @Inject constructor(
                     )
                 }
             },
-            onFailure = {}
+            onFailure = {
+                _uiState.update { TripListUiState.Error }
+            }
         )
     }
 }
