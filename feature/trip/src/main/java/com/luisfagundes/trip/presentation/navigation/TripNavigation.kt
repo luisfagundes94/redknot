@@ -18,7 +18,7 @@ fun EntryProviderScope<NavKey>.tripSection(
     entry<TripListRoute> {
         TripListScreen(
             onTripClick = {},
-            onTripCreationClick = onTripCreationClick
+            onCreateTripClick = onTripCreationClick
         )
     }
     entry<TripCreationRoute> {

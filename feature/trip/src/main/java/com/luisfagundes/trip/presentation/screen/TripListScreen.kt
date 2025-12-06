@@ -22,6 +22,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -46,7 +47,6 @@ import com.luisfagundes.designsystem.theme.spacing
 import com.luisfagundes.trip.R
 import com.luisfagundes.trip.domain.model.Trip
 import com.luisfagundes.trip.domain.model.TripSection
-import com.luisfagundes.trip.domain.model.TripSectionType
 import com.luisfagundes.trip.presentation.mapper.toTitleResId
 import com.luisfagundes.trip.presentation.provider.TripListPreviewParameterProvider
 import com.luisfagundes.trip.presentation.state.TripListUiState
@@ -57,7 +57,7 @@ import com.luisfagundes.trip.presentation.viewmodel.TripListViewModel
 internal fun TripListScreen(
     viewModel: TripListViewModel = hiltViewModel(),
     onTripClick: (Trip) -> Unit,
-    onTripCreationClick: () -> Unit
+    onCreateTripClick: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -71,7 +71,7 @@ internal fun TripListScreen(
         )
 
         is TripListUiState.Empty -> TripListEmptyContent(
-            onTripCreationClick = onTripCreationClick,
+            onTripCreationClick = onCreateTripClick,
             modifier = Modifier
                 .padding(MaterialTheme.spacing.default)
                 .fillMaxSize()
@@ -85,6 +85,7 @@ internal fun TripListScreen(
         is TripListUiState.Content -> TripListContent(
             tripSectionList = state.tripSectionList,
             onTripClick = onTripClick,
+            onCreateTripClick = onCreateTripClick,
             modifier = Modifier.fillMaxWidth()
         )
     }
@@ -167,19 +168,33 @@ private fun TripListErrorContent(
 private fun TripListContent(
     tripSectionList: List<TripSection>,
     onTripClick: (Trip) -> Unit,
+    onCreateTripClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    LazyColumn(
-        modifier = modifier,
-        contentPadding = PaddingValues(MaterialTheme.spacing.default),
-        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.default)
-    ) {
-        tripSectionList.forEach { tripSection ->
-            tripSection(
-                titleResId = tripSection.type.toTitleResId(),
-                trips = tripSection.trips,
-                onTripClick = onTripClick
-            )
+    Scaffold(
+        floatingActionButton = {
+            Button(
+                onClick = onCreateTripClick
+            ) {
+                Icon(
+                    painter = rememberVectorPainter(Icons.Default.Add),
+                    contentDescription = stringResource(R.string.create_new_trip)
+                )
+            }
+        }
+    ) { innerPadding ->
+        LazyColumn(
+            modifier = modifier.padding(innerPadding),
+            contentPadding = PaddingValues(MaterialTheme.spacing.default),
+            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.default)
+        ) {
+            tripSectionList.forEach { tripSection ->
+                tripSection(
+                    titleResId = tripSection.type.toTitleResId(),
+                    trips = tripSection.trips,
+                    onTripClick = onTripClick
+                )
+            }
         }
     }
 }
@@ -259,6 +274,7 @@ private fun TripListContentPreview(
         TripListContent(
             tripSectionList = uiState.tripSectionList,
             onTripClick = {},
+            onCreateTripClick = {},
             modifier = Modifier.fillMaxWidth()
         )
     }
