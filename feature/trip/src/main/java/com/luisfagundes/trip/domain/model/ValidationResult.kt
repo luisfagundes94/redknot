@@ -5,5 +5,7 @@ internal sealed class ValidationResult {
     data class Invalid(val error: ValidationError) : ValidationResult()
 }
 
-internal fun ValidationResult.errorOrNull(): ValidationError? =
-    (this as? ValidationResult.Invalid)?.error
+internal fun ValidationResult.errorOrNull(): ValidationError? = when (this) {
+    is ValidationResult.Valid -> null
+    is ValidationResult.Invalid -> error
+}
