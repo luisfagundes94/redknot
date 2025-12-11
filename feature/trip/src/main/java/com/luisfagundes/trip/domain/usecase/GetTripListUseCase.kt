@@ -12,16 +12,14 @@ internal class GetTripListUseCase @Inject constructor(
         return repository.getTripList().map { trips ->
             val (upcomingTrips, pastTrips) = trips.partition { !it.done }
 
-            listOf(
-                TripSection(
-                    type = TripSectionType.UPCOMING,
-                    trips = upcomingTrips
-                ),
-                TripSection(
-                    type = TripSectionType.PAST,
-                    trips = pastTrips
-                )
-            )
+            buildList {
+                if (upcomingTrips.isNotEmpty()) {
+                    add(TripSection(TripSectionType.UPCOMING, upcomingTrips))
+                }
+                if (pastTrips.isNotEmpty()) {
+                    add(TripSection(TripSectionType.PAST, pastTrips))
+                }
+            }
         }
     }
 }

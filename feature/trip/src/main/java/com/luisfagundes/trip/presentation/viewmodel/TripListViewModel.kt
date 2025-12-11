@@ -28,6 +28,10 @@ internal class TripListViewModel @Inject constructor(
 
         getTripListUseCase.invoke().fold(
             onSuccess = { tripSectionList ->
+                if (tripSectionList.isEmpty()) {
+                    _uiState.update { TripListUiState.Empty }
+                    return@fold
+                }
                 _uiState.update {
                     TripListUiState.Content(tripSectionList)
                 }
