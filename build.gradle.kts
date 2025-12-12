@@ -19,5 +19,6 @@ subprojects {
         toolVersion = "2.0.0-alpha.1"
         config.setFrom(file("$rootDir/config/detekt/detekt.yml"))
         buildUponDefaultConfig = true
+        autoCorrect = true
     }
 }
