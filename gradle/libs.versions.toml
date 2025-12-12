@@ -32,6 +32,7 @@ retrofitKotlinxSerializationJson = "1.0.0"
 kotlinxSerializationJson = "1.9.0"
 okhttp = "5.3.2"
 secretsGradlePlugin = "2.0.1"
+detekt = "2.0.0-alpha.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -86,4 +87,5 @@ jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrai
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 secrets = { id = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin", version.ref = "secretsGradlePlugin" }
+detekt = { id = "dev.detekt", version.ref = "detekt" }
 

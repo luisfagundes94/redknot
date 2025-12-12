@@ -9,4 +9,15 @@ plugins {
     alias(libs.plugins.hilt) apply false
     alias(libs.plugins.ksp) apply false
     alias(libs.plugins.secrets) apply false
+    alias(libs.plugins.detekt)
+}
+
+subprojects {
+    apply(plugin = "dev.detekt")
+
+    detekt {
+        toolVersion = "2.0.0-alpha.1"
+        config.setFrom(file("$rootDir/config/detekt/detekt.yml"))
+        buildUponDefaultConfig = true
+    }
 }
