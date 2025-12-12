@@ -76,6 +76,8 @@ junit5-jupiter-params = { group = "org.junit.jupiter", name = "junit-jupiter-par
 junit5-migration-support = { group = "org.junit.jupiter", name = "junit-jupiter-migrationsupport", version.ref = "junit5" }
 mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
 kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutinesTest" }
+detekt-formatting = { group = "io.gitlab.arturbosch.detekt", name = "detekt-formatting", version.ref = "detekt" }
+detekt-compose = { group = "io.nlopez.compose.rules", name = "detekt", version = "0.5.3" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

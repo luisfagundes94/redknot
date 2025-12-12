@@ -21,4 +21,11 @@ subprojects {
         buildUponDefaultConfig = true
         autoCorrect = true
     }
+
+    pluginManager.withPlugin("dev.detekt") {
+        dependencies {
+            add("detektPlugins", "io.gitlab.arturbosch.detekt:detekt-formatting:1.23.7")
+            add("detektPlugins", "io.nlopez.compose.rules:detekt:0.5.1")
+        }
+    }
 }
