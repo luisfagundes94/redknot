@@ -176,42 +176,6 @@ private fun TripFormContent(
 }
 
 @Composable
-private fun CreateTripButton(
-    uiState: TripFormUiState,
-    onSubmitForm: () -> Unit
-) {
-    Button(
-        onClick = onSubmitForm,
-        enabled = uiState.isFormValid && !uiState.isLoading,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = MaterialTheme.spacing.default)
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.default)
-        ) {
-            if (uiState.isLoading) {
-                CircularProgressIndicator(
-                    modifier = Modifier.size(24.dp)
-                )
-            } else {
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = null
-                )
-                Text(
-                    text = stringResource(
-                        id = R.string.create_trip
-                    )
-                )
-            }
-        }
-    }
-}
-
-
-@Composable
 private fun DateSelectionField(
     value: LocalDate?,
     label: String,
@@ -279,6 +243,41 @@ fun DatePickerModal(
         }
     ) {
         DatePicker(state = datePickerState)
+    }
+}
+
+@Composable
+private fun CreateTripButton(
+    uiState: TripFormUiState,
+    onSubmitForm: () -> Unit
+) {
+    Button(
+        onClick = onSubmitForm,
+        enabled = uiState.isFormValid && !uiState.isLoading,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = MaterialTheme.spacing.default)
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.default)
+        ) {
+            if (uiState.isLoading) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(24.dp)
+                )
+            } else {
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = null
+                )
+                Text(
+                    text = stringResource(
+                        id = R.string.create_trip
+                    )
+                )
+            }
+        }
     }
 }
 
