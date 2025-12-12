@@ -9,10 +9,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
-fun RedknotThemePreview(content: @Composable () -> Unit) {
+fun RedknotThemePreview(
+    modifier: Modifier = Modifier,
+    content: @Composable () -> Unit
+) {
     RedknotTheme {
         Box(
-            modifier = Modifier.background(color = MaterialTheme.colorScheme.background)
+            modifier = modifier.background(color = MaterialTheme.colorScheme.background)
         ) {
             content.invoke()
         }

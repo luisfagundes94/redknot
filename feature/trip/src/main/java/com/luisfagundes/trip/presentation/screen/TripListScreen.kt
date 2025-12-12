@@ -55,9 +55,9 @@ import com.luisfagundes.trip.presentation.viewmodel.TripListViewModel
 
 @Composable
 internal fun TripListScreen(
-    viewModel: TripListViewModel = hiltViewModel(),
     onTripClick: (Trip) -> Unit,
-    onCreateTripClick: () -> Unit
+    onCreateTripClick: () -> Unit,
+    viewModel: TripListViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -172,6 +172,7 @@ private fun TripListContent(
     modifier: Modifier = Modifier
 ) {
     Scaffold(
+        modifier = modifier,
         floatingActionButton = {
             Button(
                 onClick = onCreateTripClick
@@ -184,7 +185,7 @@ private fun TripListContent(
         }
     ) { innerPadding ->
         LazyColumn(
-            modifier = modifier.padding(innerPadding),
+            modifier = Modifier.padding(innerPadding),
             contentPadding = PaddingValues(MaterialTheme.spacing.default),
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.default)
         ) {

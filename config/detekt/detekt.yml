@@ -114,6 +114,7 @@ complexity:
   LongMethod:
     active: true
     allowedLines: 60
+    ignoreAnnotated: ['Composable']
   LongParameterList:
     active: true
     allowedFunctionParameters: 10
@@ -866,6 +867,7 @@ Compose:
     # treatAsLambda: MyLambdaType
   CompositionLocalAllowlist:
     active: true
+    allowedCompositionLocals: ['LocalSpacing']
     # -- You can optionally define a list of CompositionLocals that are allowed here
     # allowedCompositionLocals: LocalSomething,LocalSomethingElse
   CompositionLocalNaming:
@@ -954,7 +956,7 @@ Compose:
     # -- You can optionally add your allowed lambda names (e.g., usages from the past found in the official Compose code)
     # allowedLambdaParameterNames: onSizeChanged, onGloballyPositioned
   PreviewAnnotationNaming:
-    active: true
+    active: false
   PreviewNaming:
     active: false # Opt-in, disabled by default.
     # -- You can optionally configure the naming strategy for previews.

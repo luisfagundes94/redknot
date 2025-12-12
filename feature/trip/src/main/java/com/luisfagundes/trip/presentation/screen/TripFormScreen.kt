@@ -29,6 +29,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -61,12 +62,13 @@ internal fun TripFormScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
+    val currentOnBackClick by rememberUpdatedState(onBackClick)
 
     LaunchedEffect(Unit) {
         viewModel.uiEffect.collect { effect ->
             when (effect) {
                 is TripFormUiEffect.NavigateBack -> {
-                    onBackClick()
+                    currentOnBackClick()
                 }
 
                 is TripFormUiEffect.ShowErrorToast -> {
@@ -151,7 +153,7 @@ private fun TripFormContent(
                         Text(error.toErrorMessage(context))
                     }
                 },
-                onDateSelected = onStartDateChange,
+                onDateSelect = onStartDateChange,
                 modifier = Modifier.fillMaxWidth()
             )
             DateSelectionField(
@@ -164,7 +166,7 @@ private fun TripFormContent(
                         Text(error.toErrorMessage(context))
                     }
                 },
-                onDateSelected = onEndDateChange,
+                onDateSelect = onEndDateChange,
                 modifier = Modifier.fillMaxWidth()
             )
             CreateTripButton(
@@ -181,7 +183,7 @@ private fun DateSelectionField(
     label: String,
     placeholder: String,
     hasError: Boolean,
-    onDateSelected: (LocalDate?) -> Unit,
+    onDateSelect: (LocalDate?) -> Unit,
     supportingText: @Composable (() -> Unit)?,
     modifier: Modifier = Modifier
 ) {
@@ -213,7 +215,7 @@ private fun DateSelectionField(
 
     if (showDatePicker) {
         DatePickerModal(
-            onDateSelected = onDateSelected,
+            onDateSelect = onDateSelect,
             onDismiss = dismissPicker
         )
     }
@@ -221,7 +223,7 @@ private fun DateSelectionField(
 
 @Composable
 fun DatePickerModal(
-    onDateSelected: (LocalDate?) -> Unit,
+    onDateSelect: (LocalDate?) -> Unit,
     onDismiss: () -> Unit
 ) {
     val datePickerState = rememberDatePickerState()
@@ -230,7 +232,7 @@ fun DatePickerModal(
         onDismissRequest = onDismiss,
         confirmButton = {
             TextButton(onClick = {
-                onDateSelected(datePickerState.selectedDateMillis.convertMillisToLocalDate())
+                onDateSelect(datePickerState.selectedDateMillis.convertMillisToLocalDate())
                 onDismiss()
             }) {
                 Text(stringResource(R.string.ok))

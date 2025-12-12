@@ -7,12 +7,18 @@ import javax.inject.Inject
 
 internal class ValidateDateUseCase @Inject constructor() {
     operator fun invoke(date: LocalDate?): ValidationResult {
-        if (date == null) {
-            return ValidationResult.Invalid(ValidationError.MISSING_DATE)
+        return when {
+            date == null -> {
+                ValidationResult.Invalid(ValidationError.MISSING_DATE)
+            }
+
+            date.isBefore(LocalDate.now()) -> {
+                ValidationResult.Invalid(ValidationError.DATE_BEFORE_TODAY)
+            }
+
+            else -> {
+                ValidationResult.Valid
+            }
         }
-        if (date.isBefore(LocalDate.now())) {
-            return ValidationResult.Invalid(ValidationError.DATE_BEFORE_TODAY)
-        }
-        return ValidationResult.Valid
     }
 }

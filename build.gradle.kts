@@ -12,19 +12,22 @@ plugins {
     alias(libs.plugins.detekt)
 }
 
-subprojects {
+allprojects {
     apply(plugin = "dev.detekt")
+}
 
+subprojects {
     detekt {
         toolVersion = "2.0.0-alpha.1"
         config.setFrom(file("$rootDir/config/detekt/detekt.yml"))
         buildUponDefaultConfig = true
         autoCorrect = true
+        parallel = true
+        ignoreFailures = false
     }
 
     pluginManager.withPlugin("dev.detekt") {
         dependencies {
-            add("detektPlugins", "io.gitlab.arturbosch.detekt:detekt-formatting:1.23.7")
             add("detektPlugins", "io.nlopez.compose.rules:detekt:0.5.1")
         }
     }

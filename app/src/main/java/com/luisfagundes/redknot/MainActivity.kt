@@ -31,16 +31,19 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             RedknotTheme {
-                RedknotApp()
+                RedknotApp(
+                    modifier = Modifier.fillMaxSize()
+                )
             }
         }
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
-@PreviewScreenSizes
 @Composable
-fun RedknotApp() {
+fun RedknotApp(
+    modifier: Modifier = Modifier
+) {
     val navigationState = rememberNavigationState(
         startRoute = TopLevelDestinations.TRIP_LIST.route,
         topLevelRoutes = TopLevelDestinations.entries.map { it.route }.toSet()
@@ -48,7 +51,7 @@ fun RedknotApp() {
     val navigator = remember { Navigator(navigationState) }
 
     Scaffold(
-        modifier = Modifier.fillMaxSize(),
+        modifier = modifier,
         bottomBar = {
             if (navigationState.isCurrentRouteTopLevel.not()) return@Scaffold
 
