@@ -1,7 +1,9 @@
 package com.luisfagundes.trip.di
 
-import com.luisfagundes.trip.data.datasource.TripDataSource
-import com.luisfagundes.trip.data.datasource.TripDataSourceImpl
+import com.luisfagundes.trip.data.datasource.TripLocalDataSource
+import com.luisfagundes.trip.data.datasource.TripLocalDataSourceImpl
+import com.luisfagundes.trip.data.datasource.TripRemoteDataSource
+import com.luisfagundes.trip.data.datasource.TripRemoteDataSourceImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -13,7 +15,13 @@ import javax.inject.Singleton
 internal abstract class TripDataSourceModule {
     @Binds
     @Singleton
-    abstract fun bindTripDataSource(
-        impl: TripDataSourceImpl
-    ): TripDataSource
+    abstract fun bindTripLocalDataSource(
+        impl: TripLocalDataSourceImpl
+    ): TripLocalDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindTripRemoteDataSource(
+        impl: TripRemoteDataSourceImpl
+    ): TripRemoteDataSource
 }

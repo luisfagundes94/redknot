@@ -6,6 +6,7 @@ import com.luisfagundes.core.di.IoDispatcher
 import com.luisfagundes.trip.domain.model.Trip
 import com.luisfagundes.trip.domain.model.errorOrNull
 import com.luisfagundes.trip.domain.usecase.CreateTripUseCase
+import com.luisfagundes.trip.domain.usecase.GetTripImageUseCase
 import com.luisfagundes.trip.domain.usecase.ValidateDestinationUseCase
 import com.luisfagundes.trip.domain.usecase.ValidateDateUseCase
 import com.luisfagundes.trip.domain.usecase.ValidateTitleUseCase
@@ -27,6 +28,7 @@ internal class TripFormViewModel @Inject constructor(
     private val validateTitleUseCase: ValidateTitleUseCase,
     private val validateDateUseCase: ValidateDateUseCase,
     private val validateDestinationUseCase: ValidateDestinationUseCase,
+    private val getTripImageUseCase: GetTripImageUseCase,
     private val createTripUseCase: CreateTripUseCase,
     @param:IoDispatcher private val dispatcher: CoroutineDispatcher
 ) : ViewModel() {
@@ -76,24 +78,32 @@ internal class TripFormViewModel @Inject constructor(
         val state = _uiState.value
 
         viewModelScope.launch(dispatcher) {
-            createTripUseCase.invoke(
-                trip = Trip(
-                    id = 0,
-                    title = state.title,
-                    location = state.destination,
-                    startDate = state.startDate ?: return@launch,
-                    endDate = state.endDate ?: return@launch,
-                    imageUrl = "https://images.unsplash.com/photo-1528041119984-da3a9f8d04d1?q=80&w=2818&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-                    done = false
-                )
-            ).fold(
+            _uiState.update { it.copy(isLoading = true) }
+
+            val imageUrl = getTripImageUseCase.invoke(state.destination)
+                .getOrNull()
+                .orEmpty()
+
+            val trip = Trip(
+                id = 0,
+                title = state.title,
+                location = state.destination,
+                startDate = state.startDate ?: LocalDate.now(),
+                endDate = state.endDate ?: LocalDate.now(),
+                imageUrl = imageUrl,
+                done = false
+            )
+
+            createTripUseCase.invoke(trip).fold(
                 onSuccess = {
                     _uiEffect.send(TripFormUiEffect.NavigateBack)
                 },
                 onFailure = { error ->
                     _uiEffect.send(TripFormUiEffect.ShowErrorToast(error.toString()))
                 }
-            )
+            ).also {
+                _uiState.update { it.copy(isLoading = true) }
+            }
         }
     }
 }

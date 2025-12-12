@@ -4,9 +4,9 @@ import com.luisfagundes.trip.data.database.TripDatabase
 import com.luisfagundes.trip.data.model.TripEntity
 import javax.inject.Inject
 
-internal class TripDataSourceImpl @Inject constructor(
+internal class TripLocalDataSourceImpl @Inject constructor(
     private val database: TripDatabase
-) : TripDataSource {
+) : TripLocalDataSource {
     override suspend fun getAllTrips(): List<TripEntity> {
         return database.tripDao().getAllTrips()
     }

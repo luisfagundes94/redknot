@@ -3,7 +3,7 @@ package com.luisfagundes.trip.di
 import android.content.Context
 import androidx.room.Room
 import com.luisfagundes.trip.data.database.TripDatabase
-import com.luisfagundes.trip.data.datasource.TripDataSourceImpl
+import com.luisfagundes.trip.data.datasource.TripLocalDataSourceImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -29,5 +29,5 @@ internal object TripDatabaseModule {
     @Singleton
     fun provideTripDataSource(
         database: TripDatabase
-    ) = TripDataSourceImpl(database)
+    ) = TripLocalDataSourceImpl(database)
 }

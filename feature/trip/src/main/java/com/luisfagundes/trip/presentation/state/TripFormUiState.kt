@@ -12,6 +12,7 @@ internal data class TripFormUiState(
     val endDateError: ValidationError? = null,
     val destination: String = "",
     val destinationError: ValidationError? = null,
+    val isLoading: Boolean = false
 ) {
     val isFormValid: Boolean
         get() {

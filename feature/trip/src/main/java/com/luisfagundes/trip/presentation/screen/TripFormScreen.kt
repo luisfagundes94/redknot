@@ -8,10 +8,12 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -34,6 +36,7 @@ import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.luisfagundes.designsystem.components.RedknotTopBar
@@ -73,7 +76,7 @@ internal fun TripFormScreen(
         }
     }
 
-    TripCreationContent(
+    TripFormContent(
         uiState = uiState,
         onTitleChange = viewModel::onTitleChange,
         onDestinationChange = viewModel::onDestinationChange,
@@ -85,7 +88,7 @@ internal fun TripFormScreen(
 }
 
 @Composable
-private fun TripCreationContent(
+private fun TripFormContent(
     uiState: TripFormUiState,
     onTitleChange: (String) -> Unit,
     onDestinationChange: (String) -> Unit,
@@ -164,25 +167,44 @@ private fun TripCreationContent(
                 onDateSelected = onEndDateChange,
                 modifier = Modifier.fillMaxWidth()
             )
-            Button(
-                onClick = onSubmitForm,
-                enabled = uiState.isFormValid,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = MaterialTheme.spacing.default)
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.default)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Add,
-                        contentDescription = null
+            CreateTripButton(
+                uiState = uiState,
+                onSubmitForm = onSubmitForm
+            )
+        }
+    }
+}
+
+@Composable
+private fun CreateTripButton(
+    uiState: TripFormUiState,
+    onSubmitForm: () -> Unit
+) {
+    Button(
+        onClick = onSubmitForm,
+        enabled = uiState.isFormValid && !uiState.isLoading,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = MaterialTheme.spacing.default)
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.default)
+        ) {
+            if (uiState.isLoading) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(24.dp)
+                )
+            } else {
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = null
+                )
+                Text(
+                    text = stringResource(
+                        id = R.string.create_trip
                     )
-                    Text(
-                        text = stringResource(R.string.create_trip)
-                    )
-                }
+                )
             }
         }
     }
@@ -262,9 +284,9 @@ fun DatePickerModal(
 
 @RedknotPreview
 @Composable
-private fun TripCreationScreenPreview() {
+private fun TripFormScreenPreview() {
     RedknotThemePreview {
-        TripCreationContent(
+        TripFormContent(
             uiState = TripFormUiState(),
             onTitleChange = {},
             onDestinationChange = {},
