@@ -126,7 +126,7 @@ Feature modules use `internal` visibility extensively to enforce module boundari
 - Effects are one-time events (navigation, toasts), state is persistent UI data
 - ViewModels use `viewModelScope` with injected dispatchers for testability
 
-## Code Quality
+### Code Quality
 - Follow official Kotlin coding conventions
 - Keep functions small and focused on single responsibilities
 - Use meaningful variable and function names
