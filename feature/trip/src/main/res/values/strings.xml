@@ -8,7 +8,7 @@
     <string name="trip_name_label">Trip Name</string>
     <string name="trip_name_placeholder">e.g Summer in Italy</string>
     <string name="trip_destination_label">Destination</string>
-    <string name="trip_destination_placeholder">Search for a city or country</string>
+    <string name="trip_destination_placeholder">e.g Rome, Italy</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
     <string name="start_date_label">Start Date</string>
@@ -24,4 +24,5 @@
     <string name="missing_date_error_message">Date must be selected</string>
     <string name="date_before_today_error_message">Date must be today or later</string>
     <string name="invalid_destination_error_message">Destination can only contain letters</string>
+    <string name="creating_trip">Creating trip...</string>
 </resources>
