@@ -90,7 +90,18 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
-    testImplementation(libs.junit)
+
+    // Testing
+    testImplementation(libs.junit5.jupiter.api)
+    testRuntimeOnly(libs.junit5.jupiter.engine)
+    testImplementation(libs.junit5.jupiter.params)
+    testImplementation(libs.junit5.migration.support)
+    testImplementation(libs.mockk)
+    testImplementation(libs.kotlinx.coroutines.test)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+}
+
+tasks.withType<Test> {
+    useJUnitPlatform()
 }
