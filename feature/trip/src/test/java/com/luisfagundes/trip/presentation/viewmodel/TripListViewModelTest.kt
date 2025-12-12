@@ -43,62 +43,56 @@ internal class TripListViewModelTest {
     }
 
     @Test
-    fun `getTripList with sections returns content state`() =
-        runTest {
-            // Given
-            val upcomingTrip = fakeTrip.copy(id = 1, title = "Paris Trip", done = false)
-            val pastTrip = fakeTrip.copy(id = 2, title = "Rome Trip", done = true)
-            val tripSections = listOf(
-                TripSection(TripSectionType.UPCOMING, listOf(upcomingTrip)),
-                TripSection(TripSectionType.PAST, listOf(pastTrip))
-            )
-            coEvery { getTripListUseCase.invoke() } returns Result.success(tripSections)
-            viewModel = createViewModel()
+    fun `getTripList with sections returns content state`() = runTest {
+        // Given
+        val upcomingTrip = fakeTrip.copy(id = 1, title = "Paris Trip", done = false)
+        val pastTrip = fakeTrip.copy(id = 2, title = "Rome Trip", done = true)
+        val tripSections = listOf(
+            TripSection(TripSectionType.UPCOMING, listOf(upcomingTrip)),
+            TripSection(TripSectionType.PAST, listOf(pastTrip))
+        )
+        coEvery { getTripListUseCase.invoke() } returns Result.success(tripSections)
+        viewModel = createViewModel()
 
-            // When
-            viewModel.getTripList()
-            advanceUntilIdle()
+        // When
+        viewModel.getTripList()
 
-            // Then
-            val currentState = viewModel.uiState.value
-            val expectedState = TripListUiState.Content(tripSections)
-            assertEquals(currentState, expectedState)
-        }
+        // Then
+        val currentState = viewModel.uiState.value
+        val expectedState = TripListUiState.Content(tripSections)
+        assertEquals(currentState, expectedState)
+    }
 
     @Test
-    fun `getTripList with empty list returns empty state`() =
-        runTest {
-            // Given
-            coEvery { getTripListUseCase.invoke() } returns Result.success(emptyList())
-            viewModel = createViewModel()
+    fun `getTripList with empty list returns empty state`() = runTest {
+        // Given
+        coEvery { getTripListUseCase.invoke() } returns Result.success(emptyList())
+        viewModel = createViewModel()
 
-            // When
-            viewModel.getTripList()
-            advanceUntilIdle()
+        // When
+        viewModel.getTripList()
 
-            // Then
-            val currentState = viewModel.uiState.value
-            val expectedState = TripListUiState.Empty
-            assertEquals(currentState, expectedState)
-        }
+        // Then
+        val currentState = viewModel.uiState.value
+        val expectedState = TripListUiState.Empty
+        assertEquals(currentState, expectedState)
+    }
 
     @Test
-    fun `getTripList with failure returns Error state`() =
-        runTest {
-            // Given
-            val exception = Exception("Network error")
-            coEvery { getTripListUseCase.invoke() } returns Result.failure(exception)
-            viewModel = createViewModel()
+    fun `getTripList with failure returns Error state`() = runTest {
+        // Given
+        val exception = Exception("Network error")
+        coEvery { getTripListUseCase.invoke() } returns Result.failure(exception)
+        viewModel = createViewModel()
 
-            // When
-            viewModel.getTripList()
-            advanceUntilIdle()
+        // When
+        viewModel.getTripList()
 
-            // Then
-            val currentState = viewModel.uiState.value
-            val expectedState = TripListUiState.Error
-            assertEquals(currentState, expectedState)
-        }
+        // Then
+        val currentState = viewModel.uiState.value
+        val expectedState = TripListUiState.Error
+        assertEquals(currentState, expectedState)
+    }
 
     private fun createViewModel() = TripListViewModel(
         getTripListUseCase = getTripListUseCase,
