@@ -34,10 +34,10 @@ import com.luisfagundes.designsystem.theme.RedknotThemePreview
 import com.luisfagundes.designsystem.theme.spacing
 import com.luisfagundes.trip.R
 import com.luisfagundes.trip.domain.model.Trip
+import com.luisfagundes.trip.presentation.mapper.toStringResId
 import com.luisfagundes.trip.presentation.provider.TripDetailsPreviewParameterProvider
 import com.luisfagundes.trip.presentation.state.TripDetailsUiState
 import com.luisfagundes.trip.presentation.viewmodel.TripDetailsViewModel
-import com.luisfagundes.trip.tools.extensions.capitalize
 import com.luisfagundes.trip.tools.extensions.formatTripPeriod
 import com.luisfagundes.trip.tools.extensions.getTripDurationInDays
 
@@ -119,7 +119,7 @@ private fun TripDetailsContent(
                 .fillMaxWidth()
         ) {
             Text(
-                text = trip.status.name.capitalize(),
+                text = stringResource(trip.status.toStringResId()),
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier

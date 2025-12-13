@@ -2,6 +2,7 @@ package com.luisfagundes.trip.data.mapper
 
 import com.luisfagundes.trip.data.model.TripEntity
 import com.luisfagundes.trip.domain.model.Trip
+import com.luisfagundes.trip.domain.model.TripStatus
 import com.luisfagundes.trip.tools.extensions.convertMillisToLocalDate
 import com.luisfagundes.trip.tools.extensions.toTimestampMillis
 
@@ -13,8 +14,7 @@ internal class TripMapper {
             endDate = trip.endDate.toTimestampMillis(),
             imageUrl = trip.imageUrl,
             title = trip.title,
-            location = trip.location,
-            status = trip.status
+            location = trip.location
         )
     }
 
@@ -26,7 +26,7 @@ internal class TripMapper {
             imageUrl = tripEntity.imageUrl,
             title = tripEntity.title,
             location = tripEntity.location,
-            status = tripEntity.status
+            status = TripStatus.UNSCHEDULED
         )
     }
 }

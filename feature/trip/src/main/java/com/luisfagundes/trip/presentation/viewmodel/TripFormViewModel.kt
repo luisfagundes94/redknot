@@ -92,7 +92,7 @@ internal class TripFormViewModel @Inject constructor(
                 startDate = state.startDate ?: LocalDate.now(),
                 endDate = state.endDate ?: LocalDate.now(),
                 imageUrl = imageUrl,
-                status = TripStatus.UPCOMING
+                status = TripStatus.UNSCHEDULED
             )
 
             createTripUseCase.invoke(trip).fold(

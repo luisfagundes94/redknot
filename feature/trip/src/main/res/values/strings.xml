@@ -27,6 +27,7 @@
     <string name="creating_trip">Creating trip…</string>
     <string name="dot">•</string>
     <string name="ongoing">Ongoing</string>
+    <string name="unscheduled">Unscheduled</string>
     <plurals name="trip_duration_days">
         <item quantity="one">%d day</item>
         <item quantity="other">%d days</item>

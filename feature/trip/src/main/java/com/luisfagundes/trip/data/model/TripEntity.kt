@@ -3,7 +3,6 @@ package com.luisfagundes.trip.data.model
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.luisfagundes.trip.domain.model.TripStatus
 
 @Entity
 internal data class TripEntity(
@@ -13,5 +12,4 @@ internal data class TripEntity(
     @ColumnInfo("image_url") val imageUrl: String,
     @ColumnInfo("title") val title: String,
     @ColumnInfo("location") val location: String,
-    @ColumnInfo("status") val status: TripStatus
 )

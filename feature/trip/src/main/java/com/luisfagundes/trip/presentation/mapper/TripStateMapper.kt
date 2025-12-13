@@ -7,4 +7,5 @@ internal fun TripStatus.toStringResId() = when (this) {
     TripStatus.ONGOING -> R.string.ongoing
     TripStatus.UPCOMING -> R.string.upcoming
     TripStatus.PAST -> R.string.past
+    TripStatus.UNSCHEDULED -> R.string.unscheduled
 }
