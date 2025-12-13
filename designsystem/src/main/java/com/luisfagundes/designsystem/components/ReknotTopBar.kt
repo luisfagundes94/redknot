@@ -14,13 +14,13 @@ import androidx.compose.ui.Modifier
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RedknotTopBar(
-    title: String,
     onBackClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    title: String? = null
 ) {
     TopAppBar(
         modifier = modifier,
-        title = { Text(title) },
+        title = { title?.let { Text(it) } },
         navigationIcon = {
             IconButton(onClick = onBackClick) {
                 Icon(
@@ -29,6 +29,6 @@ fun RedknotTopBar(
                 )
             }
         },
-        windowInsets = WindowInsets(0,0,0,0)
+        windowInsets = WindowInsets(0, 0, 0, 0)
     )
 }

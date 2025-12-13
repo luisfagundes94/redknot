@@ -55,7 +55,7 @@ import com.luisfagundes.trip.presentation.viewmodel.TripListViewModel
 
 @Composable
 internal fun TripListScreen(
-    onTripClick: (Trip) -> Unit,
+    onTripClick: (id: Int) -> Unit,
     onCreateTripClick: () -> Unit,
     viewModel: TripListViewModel = hiltViewModel()
 ) {
@@ -167,7 +167,7 @@ private fun TripListErrorContent(
 @Composable
 private fun TripListContent(
     tripSectionList: List<TripSection>,
-    onTripClick: (Trip) -> Unit,
+    onTripClick: (id: Int) -> Unit,
     onCreateTripClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -203,7 +203,7 @@ private fun TripListContent(
 private fun LazyListScope.tripSection(
     @StringRes titleResId: Int,
     trips: List<Trip>,
-    onTripClick: (Trip) -> Unit
+    onTripClick: (id: Int) -> Unit
 ) {
     if (trips.isEmpty()) {
         return
@@ -223,7 +223,7 @@ private fun LazyListScope.tripSection(
         TripContent(
             modifier = Modifier
                 .fillMaxWidth()
-                .clickable { onTripClick(trip) }
+                .clickable { onTripClick(trip.id) }
                 .animateItem(),
             trip = trip,
         )

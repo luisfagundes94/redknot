@@ -5,6 +5,7 @@ import com.luisfagundes.trip.tools.constants.DEFAULT_TIMEZONE
 import java.time.LocalDate
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
 
 fun formatTripPeriod(startDate: LocalDate, endDate: LocalDate): String {
     val dayFormatter = DateTimeFormatter.ofPattern("MMM d")
@@ -15,6 +16,10 @@ fun formatTripPeriod(startDate: LocalDate, endDate: LocalDate): String {
     } else {
         "${startDate.format(fullFormatter)} - ${endDate.format(fullFormatter)}"
     }
+}
+
+fun getTripDurationInDays(startDate: LocalDate, endDate: LocalDate): Int {
+    return ChronoUnit.DAYS.between(startDate, endDate).toInt()
 }
 
 fun LocalDate.toTimestampMillis(): Long {

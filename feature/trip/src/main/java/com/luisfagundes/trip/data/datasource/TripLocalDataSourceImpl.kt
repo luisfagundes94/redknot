@@ -7,16 +7,16 @@ import javax.inject.Inject
 internal class TripLocalDataSourceImpl @Inject constructor(
     private val database: TripDatabase
 ) : TripLocalDataSource {
-    override suspend fun getAllTrips(): List<TripEntity> {
-        return database.tripDao().getAllTrips()
+    override suspend fun getAllTrips(): Result<List<TripEntity>> {
+        return runCatching { database.tripDao().getAllTrips() }
     }
 
-    override suspend fun getTripById(id: Int): TripEntity? {
-        return database.tripDao().getTripById(id)
+    override suspend fun getTripById(id: Int): Result<TripEntity> {
+        return runCatching { database.tripDao().getTripById(id) }
     }
 
-    override suspend fun createTrip(tripEntity: TripEntity) {
-        database.tripDao().createTrip(tripEntity)
+    override suspend fun createTrip(tripEntity: TripEntity): Result<Unit> {
+        return runCatching { database.tripDao().createTrip(tripEntity) }
     }
 
     override suspend fun deleteTrip(tripEntity: TripEntity) {

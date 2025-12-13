@@ -24,5 +24,10 @@
     <string name="missing_date_error_message">Date must be selected</string>
     <string name="date_before_today_error_message">Date must be today or later</string>
     <string name="invalid_destination_error_message">Destination can only contain letters</string>
-    <string name="creating_trip">Creating trip...</string>
+    <string name="creating_trip">Creating trip…</string>
+    <string name="dot">•</string>
+    <plurals name="trip_duration_days">
+        <item quantity="one">%d day</item>
+        <item quantity="other">%d days</item>
+    </plurals>
 </resources>

@@ -5,6 +5,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
 import com.luisfagundes.trip.presentation.navigation.TripCreationRoute
+import com.luisfagundes.trip.presentation.navigation.TripDetailsRoute
 import com.luisfagundes.trip.presentation.navigation.tripSection
 
 @Composable
@@ -16,6 +17,7 @@ fun AppNavDisplay(
     val entryProvider = entryProvider {
         tripSection(
             onTripCreationClick = { navigator.navigate(TripCreationRoute) },
+            onTripClick = { tripId -> navigator.navigate(TripDetailsRoute(tripId)) },
             onBackClick = { navigator.goBack() }
         )
     }

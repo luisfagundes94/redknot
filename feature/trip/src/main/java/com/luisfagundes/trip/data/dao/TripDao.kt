@@ -12,7 +12,7 @@ internal interface TripDao {
     suspend fun getAllTrips(): List<TripEntity>
 
     @Query("SELECT * FROM tripentity WHERE id = :id LIMIT 1")
-    suspend fun getTripById(id: Int): TripEntity?
+    suspend fun getTripById(id: Int): TripEntity
 
     @Insert
     suspend fun createTrip(tripEntity: TripEntity)
