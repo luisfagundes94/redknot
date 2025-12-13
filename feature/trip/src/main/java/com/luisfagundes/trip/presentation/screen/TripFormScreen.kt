@@ -229,7 +229,6 @@ fun DatePickerModal(
     val datePickerState = rememberDatePickerState()
 
     DatePickerDialog(
-        onDismissRequest = onDismiss,
         confirmButton = {
             TextButton(onClick = {
                 onDateSelect(datePickerState.selectedDateMillis.convertMillisToLocalDate())
@@ -242,7 +241,8 @@ fun DatePickerModal(
             TextButton(onClick = onDismiss) {
                 Text(stringResource(R.string.cancel))
             }
-        }
+        },
+        onDismissRequest = onDismiss
     ) {
         DatePicker(state = datePickerState)
     }
