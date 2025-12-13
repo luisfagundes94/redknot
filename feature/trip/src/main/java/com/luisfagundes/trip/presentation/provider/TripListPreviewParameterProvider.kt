@@ -2,13 +2,12 @@ package com.luisfagundes.trip.presentation.provider
 
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import com.luisfagundes.trip.domain.model.Trip
-import com.luisfagundes.trip.domain.model.TripSection
-import com.luisfagundes.trip.domain.model.TripSectionType
+import com.luisfagundes.trip.domain.model.TripState
 import com.luisfagundes.trip.presentation.state.TripListUiState
 import java.time.LocalDate
 import java.time.Month
 
-internal class TripListPreviewParameterProvider : PreviewParameterProvider<TripListUiState.Content> {
+internal class TripListPreviewParameterProvider : PreviewParameterProvider<TripListUiState.Success> {
     private val upcomingTrips = listOf(
         Trip(
             id = 2,
@@ -17,7 +16,7 @@ internal class TripListPreviewParameterProvider : PreviewParameterProvider<TripL
             startDate = LocalDate.of(2026, Month.AUGUST, 15),
             endDate = LocalDate.of(2026, Month.AUGUST, 25),
             location = "Florence, Italy",
-            done = false
+            state = TripState.UPCOMING
         ),
         Trip(
             id = 3,
@@ -26,7 +25,7 @@ internal class TripListPreviewParameterProvider : PreviewParameterProvider<TripL
             startDate = LocalDate.of(2026, Month.SEPTEMBER, 20),
             endDate = LocalDate.of(2026, Month.SEPTEMBER, 24),
             location = "Paris, France",
-            done = false
+            state = TripState.UPCOMING
         )
     )
 
@@ -38,24 +37,14 @@ internal class TripListPreviewParameterProvider : PreviewParameterProvider<TripL
             startDate = LocalDate.of(2022, Month.APRIL, 2),
             endDate = LocalDate.of(2022, Month.APRIL, 24),
             location = "Orlando, United States",
-            done = true
-        )
-    )
-
-    private val tripSectionList = listOf(
-        TripSection(
-            type = TripSectionType.UPCOMING,
-            trips = upcomingTrips
-        ),
-        TripSection(
-            type = TripSectionType.PAST,
-            trips = pastTrips
+            state = TripState.PAST
         )
     )
 
     override val values = sequenceOf(
-        TripListUiState.Content(
-            tripSectionList = tripSectionList
+        TripListUiState.Success(
+            upcomingTrips = upcomingTrips,
+            pastTrips = pastTrips
         )
     )
 }

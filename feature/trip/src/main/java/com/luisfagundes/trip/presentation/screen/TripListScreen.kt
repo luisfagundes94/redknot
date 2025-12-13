@@ -46,8 +46,6 @@ import com.luisfagundes.designsystem.theme.RedknotThemePreview
 import com.luisfagundes.designsystem.theme.spacing
 import com.luisfagundes.trip.R
 import com.luisfagundes.trip.domain.model.Trip
-import com.luisfagundes.trip.domain.model.TripSection
-import com.luisfagundes.trip.presentation.mapper.toTitleResId
 import com.luisfagundes.trip.presentation.provider.TripListPreviewParameterProvider
 import com.luisfagundes.trip.presentation.state.TripListUiState
 import com.luisfagundes.trip.tools.extensions.formatTripPeriod
@@ -79,11 +77,14 @@ internal fun TripListScreen(
 
         is TripListUiState.Error -> TripListErrorContent(
             onTryAgainClick = { viewModel.getTripList() },
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier
+                .padding(MaterialTheme.spacing.default)
+                .fillMaxSize()
         )
 
-        is TripListUiState.Content -> TripListContent(
-            tripSectionList = state.tripSectionList,
+        is TripListUiState.Success -> TripListContent(
+            upcomingTrips = state.upcomingTrips,
+            pastTrips = state.pastTrips,
             onTripClick = onTripClick,
             onCreateTripClick = onCreateTripClick,
             modifier = Modifier.fillMaxWidth()
@@ -146,13 +147,17 @@ private fun TripListErrorContent(
     onTryAgainClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Box(
+    Column(
         modifier = modifier,
-        contentAlignment = Alignment.Center
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
     ) {
         Text(
             text = stringResource(R.string.error_occurred_try_again),
             textAlign = TextAlign.Center,
+        )
+        Spacer(
+            modifier = Modifier.height(MaterialTheme.spacing.default)
         )
         Button(
             onClick = onTryAgainClick
@@ -166,7 +171,8 @@ private fun TripListErrorContent(
 
 @Composable
 private fun TripListContent(
-    tripSectionList: List<TripSection>,
+    upcomingTrips: List<Trip>,
+    pastTrips: List<Trip>,
     onTripClick: (id: Int) -> Unit,
     onCreateTripClick: () -> Unit,
     modifier: Modifier = Modifier
@@ -189,13 +195,16 @@ private fun TripListContent(
             contentPadding = PaddingValues(MaterialTheme.spacing.default),
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.default)
         ) {
-            tripSectionList.forEach { tripSection ->
-                tripSection(
-                    titleResId = tripSection.type.toTitleResId(),
-                    trips = tripSection.trips,
-                    onTripClick = onTripClick
-                )
-            }
+            tripSection(
+                titleResId = R.string.upcoming,
+                trips = upcomingTrips,
+                onTripClick = onTripClick
+            )
+            tripSection(
+                titleResId = R.string.past,
+                trips = pastTrips,
+                onTripClick = onTripClick
+            )
         }
     }
 }
@@ -269,11 +278,12 @@ private fun TripContent(
 @Composable
 private fun TripListContentPreview(
     @PreviewParameter(TripListPreviewParameterProvider::class)
-    uiState: TripListUiState.Content
+    uiState: TripListUiState.Success
 ) {
     RedknotThemePreview {
         TripListContent(
-            tripSectionList = uiState.tripSectionList,
+            upcomingTrips = uiState.upcomingTrips,
+            pastTrips = uiState.pastTrips,
             onTripClick = {},
             onCreateTripClick = {},
             modifier = Modifier.fillMaxWidth()

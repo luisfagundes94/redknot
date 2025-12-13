@@ -1,8 +1,7 @@
 package com.luisfagundes.trip.presentation.viewmodel
 
 import com.luisfagundes.core.testing.MainDispatcherRule
-import com.luisfagundes.trip.domain.model.TripSection
-import com.luisfagundes.trip.domain.model.TripSectionType
+import com.luisfagundes.trip.domain.model.TripState
 import com.luisfagundes.trip.domain.usecase.GetTripListUseCase
 import com.luisfagundes.trip.presentation.state.TripListUiState
 import com.luisfagundes.trip.presentation.stubs.fakeTrip
@@ -44,13 +43,11 @@ internal class TripListViewModelTest {
     @Test
     fun `getTripList with sections returns content state`() = runTest {
         // Given
-        val upcomingTrip = fakeTrip.copy(id = 1, title = "Paris Trip", done = false)
-        val pastTrip = fakeTrip.copy(id = 2, title = "Rome Trip", done = true)
-        val tripSections = listOf(
-            TripSection(TripSectionType.UPCOMING, listOf(upcomingTrip)),
-            TripSection(TripSectionType.PAST, listOf(pastTrip))
-        )
-        coEvery { getTripListUseCase.invoke() } returns Result.success(tripSections)
+        val upcomingTrip = fakeTrip.copy(id = 1, title = "Paris Trip", state = TripState.UPCOMING)
+        val pastTrip = fakeTrip.copy(id = 2, title = "Rome Trip", state = TripState.PAST)
+        val trips = listOf(upcomingTrip, pastTrip)
+
+        coEvery { getTripListUseCase.invoke() } returns Result.success(trips)
         viewModel = createViewModel()
 
         // When
@@ -58,7 +55,7 @@ internal class TripListViewModelTest {
 
         // Then
         val currentState = viewModel.uiState.value
-        val expectedState = TripListUiState.Content(tripSections)
+        val expectedState = TripListUiState.Success(listOf(upcomingTrip), listOf(pastTrip))
         assertEquals(currentState, expectedState)
     }
 

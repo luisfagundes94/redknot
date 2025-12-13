@@ -1,6 +1,7 @@
 package com.luisfagundes.trip.domain.model
 
-internal enum class TripSectionType {
+internal enum class TripState {
     UPCOMING,
+    ONGOING,
     PAST
 }

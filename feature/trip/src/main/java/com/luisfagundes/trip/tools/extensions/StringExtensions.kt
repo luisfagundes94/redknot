@@ -9,3 +9,7 @@ fun String.capitalizeEveryWord(): String {
         }
     }
 }
+
+fun String.capitalize(): String {
+    return this.lowercase().replaceFirstChar { it.titlecase(Locale.ROOT) }
+}

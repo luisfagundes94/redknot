@@ -2,6 +2,7 @@ package com.luisfagundes.trip.presentation.provider
 
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import com.luisfagundes.trip.domain.model.Trip
+import com.luisfagundes.trip.domain.model.TripState
 import com.luisfagundes.trip.presentation.state.TripDetailsUiState
 import java.time.LocalDate
 import java.time.Month
@@ -14,7 +15,7 @@ internal class TripDetailsPreviewParameterProvider : PreviewParameterProvider<Tr
         startDate = LocalDate.of(2026, Month.AUGUST, 15),
         endDate = LocalDate.of(2026, Month.AUGUST, 25),
         location = "Florence, Italy",
-        done = false
+        state = TripState.UPCOMING
     )
 
     override val values = sequenceOf(

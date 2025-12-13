@@ -9,5 +9,5 @@ internal data class Trip(
     val imageUrl: String,
     val title: String,
     val location: String,
-    val done: Boolean
+    val state: TripState
 )
