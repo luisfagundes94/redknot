@@ -4,7 +4,8 @@ import com.luisfagundes.core.testing.MainDispatcherRule
 import com.luisfagundes.trip.domain.model.TripStatus
 import com.luisfagundes.trip.domain.usecase.GetTripListUseCase
 import com.luisfagundes.trip.presentation.state.TripListUiState
-import com.luisfagundes.trip.presentation.stubs.fakeTrip
+import com.luisfagundes.trip.presentation.stubs.fakePastTrip
+import com.luisfagundes.trip.presentation.stubs.fakeUpcomingTrip
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -43,11 +44,9 @@ internal class TripListViewModelTest {
     @Test
     fun `getTripList with sections returns content state`() = runTest {
         // Given
-        val upcomingTrip = fakeTrip.copy(id = 1, title = "Paris Trip", status = TripStatus.UPCOMING)
-        val pastTrip = fakeTrip.copy(id = 2, title = "Rome Trip", status = TripStatus.PAST)
         val tripsByStatus = mapOf(
-            TripStatus.UPCOMING to listOf(upcomingTrip),
-            TripStatus.PAST to listOf(pastTrip)
+            TripStatus.UPCOMING to listOf(fakeUpcomingTrip),
+            TripStatus.PAST to listOf(fakePastTrip)
         )
 
         coEvery { getTripListUseCase.invoke() } returns Result.success(tripsByStatus)
