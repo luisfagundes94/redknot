@@ -14,7 +14,7 @@ internal class TripMapper {
             imageUrl = trip.imageUrl,
             title = trip.title,
             location = trip.location,
-            state = trip.state
+            status = trip.status
         )
     }
 
@@ -26,7 +26,7 @@ internal class TripMapper {
             imageUrl = tripEntity.imageUrl,
             title = tripEntity.title,
             location = tripEntity.location,
-            state = tripEntity.state
+            status = tripEntity.status
         )
     }
 }

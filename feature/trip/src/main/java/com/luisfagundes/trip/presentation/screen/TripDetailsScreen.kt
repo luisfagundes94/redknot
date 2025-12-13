@@ -119,7 +119,7 @@ private fun TripDetailsContent(
                 .fillMaxWidth()
         ) {
             Text(
-                text = trip.state.name.capitalize(),
+                text = trip.status.name.capitalize(),
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier

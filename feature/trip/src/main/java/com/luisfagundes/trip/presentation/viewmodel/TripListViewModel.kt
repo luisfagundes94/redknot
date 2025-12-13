@@ -3,7 +3,6 @@ package com.luisfagundes.trip.presentation.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.luisfagundes.core.di.IoDispatcher
-import com.luisfagundes.trip.domain.model.TripState
 import com.luisfagundes.trip.domain.usecase.GetTripListUseCase
 import com.luisfagundes.trip.presentation.state.TripListUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -27,19 +26,13 @@ internal class TripListViewModel @Inject constructor(
         _uiState.update { TripListUiState.Loading }
 
         getTripListUseCase.invoke().fold(
-            onSuccess = { tripList ->
-                if (tripList.isEmpty()) {
+            onSuccess = { tripsByStatus ->
+                if (tripsByStatus.isEmpty()) {
                     _uiState.update { TripListUiState.Empty }
                     return@fold
                 }
                 _uiState.update {
-                    val upcomingTrips = tripList.filter { it.state == TripState.UPCOMING }
-                    val pastTrips = tripList.filter { it.state == TripState.PAST }
-
-                    TripListUiState.Success(
-                        upcomingTrips = upcomingTrips,
-                        pastTrips = pastTrips
-                    )
+                    TripListUiState.Success(tripsByStatus)
                 }
             },
             onFailure = {

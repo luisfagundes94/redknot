@@ -26,6 +26,7 @@
     <string name="invalid_destination_error_message">Destination can only contain letters</string>
     <string name="creating_trip">Creating trip…</string>
     <string name="dot">•</string>
+    <string name="ongoing">Ongoing</string>
     <plurals name="trip_duration_days">
         <item quantity="one">%d day</item>
         <item quantity="other">%d days</item>

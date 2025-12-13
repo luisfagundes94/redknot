@@ -1,7 +1,7 @@
 package com.luisfagundes.trip.presentation.stubs
 
 import com.luisfagundes.trip.domain.model.Trip
-import com.luisfagundes.trip.domain.model.TripState
+import com.luisfagundes.trip.domain.model.TripStatus
 import java.time.LocalDate
 
 internal val fakeTrip = Trip(
@@ -11,5 +11,5 @@ internal val fakeTrip = Trip(
     startDate = LocalDate.of(2025,6, 15),
     endDate = LocalDate.of(2025,6, 25),
     imageUrl = "https://images.unsplash.com/photo-1506744038136-462",
-    state = TripState.UPCOMING
+    status = TripStatus.UPCOMING
 )

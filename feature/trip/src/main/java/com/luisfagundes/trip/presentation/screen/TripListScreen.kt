@@ -46,6 +46,8 @@ import com.luisfagundes.designsystem.theme.RedknotThemePreview
 import com.luisfagundes.designsystem.theme.spacing
 import com.luisfagundes.trip.R
 import com.luisfagundes.trip.domain.model.Trip
+import com.luisfagundes.trip.domain.model.TripStatus
+import com.luisfagundes.trip.presentation.mapper.toStringResId
 import com.luisfagundes.trip.presentation.provider.TripListPreviewParameterProvider
 import com.luisfagundes.trip.presentation.state.TripListUiState
 import com.luisfagundes.trip.tools.extensions.formatTripPeriod
@@ -83,8 +85,7 @@ internal fun TripListScreen(
         )
 
         is TripListUiState.Success -> TripListContent(
-            upcomingTrips = state.upcomingTrips,
-            pastTrips = state.pastTrips,
+            tripsByStatus = state.tripsByStatus,
             onTripClick = onTripClick,
             onCreateTripClick = onCreateTripClick,
             modifier = Modifier.fillMaxWidth()
@@ -171,8 +172,7 @@ private fun TripListErrorContent(
 
 @Composable
 private fun TripListContent(
-    upcomingTrips: List<Trip>,
-    pastTrips: List<Trip>,
+    tripsByStatus: Map<TripStatus, List<Trip>>,
     onTripClick: (id: Int) -> Unit,
     onCreateTripClick: () -> Unit,
     modifier: Modifier = Modifier
@@ -195,16 +195,17 @@ private fun TripListContent(
             contentPadding = PaddingValues(MaterialTheme.spacing.default),
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.default)
         ) {
-            tripSection(
-                titleResId = R.string.upcoming,
-                trips = upcomingTrips,
-                onTripClick = onTripClick
-            )
-            tripSection(
-                titleResId = R.string.past,
-                trips = pastTrips,
-                onTripClick = onTripClick
-            )
+            TripStatus.entries
+                .sortedBy { it.displayOrder }
+                .forEach { state ->
+                    tripsByStatus[state]?.let { trips ->
+                        tripSection(
+                            titleResId = state.toStringResId(),
+                            trips = trips,
+                            onTripClick = onTripClick
+                        )
+                    }
+                }
         }
     }
 }
@@ -282,8 +283,7 @@ private fun TripListContentPreview(
 ) {
     RedknotThemePreview {
         TripListContent(
-            upcomingTrips = uiState.upcomingTrips,
-            pastTrips = uiState.pastTrips,
+            tripsByStatus = uiState.tripsByStatus,
             onTripClick = {},
             onCreateTripClick = {},
             modifier = Modifier.fillMaxWidth()

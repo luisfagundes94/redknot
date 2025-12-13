@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.luisfagundes.core.di.IoDispatcher
 import com.luisfagundes.trip.domain.model.Trip
-import com.luisfagundes.trip.domain.model.TripState
+import com.luisfagundes.trip.domain.model.TripStatus
 import com.luisfagundes.trip.domain.model.errorOrNull
 import com.luisfagundes.trip.domain.usecase.CreateTripUseCase
 import com.luisfagundes.trip.domain.usecase.GetTripImageUseCase
@@ -92,7 +92,7 @@ internal class TripFormViewModel @Inject constructor(
                 startDate = state.startDate ?: LocalDate.now(),
                 endDate = state.endDate ?: LocalDate.now(),
                 imageUrl = imageUrl,
-                state = TripState.UPCOMING
+                status = TripStatus.UPCOMING
             )
 
             createTripUseCase.invoke(trip).fold(

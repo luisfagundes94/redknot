@@ -1,7 +1,7 @@
 package com.luisfagundes.trip.presentation.viewmodel
 
 import com.luisfagundes.core.testing.MainDispatcherRule
-import com.luisfagundes.trip.domain.model.TripState
+import com.luisfagundes.trip.domain.model.TripStatus
 import com.luisfagundes.trip.domain.usecase.GetTripListUseCase
 import com.luisfagundes.trip.presentation.state.TripListUiState
 import com.luisfagundes.trip.presentation.stubs.fakeTrip
@@ -43,11 +43,14 @@ internal class TripListViewModelTest {
     @Test
     fun `getTripList with sections returns content state`() = runTest {
         // Given
-        val upcomingTrip = fakeTrip.copy(id = 1, title = "Paris Trip", state = TripState.UPCOMING)
-        val pastTrip = fakeTrip.copy(id = 2, title = "Rome Trip", state = TripState.PAST)
-        val trips = listOf(upcomingTrip, pastTrip)
+        val upcomingTrip = fakeTrip.copy(id = 1, title = "Paris Trip", status = TripStatus.UPCOMING)
+        val pastTrip = fakeTrip.copy(id = 2, title = "Rome Trip", status = TripStatus.PAST)
+        val tripsByStatus = mapOf(
+            TripStatus.UPCOMING to listOf(upcomingTrip),
+            TripStatus.PAST to listOf(pastTrip)
+        )
 
-        coEvery { getTripListUseCase.invoke() } returns Result.success(trips)
+        coEvery { getTripListUseCase.invoke() } returns Result.success(tripsByStatus)
         viewModel = createViewModel()
 
         // When
@@ -55,14 +58,14 @@ internal class TripListViewModelTest {
 
         // Then
         val currentState = viewModel.uiState.value
-        val expectedState = TripListUiState.Success(listOf(upcomingTrip), listOf(pastTrip))
+        val expectedState = TripListUiState.Success(tripsByStatus)
         assertEquals(currentState, expectedState)
     }
 
     @Test
     fun `getTripList with empty list returns empty state`() = runTest {
         // Given
-        coEvery { getTripListUseCase.invoke() } returns Result.success(emptyList())
+        coEvery { getTripListUseCase.invoke() } returns Result.success(emptyMap())
         viewModel = createViewModel()
 
         // When
