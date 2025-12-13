@@ -52,6 +52,7 @@ import com.luisfagundes.trip.presentation.viewmodel.TripFormViewModel
 import com.luisfagundes.trip.tools.extensions.capitalizeEveryWord
 import com.luisfagundes.trip.tools.extensions.convertMillisToLocalDate
 import com.luisfagundes.trip.tools.extensions.toFormattedString
+import com.luisfagundes.trip.tools.extensions.toTimestampMillis
 import java.time.LocalDate
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -167,7 +168,8 @@ private fun TripFormContent(
                     }
                 },
                 onDateSelect = onEndDateChange,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                startDate = uiState.startDate
             )
             CreateTripButton(
                 uiState = uiState,
@@ -185,7 +187,8 @@ private fun DateSelectionField(
     hasError: Boolean,
     onDateSelect: (LocalDate?) -> Unit,
     supportingText: @Composable (() -> Unit)?,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    startDate: LocalDate? = null
 ) {
     var showDatePicker by remember { mutableStateOf(false) }
     val dismissPicker = remember { { showDatePicker = false } }
@@ -216,7 +219,8 @@ private fun DateSelectionField(
     if (showDatePicker) {
         DatePickerModal(
             onDateSelect = onDateSelect,
-            onDismiss = dismissPicker
+            onDismiss = dismissPicker,
+            startDate = startDate
         )
     }
 }
@@ -224,9 +228,12 @@ private fun DateSelectionField(
 @Composable
 fun DatePickerModal(
     onDateSelect: (LocalDate?) -> Unit,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
+    startDate: LocalDate? = null
 ) {
-    val datePickerState = rememberDatePickerState()
+    val datePickerState = rememberDatePickerState(
+        initialSelectedDateMillis = startDate?.toTimestampMillis()
+    )
 
     DatePickerDialog(
         confirmButton = {
