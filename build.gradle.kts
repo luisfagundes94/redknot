@@ -13,12 +13,11 @@ plugins {
 }
 
 allprojects {
-    apply(plugin = "dev.detekt")
+    apply(plugin = "io.gitlab.arturbosch.detekt")
 }
 
 subprojects {
     detekt {
-        toolVersion = "2.0.0-alpha.1"
         config.setFrom(file("$rootDir/config/detekt/detekt.yml"))
         buildUponDefaultConfig = true
         autoCorrect = true
@@ -26,7 +25,7 @@ subprojects {
         ignoreFailures = false
     }
 
-    pluginManager.withPlugin("dev.detekt") {
+    pluginManager.withPlugin("io.gitlab.arturbosch.detekt") {
         dependencies {
             add("detektPlugins", "io.nlopez.compose.rules:detekt:0.5.1")
         }

@@ -79,7 +79,7 @@ internal class TripFormViewModel @Inject constructor(
         val state = _uiState.value
 
         viewModelScope.launch(dispatcher) {
-            _uiState.update { it.copy(isLoading = true) }
+            _uiState.update { state -> state.copy(isLoading = true) }
 
             val imageUrl = getTripImageUseCase.invoke(state.destination)
                 .getOrNull()
@@ -103,7 +103,7 @@ internal class TripFormViewModel @Inject constructor(
                     _uiEffect.send(TripFormUiEffect.ShowErrorToast(error.toString()))
                 }
             ).also {
-                _uiState.update { it.copy(isLoading = true) }
+                _uiState.update { state -> state.copy(isLoading = true) }
             }
         }
     }
