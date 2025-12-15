@@ -1,8 +1,8 @@
 package com.luisfagundes.trip.domain.usecase
 
-import com.luisfagundes.trip.domain.model.Trip
 import com.luisfagundes.trip.domain.model.TripStatus
 import com.luisfagundes.trip.domain.repository.TripRepository
+import com.luisfagundes.trip.presentation.fixtures.fakeTrip
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -27,7 +27,7 @@ internal class GetTripByIdUseCaseTest {
     fun `invoke returns trip with calculated PAST status when endDate is before today`() = runTest {
         // Given
         val tripId = 1
-        val trip = createTrip(
+        val trip = fakeTrip.copy(
             id = tripId,
             startDate = LocalDate.of(2024, 11, 1),
             endDate = LocalDate.of(2024, 11, 10)
@@ -48,10 +48,10 @@ internal class GetTripByIdUseCaseTest {
     fun `invoke returns trip with calculated UPCOMING status when startDate is after today`() = runTest {
         // Given
         val tripId = 2
-        val trip = createTrip(
+        val trip = fakeTrip.copy(
             id = tripId,
-            startDate = LocalDate.of(2200, 6, 1),
-            endDate = LocalDate.of(2200, 6, 10)
+            startDate = LocalDate.now().plusDays(5),
+            endDate = LocalDate.now().plusDays(10)
         )
 
         coEvery { repository.getTripById(tripId) } returns Result.success(trip)
@@ -69,11 +69,10 @@ internal class GetTripByIdUseCaseTest {
     fun `invoke returns trip with calculated ONGOING status when today is between start and end`() = runTest {
         // Given
         val tripId = 3
-        val today = LocalDate.now()
-        val trip = createTrip(
+        val trip = fakeTrip.copy(
             id = tripId,
-            startDate = today.minusDays(5),
-            endDate = today.plusDays(5)
+            startDate = LocalDate.now().minusDays(5),
+            endDate = LocalDate.now().plusDays(5)
         )
 
         coEvery { repository.getTripById(tripId) } returns Result.success(trip)
@@ -108,7 +107,7 @@ internal class GetTripByIdUseCaseTest {
     fun `invoke preserves all trip properties during transformation`() = runTest {
         // Given
         val tripId = 123
-        val originalTrip = createTrip(
+        val originalTrip = fakeTrip.copy(
             id = tripId,
             title = "Summer Vacation",
             location = "Paris, France",
@@ -139,10 +138,10 @@ internal class GetTripByIdUseCaseTest {
     fun `invoke recalculates status even when trip already has a status`() = runTest {
         // Given
         val tripId = 5
-        val trip = createTrip(
+        val trip = fakeTrip.copy(
             id = tripId,
-            startDate = LocalDate.of(2200, 6, 1),
-            endDate = LocalDate.of(2200, 6, 10),
+            startDate = LocalDate.now().plusDays(5),
+            endDate = LocalDate.now().plusDays(10),
             status = TripStatus.PAST
         )
 
@@ -160,7 +159,7 @@ internal class GetTripByIdUseCaseTest {
     fun `invoke passes correct id to repository`() = runTest {
         // Given
         val tripId = 42
-        val trip = createTrip(id = tripId)
+        val trip = fakeTrip.copy(id = tripId)
 
         coEvery { repository.getTripById(tripId) } returns Result.success(trip)
 
@@ -170,22 +169,4 @@ internal class GetTripByIdUseCaseTest {
         // Then
         coVerify(exactly = 1) { repository.getTripById(42) }
     }
-
-    private fun createTrip(
-        id: Int = 1,
-        title: String = "Test Trip",
-        location: String = "Test Location",
-        startDate: LocalDate = LocalDate.now().plusDays(7),
-        endDate: LocalDate = LocalDate.now().plusDays(14),
-        imageUrl: String = "https://example.com/image.jpg",
-        status: TripStatus = TripStatus.UNSCHEDULED
-    ) = Trip(
-        id = id,
-        title = title,
-        location = location,
-        startDate = startDate,
-        endDate = endDate,
-        imageUrl = imageUrl,
-        status = status
-    )
 }

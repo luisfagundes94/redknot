@@ -1,8 +1,8 @@
 package com.luisfagundes.trip.domain.usecase
 
-import com.luisfagundes.trip.domain.model.Trip
 import com.luisfagundes.trip.domain.model.TripStatus
 import com.luisfagundes.trip.domain.repository.TripRepository
+import com.luisfagundes.trip.presentation.fixtures.fakeTrip
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -40,19 +40,19 @@ internal class GetTripListUseCaseTest {
     @Test
     fun `invoke calculates status and groups trips correctly`() = runTest {
         // Given
-        val pastTrip = createTrip(
+        val pastTrip = fakeTrip.copy(
             id = 1,
             startDate = LocalDate.of(2024, 12, 1),
             endDate = LocalDate.of(2024, 12, 10),
             status = TripStatus.PAST
         )
-        val upcomingTrip = createTrip(
+        val upcomingTrip = fakeTrip.copy(
             id = 2,
             startDate = LocalDate.now().plusDays(15),
             endDate = LocalDate.now().plusDays(20),
             status = TripStatus.UPCOMING
         )
-        val ongoingTrip = createTrip(
+        val ongoingTrip = fakeTrip.copy(
             id = 3,
             startDate = LocalDate.now(),
             endDate = LocalDate.now().plusDays(5)
@@ -82,19 +82,19 @@ internal class GetTripListUseCaseTest {
     @Test
     fun `invoke groups multiple trips with same status together`() = runTest {
         // Given
-        val pastTrip1 = createTrip(
+        val pastTrip1 = fakeTrip.copy(
             id = 1,
             startDate = LocalDate.of(2024, 11, 1),
             endDate = LocalDate.of(2024, 11, 10),
             status = TripStatus.PAST
         )
-        val pastTrip2 = createTrip(
+        val pastTrip2 = fakeTrip.copy(
             id = 2,
             startDate = LocalDate.of(2024, 12, 1),
             endDate = LocalDate.of(2024, 12, 10),
             status = TripStatus.PAST
         )
-        val upcomingTrip = createTrip(
+        val upcomingTrip = fakeTrip.copy(
             id = 3,
             startDate = LocalDate.now().plusDays(5),
             endDate = LocalDate.now().plusDays(10),
@@ -136,7 +136,7 @@ internal class GetTripListUseCaseTest {
     @Test
     fun `invoke handles trips with UNSCHEDULED status and recalculates them`() = runTest {
         // Given
-        val unscheduledTrip = createTrip(
+        val unscheduledTrip = fakeTrip.copy(
             id = 1,
             startDate = LocalDate.now().plusDays(5),
             endDate = LocalDate.now().plusDays(10),
@@ -160,7 +160,7 @@ internal class GetTripListUseCaseTest {
     @Test
     fun `invoke preserves all trip properties during transformation`() = runTest {
         // Given
-        val originalTrip = createTrip(
+        val originalTrip = fakeTrip.copy(
             id = 123,
             title = "Test Trip",
             location = "Test Location",
@@ -186,22 +186,4 @@ internal class GetTripListUseCaseTest {
         assertEquals(LocalDate.of(2025, 6, 10), trip.endDate)
         assertEquals("https://example.com/image.jpg", trip.imageUrl)
     }
-
-    private fun createTrip(
-        id: Int = 1,
-        title: String = "Test Trip",
-        location: String = "Test Location",
-        startDate: LocalDate,
-        endDate: LocalDate,
-        imageUrl: String = "https://example.com/image.jpg",
-        status: TripStatus = TripStatus.UNSCHEDULED
-    ) = Trip(
-        id = id,
-        title = title,
-        location = location,
-        startDate = startDate,
-        endDate = endDate,
-        imageUrl = imageUrl,
-        status = status
-    )
 }

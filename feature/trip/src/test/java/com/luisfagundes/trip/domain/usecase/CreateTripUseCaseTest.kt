@@ -1,8 +1,7 @@
 package com.luisfagundes.trip.domain.usecase
 
-import com.luisfagundes.trip.domain.model.Trip
-import com.luisfagundes.trip.domain.model.TripStatus
 import com.luisfagundes.trip.domain.repository.TripRepository
+import com.luisfagundes.trip.presentation.fixtures.fakeTrip
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -11,7 +10,6 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import java.time.LocalDate
 
 internal class CreateTripUseCaseTest {
 
@@ -26,38 +24,36 @@ internal class CreateTripUseCaseTest {
     @Test
     fun `invoke calls repository createTrip and returns success`() = runTest {
         // Given
-        val trip = createTestTrip()
-        coEvery { repository.createTrip(trip) } returns Result.success(Unit)
+        coEvery { repository.createTrip(fakeTrip) } returns Result.success(Unit)
 
         // When
-        val result = useCase(trip)
+        val result = useCase(fakeTrip)
 
         // Then
         assertTrue(result.isSuccess)
-        coVerify(exactly = 1) { repository.createTrip(trip) }
+        coVerify(exactly = 1) { repository.createTrip(fakeTrip) }
     }
 
     @Test
     fun `invoke calls repository createTrip and returns failure when repository fails`() = runTest {
         // Given
-        val trip = createTestTrip()
         val exception = RuntimeException("Database error")
 
-        coEvery { repository.createTrip(trip) } returns Result.failure(exception)
+        coEvery { repository.createTrip(fakeTrip) } returns Result.failure(exception)
 
         // When
-        val result = useCase(trip)
+        val result = useCase(fakeTrip)
 
         // Then
         assertTrue(result.isFailure)
         assertEquals(exception, result.exceptionOrNull())
-        coVerify(exactly = 1) { repository.createTrip(trip) }
+        coVerify(exactly = 1) { repository.createTrip(fakeTrip) }
     }
 
     @Test
     fun `invoke passes correct trip data to repository`() = runTest {
         // Given
-        val trip = createTestTrip(
+        val trip = fakeTrip.copy(
             id = 42,
             title = "Custom Title",
             location = "Custom Location"
@@ -78,18 +74,4 @@ internal class CreateTripUseCaseTest {
             )
         }
     }
-
-    private fun createTestTrip(
-        id: Int = 1,
-        title: String = "Test Trip",
-        location: String = "Test Location"
-    ) = Trip(
-        id = id,
-        title = title,
-        location = location,
-        startDate = LocalDate.now().plusDays(7),
-        endDate = LocalDate.now().plusDays(14),
-        imageUrl = "https://example.com/image.jpg",
-        status = TripStatus.UPCOMING
-    )
 }
