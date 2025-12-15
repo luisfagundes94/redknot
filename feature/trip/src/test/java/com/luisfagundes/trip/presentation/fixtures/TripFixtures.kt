@@ -1,4 +1,4 @@
-package com.luisfagundes.trip.presentation.stubs
+package com.luisfagundes.trip.presentation.fixtures
 
 import com.luisfagundes.trip.domain.model.Trip
 import com.luisfagundes.trip.domain.model.TripStatus
