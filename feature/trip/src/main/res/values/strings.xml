@@ -28,6 +28,10 @@
     <string name="dot">•</string>
     <string name="ongoing">Ongoing</string>
     <string name="unscheduled">Unscheduled</string>
+    <string name="itinerary">Itinerary</string>
+    <string name="budget">Budget</string>
+    <string name="documents">Documents</string>
+    <string name="saved_places">Saved Places</string>
     <plurals name="trip_duration_days">
         <item quantity="one">%d day</item>
         <item quantity="other">%d days</item>
