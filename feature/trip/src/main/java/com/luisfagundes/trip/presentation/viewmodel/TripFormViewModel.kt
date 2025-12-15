@@ -103,7 +103,7 @@ internal class TripFormViewModel @Inject constructor(
                     _uiEffect.send(TripFormUiEffect.ShowErrorToast(error.toString()))
                 }
             ).also {
-                _uiState.update { state -> state.copy(isLoading = true) }
+                _uiState.update { state -> state.copy(isLoading = false) }
             }
         }
     }
