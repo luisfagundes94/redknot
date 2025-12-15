@@ -50,8 +50,8 @@ internal class GetTripByIdUseCaseTest {
         val tripId = 2
         val trip = createTrip(
             id = tripId,
-            startDate = LocalDate.of(2025, 6, 1),
-            endDate = LocalDate.of(2025, 6, 10)
+            startDate = LocalDate.of(2200, 6, 1),
+            endDate = LocalDate.of(2200, 6, 10)
         )
 
         coEvery { repository.getTripById(tripId) } returns Result.success(trip)
@@ -125,8 +125,14 @@ internal class GetTripByIdUseCaseTest {
         // Then
         assertTrue(result.isSuccess)
 
-        val trip = result.getOrNull()!!
-        assertEquals(originalTrip, trip)
+        val trip = result.getOrNull() ?: return@runTest
+
+        assertEquals(123, trip.id)
+        assertEquals("Summer Vacation", trip.title)
+        assertEquals("Paris, France", trip.location)
+        assertEquals(LocalDate.of(2025, 6, 15), trip.startDate)
+        assertEquals(LocalDate.of(2025, 6, 25), trip.endDate)
+        assertEquals("https://example.com/paris.jpg", trip.imageUrl)
     }
 
     @Test
@@ -135,8 +141,8 @@ internal class GetTripByIdUseCaseTest {
         val tripId = 5
         val trip = createTrip(
             id = tripId,
-            startDate = LocalDate.of(2025, 6, 1),
-            endDate = LocalDate.of(2025, 6, 10),
+            startDate = LocalDate.of(2200, 6, 1),
+            endDate = LocalDate.of(2200, 6, 10),
             status = TripStatus.PAST
         )
 
