@@ -75,36 +75,36 @@ internal class TripFormViewModel @Inject constructor(
         }
     }
 
-    fun onSubmit() {
+    fun onSubmit() = viewModelScope.launch(dispatcher) {
         val state = _uiState.value
 
-        viewModelScope.launch(dispatcher) {
-            _uiState.update { state -> state.copy(isLoading = true) }
+        _uiState.update { state -> state.copy(isLoading = true) }
 
-            val imageUrl = getTripImageUseCase.invoke(state.destination)
-                .getOrNull()
-                .orEmpty()
+        val imageUrl = getTripImageUseCase(state.destination)
+            .getOrNull()
+            .orEmpty()
 
-            val trip = Trip(
-                id = 0,
-                title = state.title,
-                location = state.destination,
-                startDate = state.startDate ?: LocalDate.now(),
-                endDate = state.endDate ?: LocalDate.now(),
-                imageUrl = imageUrl,
-                status = TripStatus.UNSCHEDULED
-            )
+        val trip = state.toTripWith(imageUrl)
 
-            createTripUseCase.invoke(trip).fold(
-                onSuccess = {
-                    _uiEffect.send(TripFormUiEffect.NavigateBack)
-                },
-                onFailure = { error ->
-                    _uiEffect.send(TripFormUiEffect.ShowErrorToast(error.toString()))
-                }
-            ).also {
-                _uiState.update { state -> state.copy(isLoading = false) }
+        createTripUseCase(trip).fold(
+            onSuccess = {
+                _uiEffect.send(TripFormUiEffect.NavigateBack)
+            },
+            onFailure = { error ->
+                _uiEffect.send(TripFormUiEffect.ShowErrorToast(error.toString()))
             }
+        ).also {
+            _uiState.update { state -> state.copy(isLoading = false) }
         }
     }
+
+    private fun TripFormUiState.toTripWith(imageUrl: String) = Trip(
+        id = 0,
+        title = title,
+        location = destination,
+        startDate = startDate ?: LocalDate.now(),
+        endDate = endDate ?: LocalDate.now(),
+        imageUrl = imageUrl,
+        status = TripStatus.UNSCHEDULED
+    )
 }
