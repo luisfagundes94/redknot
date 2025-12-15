@@ -1,7 +1,7 @@
 package com.luisfagundes.trip.domain.usecase
 
+import com.luisfagundes.trip.domain.extensions.withCalculatedStatus
 import com.luisfagundes.trip.domain.model.Trip
-import com.luisfagundes.trip.domain.model.withCalculatedStatus
 import com.luisfagundes.trip.domain.repository.TripRepository
 import javax.inject.Inject
 
