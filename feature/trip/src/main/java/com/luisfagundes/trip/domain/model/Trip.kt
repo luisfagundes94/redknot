@@ -12,7 +12,7 @@ internal data class Trip(
     val status: TripStatus
 )
 
-internal fun Trip.withStatus(today: LocalDate = LocalDate.now()): Trip {
+internal fun Trip.withCalculatedStatus(today: LocalDate = LocalDate.now()): Trip {
     val calculatedStatus = when {
         endDate.isBefore(today) -> TripStatus.PAST
         startDate.isAfter(today) -> TripStatus.UPCOMING
