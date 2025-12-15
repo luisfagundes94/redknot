@@ -3,9 +3,9 @@ package com.luisfagundes.trip.presentation.presentation.viewmodel
 import com.luisfagundes.core.testing.MainDispatcherRule
 import com.luisfagundes.trip.domain.model.TripStatus
 import com.luisfagundes.trip.domain.usecase.GetTripListUseCase
-import com.luisfagundes.trip.presentation.state.TripListUiState
 import com.luisfagundes.trip.presentation.fixtures.fakePastTrip
 import com.luisfagundes.trip.presentation.fixtures.fakeUpcomingTrip
+import com.luisfagundes.trip.presentation.state.TripListUiState
 import com.luisfagundes.trip.presentation.viewmodel.TripListViewModel
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -14,7 +14,6 @@ import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -23,13 +22,9 @@ internal class TripListViewModelTest {
     @get:Rule
     val dispatcherRule = MainDispatcherRule(UnconfinedTestDispatcher())
 
-    private lateinit var getTripListUseCase: GetTripListUseCase
-    private lateinit var viewModel: TripListViewModel
+    private val getTripListUseCase: GetTripListUseCase = mockk()
 
-    @BeforeEach
-    fun setup() {
-        getTripListUseCase = mockk()
-    }
+    private lateinit var viewModel: TripListViewModel
 
     @Test
     fun `initial state is Loading`() {
@@ -39,6 +34,7 @@ internal class TripListViewModelTest {
         // Then
         val currentState = viewModel.uiState.value
         val expectedState = TripListUiState.Loading
+
         assertEquals(currentState, expectedState)
     }
 
@@ -49,8 +45,8 @@ internal class TripListViewModelTest {
             TripStatus.UPCOMING to listOf(fakeUpcomingTrip),
             TripStatus.PAST to listOf(fakePastTrip)
         )
-
         coEvery { getTripListUseCase.invoke() } returns Result.success(tripsByStatus)
+
         viewModel = createViewModel()
 
         // When
@@ -59,6 +55,7 @@ internal class TripListViewModelTest {
         // Then
         val currentState = viewModel.uiState.value
         val expectedState = TripListUiState.Success(tripsByStatus)
+
         assertEquals(currentState, expectedState)
     }
 
@@ -66,6 +63,7 @@ internal class TripListViewModelTest {
     fun `getTripList with empty list returns empty state`() = runTest {
         // Given
         coEvery { getTripListUseCase.invoke() } returns Result.success(emptyMap())
+
         viewModel = createViewModel()
 
         // When
@@ -74,6 +72,7 @@ internal class TripListViewModelTest {
         // Then
         val currentState = viewModel.uiState.value
         val expectedState = TripListUiState.Empty
+
         assertEquals(currentState, expectedState)
     }
 
@@ -82,6 +81,7 @@ internal class TripListViewModelTest {
         // Given
         val exception = Exception("Network error")
         coEvery { getTripListUseCase.invoke() } returns Result.failure(exception)
+
         viewModel = createViewModel()
 
         // When
@@ -90,6 +90,7 @@ internal class TripListViewModelTest {
         // Then
         val currentState = viewModel.uiState.value
         val expectedState = TripListUiState.Error
+
         assertEquals(currentState, expectedState)
     }
 
