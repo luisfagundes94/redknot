@@ -43,17 +43,19 @@ internal class GetTripListUseCaseTest {
         val pastTrip = createTrip(
             id = 1,
             startDate = LocalDate.of(2024, 12, 1),
-            endDate = LocalDate.of(2024, 12, 10)
+            endDate = LocalDate.of(2024, 12, 10),
+            status = TripStatus.PAST
         )
         val upcomingTrip = createTrip(
             id = 2,
-            startDate = LocalDate.of(2025, 2, 1),
-            endDate = LocalDate.of(2025, 2, 10)
+            startDate = LocalDate.now().plusDays(15),
+            endDate = LocalDate.now().plusDays(20),
+            status = TripStatus.UPCOMING
         )
         val ongoingTrip = createTrip(
             id = 3,
-            startDate = LocalDate.of(2025, 1, 10),
-            endDate = LocalDate.of(2025, 1, 20)
+            startDate = LocalDate.now(),
+            endDate = LocalDate.now().plusDays(5)
         )
 
         coEvery { repository.getTripList() } returns Result.success(
@@ -83,17 +85,20 @@ internal class GetTripListUseCaseTest {
         val pastTrip1 = createTrip(
             id = 1,
             startDate = LocalDate.of(2024, 11, 1),
-            endDate = LocalDate.of(2024, 11, 10)
+            endDate = LocalDate.of(2024, 11, 10),
+            status = TripStatus.PAST
         )
         val pastTrip2 = createTrip(
             id = 2,
             startDate = LocalDate.of(2024, 12, 1),
-            endDate = LocalDate.of(2024, 12, 10)
+            endDate = LocalDate.of(2024, 12, 10),
+            status = TripStatus.PAST
         )
         val upcomingTrip = createTrip(
             id = 3,
-            startDate = LocalDate.of(2025, 3, 1),
-            endDate = LocalDate.of(2025, 3, 10)
+            startDate = LocalDate.now().plusDays(5),
+            endDate = LocalDate.now().plusDays(10),
+            status = TripStatus.UPCOMING
         )
 
         coEvery { repository.getTripList() } returns Result.success(
@@ -133,8 +138,8 @@ internal class GetTripListUseCaseTest {
         // Given
         val unscheduledTrip = createTrip(
             id = 1,
-            startDate = LocalDate.of(2025, 6, 1),
-            endDate = LocalDate.of(2025, 6, 10),
+            startDate = LocalDate.now().plusDays(5),
+            endDate = LocalDate.now().plusDays(10),
             status = TripStatus.UNSCHEDULED
         )
 
