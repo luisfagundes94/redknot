@@ -1,9 +1,13 @@
 package com.luisfagundes.trip.di
 
+import com.luisfagundes.trip.data.datasource.TripItineraryLocalDataSource
 import com.luisfagundes.trip.data.datasource.TripLocalDataSource
 import com.luisfagundes.trip.data.datasource.TripRemoteDataSource
+import com.luisfagundes.trip.data.mapper.TripItineraryItemMapper
 import com.luisfagundes.trip.data.mapper.TripMapper
+import com.luisfagundes.trip.data.repository.TripItineraryRepositoryImpl
 import com.luisfagundes.trip.data.repository.TripRepositoryImpl
+import com.luisfagundes.trip.domain.repository.TripItineraryRepository
 import com.luisfagundes.trip.domain.repository.TripRepository
 import dagger.Module
 import dagger.Provides
@@ -24,6 +28,18 @@ internal object TripRepositoryModule {
         return TripRepositoryImpl(
             localDataSource = localDataSource,
             remoteDataSource = remoteDataSource,
+            mapper = mapper
+        )
+    }
+
+    @Provides
+    @Singleton
+    fun provideTripItineraryRepository(
+        localDataSource: TripItineraryLocalDataSource,
+        mapper: TripItineraryItemMapper
+    ): TripItineraryRepository {
+        return TripItineraryRepositoryImpl(
+            localDataSource = localDataSource,
             mapper = mapper
         )
     }

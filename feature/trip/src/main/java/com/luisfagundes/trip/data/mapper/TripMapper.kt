@@ -5,9 +5,7 @@ import com.luisfagundes.trip.domain.model.Trip
 import com.luisfagundes.trip.domain.model.TripStatus
 import javax.inject.Inject
 
-internal class TripMapper @Inject constructor(
-    private val itineraryMapper: ItineraryMapper
-) {
+internal class TripMapper @Inject constructor() {
     fun mapToEntity(trip: Trip): TripEntity {
         return TripEntity(
             id = trip.id,
@@ -15,8 +13,7 @@ internal class TripMapper @Inject constructor(
             endDate = trip.endDate,
             imageUrl = trip.imageUrl,
             title = trip.title,
-            location = trip.location,
-            itinerary = itineraryMapper.mapToEntity(trip.itinerary)
+            location = trip.location
         )
     }
 
@@ -28,7 +25,6 @@ internal class TripMapper @Inject constructor(
             imageUrl = tripEntity.imageUrl,
             title = tripEntity.title,
             location = tripEntity.location,
-            itinerary = itineraryMapper.mapToDomain(tripEntity.itinerary),
             status = TripStatus.UNSCHEDULED
         )
     }

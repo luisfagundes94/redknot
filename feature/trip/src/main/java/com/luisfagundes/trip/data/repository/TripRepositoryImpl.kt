@@ -25,8 +25,7 @@ internal class TripRepositoryImpl @Inject constructor(
     }
 
     override suspend fun createTrip(trip: Trip): Result<Unit> {
-        val tripEntity = mapper.mapToEntity(trip)
-        return localDataSource.createTrip(tripEntity)
+        return localDataSource.createTrip(tripEntity = mapper.mapToEntity(trip))
     }
 
     override suspend fun getTripImageUrl(location: String): Result<String> {

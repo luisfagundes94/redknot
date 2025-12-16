@@ -11,7 +11,6 @@ internal val fakeTrip = Trip(
     startDate = LocalDate.now(),
     endDate = LocalDate.now(),
     imageUrl = "https://images.unsplash.com/photo-1506744038136-462",
-    itinerary = null,
     status = TripStatus.UNSCHEDULED
 )
 
@@ -22,7 +21,6 @@ internal val fakeUpcomingTrip = Trip(
     startDate = LocalDate.now().plusDays(5),
     endDate = LocalDate.now().plusDays(10),
     imageUrl = "https://images.unsplash.com/photo-1506744038136-462",
-    itinerary = null,
     status = TripStatus.UPCOMING
 )
 
@@ -33,6 +31,5 @@ internal val fakePastTrip = Trip(
     startDate = LocalDate.of(2024, 8, 15),
     endDate = LocalDate.of(2024, 8, 25),
     imageUrl = "https://images.unsplash.com/photo-1506744038136-462",
-    itinerary = null,
     status = TripStatus.PAST
 )

@@ -1,14 +1,19 @@
 package com.luisfagundes.trip.domain.model
 
+import java.time.LocalDate
 import java.time.LocalTime
 import kotlin.time.Duration
 
 internal sealed class ItineraryItem {
     abstract val id: String
+    abstract val tripId: Int
+    abstract val date: LocalDate
     abstract val time: LocalTime
 
     data class Flight(
         override val id: String,
+        override val tripId: Int,
+        override val date: LocalDate,
         override val time: LocalTime,
         val flightNumber: String,
         val origin: Airport,
@@ -19,6 +24,8 @@ internal sealed class ItineraryItem {
 
     data class Accommodation(
         override val id: String,
+        override val tripId: Int,
+        override val date: LocalDate,
         override val time: LocalTime,
         val name: String,
         val address: String,
@@ -28,12 +35,16 @@ internal sealed class ItineraryItem {
 
     data class Restaurant(
         override val id: String,
+        override val tripId: Int,
+        override val date: LocalDate,
         override val time: LocalTime,
         val name: String,
     ) : ItineraryItem()
 
     data class Activity(
         override val id: String,
+        override val tripId: Int,
+        override val date: LocalDate,
         override val time: LocalTime,
         val title: String,
         val description: String?,

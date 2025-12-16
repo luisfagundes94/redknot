@@ -58,7 +58,6 @@ internal class TripExtensionsTest {
         imageUrl = "",
         title = "Test Trip",
         location = "Test Location",
-        itinerary = null,
         status = TripStatus.UPCOMING
     )
 }

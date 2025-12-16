@@ -101,7 +101,6 @@ internal class TripFormViewModel @Inject constructor(
         startDate = startDate ?: LocalDate.now(),
         endDate = endDate ?: LocalDate.now(),
         imageUrl = imageUrl,
-        itinerary = null,
         status = TripStatus.UNSCHEDULED
     )
 }

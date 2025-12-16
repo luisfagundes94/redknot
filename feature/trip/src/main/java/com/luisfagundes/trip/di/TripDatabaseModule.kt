@@ -2,7 +2,9 @@ package com.luisfagundes.trip.di
 
 import android.content.Context
 import androidx.room.Room
+import com.luisfagundes.trip.data.dao.ItineraryItemDao
 import com.luisfagundes.trip.data.database.TripDatabase
+import com.luisfagundes.trip.data.datasource.TripItineraryLocalDataSourceImpl
 import com.luisfagundes.trip.data.datasource.TripLocalDataSourceImpl
 import dagger.Module
 import dagger.Provides
@@ -23,11 +25,25 @@ internal object TripDatabaseModule {
     ) = Room.databaseBuilder(
         applicationContext,
         TripDatabase::class.java, TRIP_DATABASE_NAME
-    ).build()
+    )
+        .fallbackToDestructiveMigration(false)
+        .build()
 
     @Provides
     @Singleton
     fun provideTripDataSource(
         database: TripDatabase
     ) = TripLocalDataSourceImpl(database)
+
+    @Provides
+    @Singleton
+    fun provideTripItineraryDataSource(
+        database: TripDatabase
+    ) = TripItineraryLocalDataSourceImpl(database)
+
+    @Provides
+    @Singleton
+    fun provideItineraryItemDao(
+        database: TripDatabase
+    ): ItineraryItemDao = database.itineraryItemDao()
 }

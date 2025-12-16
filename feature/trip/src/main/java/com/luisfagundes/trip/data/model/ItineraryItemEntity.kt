@@ -1,15 +1,35 @@
 package com.luisfagundes.trip.data.model
 
 import androidx.room.ColumnInfo
-import com.luisfagundes.trip.data.database.converters.serializers.LocalTimeSerializer
-import kotlinx.serialization.Serializable
+import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.Index
+import androidx.room.PrimaryKey
+import androidx.room.TypeConverters
+import com.luisfagundes.trip.data.database.converters.AirportConverter
+import java.time.LocalDate
 import java.time.LocalTime
 
-@Serializable
+@Entity(
+    tableName = "itinerary_items",
+    foreignKeys = [
+        ForeignKey(
+            entity = TripEntity::class,
+            parentColumns = ["id"],
+            childColumns = ["trip_id"],
+            onDelete = ForeignKey.CASCADE
+        )
+    ],
+    indices = [Index("trip_id"), Index("date")]
+)
+@TypeConverters(AirportConverter::class)
 internal data class ItineraryItemEntity(
+    @PrimaryKey
     @ColumnInfo("id") val id: String,
+    @ColumnInfo("trip_id") val tripId: Int,
+    @ColumnInfo("date") val date: LocalDate,
+    @ColumnInfo("time") val time: LocalTime,
     @ColumnInfo("type") val type: String,
-    @ColumnInfo("time") @Serializable(with = LocalTimeSerializer::class) val time: LocalTime,
 
     // Flight fields
     @ColumnInfo("flight_number") val flightNumber: String? = null,

@@ -6,13 +6,15 @@ import com.luisfagundes.trip.domain.model.ItineraryItem
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.milliseconds
 
-internal class ItineraryItemMapper @Inject constructor(
+internal class TripItineraryItemMapper @Inject constructor(
     private val airportMapper: AirportMapper
 ) {
     fun mapToDomain(source: ItineraryItemEntity): ItineraryItem {
         return when (source.type) {
             "flight" -> ItineraryItem.Flight(
                 id = source.id,
+                tripId = source.tripId,
+                date = source.date,
                 time = source.time,
                 flightNumber = source.flightNumber.orEmpty(),
                 origin = airportMapper.mapToDomain(requireNotNull(source.originAirport)),
@@ -22,6 +24,8 @@ internal class ItineraryItemMapper @Inject constructor(
             )
             "accommodation" -> ItineraryItem.Accommodation(
                 id = source.id,
+                tripId = source.tripId,
+                date = source.date,
                 time = source.time,
                 name = source.accommodationName.orEmpty(),
                 address = source.address.orEmpty(),
@@ -30,11 +34,15 @@ internal class ItineraryItemMapper @Inject constructor(
             )
             "restaurant" -> ItineraryItem.Restaurant(
                 id = source.id,
+                tripId = source.tripId,
+                date = source.date,
                 time = source.time,
                 name = source.restaurantName.orEmpty()
             )
             "activity" -> ItineraryItem.Activity(
                 id = source.id,
+                tripId = source.tripId,
+                date = source.date,
                 time = source.time,
                 title = source.activityTitle.orEmpty(),
                 description = source.description,
@@ -49,6 +57,8 @@ internal class ItineraryItemMapper @Inject constructor(
         return when (source) {
             is ItineraryItem.Flight -> ItineraryItemEntity(
                 id = source.id,
+                tripId = source.tripId,
+                date = source.date,
                 type = "flight",
                 time = source.time,
                 flightNumber = source.flightNumber,
@@ -59,6 +69,8 @@ internal class ItineraryItemMapper @Inject constructor(
             )
             is ItineraryItem.Accommodation -> ItineraryItemEntity(
                 id = source.id,
+                tripId = source.tripId,
+                date = source.date,
                 type = "accommodation",
                 time = source.time,
                 accommodationName = source.name,
@@ -68,12 +80,16 @@ internal class ItineraryItemMapper @Inject constructor(
             )
             is ItineraryItem.Restaurant -> ItineraryItemEntity(
                 id = source.id,
+                tripId = source.tripId,
+                date = source.date,
                 type = "restaurant",
                 time = source.time,
                 restaurantName = source.name
             )
             is ItineraryItem.Activity -> ItineraryItemEntity(
                 id = source.id,
+                tripId = source.tripId,
+                date = source.date,
                 type = "activity",
                 time = source.time,
                 activityTitle = source.title,

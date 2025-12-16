@@ -16,7 +16,6 @@ internal class TripDetailsPreviewParameterProvider : PreviewParameterProvider<Tr
         endDate = LocalDate.of(2026, Month.AUGUST, 25),
         location = "Florence, Italy",
         status = TripStatus.UPCOMING,
-        itinerary = null
     )
 
     override val values = sequenceOf(

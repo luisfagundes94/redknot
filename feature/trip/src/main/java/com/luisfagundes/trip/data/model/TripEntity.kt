@@ -14,6 +14,5 @@ internal data class TripEntity(
     @ColumnInfo("end_date") @Serializable(with = LocalDateSerializer::class) val endDate: LocalDate,
     @ColumnInfo("image_url") val imageUrl: String,
     @ColumnInfo("title") val title: String,
-    @ColumnInfo("location") val location: String,
-    @ColumnInfo("itinerary") val itinerary: ItineraryEntity? = null
+    @ColumnInfo("location") val location: String
 )

@@ -16,7 +16,6 @@ internal class TripListPreviewParameterProvider : PreviewParameterProvider<TripL
             startDate = LocalDate.of(2025, Month.DECEMBER, 10),
             endDate = LocalDate.of(2025, Month.DECEMBER, 24),
             location = "Paris, France",
-            itinerary = null,
             status = TripStatus.ONGOING
         ),
         Trip(
@@ -26,7 +25,6 @@ internal class TripListPreviewParameterProvider : PreviewParameterProvider<TripL
             startDate = LocalDate.of(2026, Month.AUGUST, 15),
             endDate = LocalDate.of(2026, Month.AUGUST, 25),
             location = "Florence, Italy",
-            itinerary = null,
             status = TripStatus.UPCOMING
         ),
         Trip(
@@ -36,7 +34,6 @@ internal class TripListPreviewParameterProvider : PreviewParameterProvider<TripL
             startDate = LocalDate.of(2022, Month.APRIL, 2),
             endDate = LocalDate.of(2022, Month.APRIL, 24),
             location = "Orlando, United States",
-            itinerary = null,
             status = TripStatus.PAST
         )
     )
