@@ -22,13 +22,17 @@ internal object TripDataModule {
     @Singleton
     fun provideTripLocalDataSource(
         database: TripDatabase
-    ): TripLocalDataSource = TripLocalDataSourceImpl(database)
+    ): TripLocalDataSource {
+        return TripLocalDataSourceImpl(database)
+    }
 
     @Provides
     @Singleton
     fun provideTripRemoteDataSource(
         apiService: UnsplashApiService
-    ): TripRemoteDataSource = TripRemoteDataSourceImpl(apiService)
+    ): TripRemoteDataSource {
+        return TripRemoteDataSourceImpl(apiService)
+    }
 
     @Provides
     @Singleton
