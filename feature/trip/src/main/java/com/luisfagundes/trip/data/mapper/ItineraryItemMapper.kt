@@ -6,7 +6,7 @@ import com.luisfagundes.trip.domain.model.ItineraryItem
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.milliseconds
 
-internal class TripItineraryItemMapper @Inject constructor(
+internal class ItineraryItemMapper @Inject constructor(
     private val airportMapper: AirportMapper
 ) {
     fun mapToDomain(source: ItineraryItemEntity): ItineraryItem {

@@ -1,7 +1,7 @@
 package com.luisfagundes.trip.di
 
 import com.luisfagundes.trip.data.mapper.AirportMapper
-import com.luisfagundes.trip.data.mapper.TripItineraryItemMapper
+import com.luisfagundes.trip.data.mapper.ItineraryItemMapper
 import com.luisfagundes.trip.data.mapper.TripMapper
 import dagger.Module
 import dagger.Provides
@@ -19,7 +19,7 @@ internal object TripMapperModule {
     @Provides
     @Singleton
     fun provideItineraryItemMapper(airportMapper: AirportMapper) =
-        TripItineraryItemMapper(airportMapper)
+        ItineraryItemMapper(airportMapper)
 
     @Provides
     @Singleton

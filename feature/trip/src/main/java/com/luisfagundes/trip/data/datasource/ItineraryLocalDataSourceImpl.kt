@@ -4,9 +4,9 @@ import com.luisfagundes.trip.data.database.TripDatabase
 import com.luisfagundes.trip.data.model.ItineraryItemEntity
 import javax.inject.Inject
 
-internal class TripItineraryLocalDataSourceImpl @Inject constructor(
+internal class ItineraryLocalDataSourceImpl @Inject constructor(
     private val database: TripDatabase
-) : TripItineraryLocalDataSource {
+) : ItineraryLocalDataSource {
     override suspend fun getItineraryItems(tripId: Int): Result<List<ItineraryItemEntity>> {
         return runCatching { database.itineraryItemDao().getItemsForTrip(tripId) }
     }

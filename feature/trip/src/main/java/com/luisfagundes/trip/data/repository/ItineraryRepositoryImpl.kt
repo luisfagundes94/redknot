@@ -1,15 +1,15 @@
 package com.luisfagundes.trip.data.repository
 
-import com.luisfagundes.trip.data.datasource.TripItineraryLocalDataSource
-import com.luisfagundes.trip.data.mapper.TripItineraryItemMapper
+import com.luisfagundes.trip.data.datasource.ItineraryLocalDataSource
+import com.luisfagundes.trip.data.mapper.ItineraryItemMapper
 import com.luisfagundes.trip.domain.model.ItineraryItem
-import com.luisfagundes.trip.domain.repository.TripItineraryRepository
+import com.luisfagundes.trip.domain.repository.ItineraryRepository
 import javax.inject.Inject
 
-internal class TripItineraryRepositoryImpl @Inject constructor(
-    private val localDataSource: TripItineraryLocalDataSource,
-    private val mapper: TripItineraryItemMapper
-): TripItineraryRepository {
+internal class ItineraryRepositoryImpl @Inject constructor(
+    private val localDataSource: ItineraryLocalDataSource,
+    private val mapper: ItineraryItemMapper
+): ItineraryRepository {
     override suspend fun getItineraryItems(tripId: Int): Result<List<ItineraryItem>> {
         return localDataSource.getItineraryItems(tripId).map { itineraryItemEntities ->
             itineraryItemEntities.map { itineraryItemEntity ->

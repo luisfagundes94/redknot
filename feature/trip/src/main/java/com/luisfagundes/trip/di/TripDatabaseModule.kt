@@ -4,7 +4,9 @@ import android.content.Context
 import androidx.room.Room
 import com.luisfagundes.trip.data.dao.ItineraryItemDao
 import com.luisfagundes.trip.data.database.TripDatabase
-import com.luisfagundes.trip.data.datasource.TripItineraryLocalDataSourceImpl
+import com.luisfagundes.trip.data.datasource.ItineraryLocalDataSource
+import com.luisfagundes.trip.data.datasource.ItineraryLocalDataSourceImpl
+import com.luisfagundes.trip.data.datasource.TripLocalDataSource
 import com.luisfagundes.trip.data.datasource.TripLocalDataSourceImpl
 import dagger.Module
 import dagger.Provides
@@ -33,13 +35,13 @@ internal object TripDatabaseModule {
     @Singleton
     fun provideTripDataSource(
         database: TripDatabase
-    ) = TripLocalDataSourceImpl(database)
+    ): TripLocalDataSource = TripLocalDataSourceImpl(database)
 
     @Provides
     @Singleton
-    fun provideTripItineraryDataSource(
+    fun provideItineraryDataSource(
         database: TripDatabase
-    ) = TripItineraryLocalDataSourceImpl(database)
+    ): ItineraryLocalDataSource = ItineraryLocalDataSourceImpl(database)
 
     @Provides
     @Singleton
