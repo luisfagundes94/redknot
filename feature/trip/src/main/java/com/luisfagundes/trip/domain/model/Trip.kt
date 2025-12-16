@@ -9,5 +9,6 @@ internal data class Trip(
     val imageUrl: String,
     val title: String,
     val location: String,
+    val itinerary: Itinerary?,
     val status: TripStatus
 )
