@@ -14,7 +14,7 @@ import com.luisfagundes.trip.data.model.TripEntity
 
 @Database(
     entities = [TripEntity::class, ItineraryItemEntity::class],
-    version = 3,
+    version = 4,
     exportSchema = false
 )
 @TypeConverters(

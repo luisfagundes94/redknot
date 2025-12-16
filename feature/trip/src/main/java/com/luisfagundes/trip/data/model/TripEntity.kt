@@ -7,7 +7,7 @@ import com.luisfagundes.trip.data.database.converters.serializers.LocalDateSeria
 import kotlinx.serialization.Serializable
 import java.time.LocalDate
 
-@Entity
+@Entity(tableName = "trips")
 internal data class TripEntity(
     @PrimaryKey(autoGenerate = true) val id: Int,
     @ColumnInfo("start_date") @Serializable(with = LocalDateSerializer::class) val startDate: LocalDate,
