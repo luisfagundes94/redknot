@@ -14,29 +14,29 @@ internal class ItineraryItemMapper @Inject constructor(
             "flight" -> ItineraryItem.Flight(
                 id = source.id,
                 time = source.time,
-                flightNumber = source.flightNumber ?: "",
-                origin = airportMapper.mapToDomain(source.originAirport!!),
-                destination = airportMapper.mapToDomain(source.destinationAirport!!),
-                duration = source.durationMillis!!.milliseconds,
-                seatNumber = source.seatNumber ?: ""
+                flightNumber = source.flightNumber.orEmpty(),
+                origin = airportMapper.mapToDomain(requireNotNull(source.originAirport)),
+                destination = airportMapper.mapToDomain(requireNotNull(source.destinationAirport)),
+                duration = requireNotNull(source.durationMillis).milliseconds,
+                seatNumber = source.seatNumber.orEmpty()
             )
             "accommodation" -> ItineraryItem.Accommodation(
                 id = source.id,
                 time = source.time,
-                name = source.accommodationName ?: "",
-                address = source.address ?: "",
+                name = source.accommodationName.orEmpty(),
+                address = source.address.orEmpty(),
                 checkInType = CheckInType.valueOf(source.checkInType ?: "CHECK_IN"),
-                imageUrl = source.accommodationImageUrl ?: ""
+                imageUrl = source.accommodationImageUrl.orEmpty()
             )
             "restaurant" -> ItineraryItem.Restaurant(
                 id = source.id,
                 time = source.time,
-                name = source.restaurantName ?: ""
+                name = source.restaurantName.orEmpty()
             )
             "activity" -> ItineraryItem.Activity(
                 id = source.id,
                 time = source.time,
-                title = source.activityTitle ?: "",
+                title = source.activityTitle.orEmpty(),
                 description = source.description,
                 location = source.location,
                 imageUrl = source.activityImageUrl

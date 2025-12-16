@@ -2,7 +2,6 @@ package com.luisfagundes.trip.data.database.converters
 
 import androidx.room.TypeConverter
 import com.luisfagundes.trip.data.model.AirportEntity
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 internal class AirportConverter {

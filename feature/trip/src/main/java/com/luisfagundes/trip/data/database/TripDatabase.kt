@@ -13,7 +13,7 @@ import com.luisfagundes.trip.data.database.converters.LocalTimeConverter
 import com.luisfagundes.trip.data.database.converters.TripStatusConverter
 import com.luisfagundes.trip.data.model.TripEntity
 
-@Database(entities = [TripEntity::class], version = 2)
+@Database(entities = [TripEntity::class], version = 2, exportSchema = false)
 @TypeConverters(
     TripStatusConverter::class,
     LocalDateConverter::class,
