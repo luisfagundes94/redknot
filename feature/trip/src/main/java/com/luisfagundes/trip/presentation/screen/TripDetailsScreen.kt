@@ -23,7 +23,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -37,6 +38,7 @@ import com.luisfagundes.designsystem.components.RedknotTopBar
 import com.luisfagundes.designsystem.theme.RedknotPreview
 import com.luisfagundes.designsystem.theme.RedknotThemePreview
 import com.luisfagundes.designsystem.theme.spacing
+import com.luisfagundes.itinerary.presentation.ItineraryScreen
 import com.luisfagundes.trip.R
 import com.luisfagundes.trip.domain.model.Trip
 import com.luisfagundes.trip.presentation.mapper.toStringResId
@@ -109,6 +111,8 @@ private fun TripDetailsContent(
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    var currentSelectedTab by rememberSaveable { mutableStateOf(TripDetailsTabs.ITINERARY) }
+
     Scaffold(
         modifier = modifier,
         topBar = {
@@ -126,10 +130,16 @@ private fun TripDetailsContent(
         ) {
             TripDetailsHeader(trip)
             TripDetailsTabRow(
+                onTabSelect = { currentSelectedTab = it },
                 modifier = Modifier
                     .padding(top = MaterialTheme.spacing.default)
                     .fillMaxWidth()
             )
+            when (currentSelectedTab) {
+                TripDetailsTabs.ITINERARY -> ItineraryScreen()
+                TripDetailsTabs.BUDGET -> Unit
+                TripDetailsTabs.DOCUMENTS -> Unit
+            }
         }
     }
 }
@@ -180,9 +190,10 @@ private fun TripDetailsHeader(trip: Trip) {
 
 @Composable
 private fun TripDetailsTabRow(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onTabSelect: (TripDetailsTabs) -> Unit
 ) {
-    var selectedTabIndex by remember { mutableIntStateOf(0) }
+    var selectedTabIndex by rememberSaveable { mutableIntStateOf(0) }
 
     PrimaryTabRow(
         selectedTabIndex = selectedTabIndex,
@@ -196,7 +207,7 @@ private fun TripDetailsTabRow(
 
             Tab(
                 selected = selectedTabIndex == index,
-                onClick = { selectedTabIndex = index },
+                onClick = { selectedTabIndex = index; onTabSelect(tab) },
                 icon = {
                     Icon(
                         imageVector = tab.icon,
@@ -211,11 +222,6 @@ private fun TripDetailsTabRow(
                     )
                 }
             )
-            when (tab) {
-                TripDetailsTabs.ITINERARY -> Unit
-                TripDetailsTabs.DOCUMENTS -> Unit
-                TripDetailsTabs.BUDGET -> Unit
-            }
         }
     }
 }
