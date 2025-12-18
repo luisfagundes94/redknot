@@ -177,7 +177,8 @@ private fun TripDetailsHeader(trip: Trip) {
             modifier = Modifier.width(MaterialTheme.spacing.small)
         )
         Text(
-            text = formatTripPeriod(trip.startDate, trip.endDate)
+            text = formatTripPeriod(trip.startDate, trip.endDate),
+            style = MaterialTheme.typography.titleMedium
         )
         Text(
             text = stringResource(R.string.dot),

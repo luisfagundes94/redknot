@@ -73,8 +73,7 @@ private fun ItineraryEmptyContent(
     ) {
         Text(
             text = stringResource(R.string.empty_itinerary_message),
-            textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.titleLarge
+            textAlign = TextAlign.Center
         )
         Spacer(
             modifier = Modifier.height(MaterialTheme.spacing.default)
