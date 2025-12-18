@@ -10,19 +10,9 @@ internal class ItineraryRepositoryImpl @Inject constructor(
     private val dataSource: ItineraryLocalDataSource,
     private val mapper: ItineraryItemMapper
 ): ItineraryRepository {
-    override suspend fun getItineraryItems(tripId: Int): Result<List<ItineraryItem>> {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun addItineraryItem(item: ItineraryItem): Result<Unit> {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun updateItineraryItem(item: ItineraryItem): Result<Unit> {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun deleteItineraryItem(item: ItineraryItem): Result<Unit> {
-        TODO("Not yet implemented")
+    override suspend fun getItineraryItemList(tripId: Int): Result<List<ItineraryItem>> {
+        return dataSource.getItineraryItemList(tripId).map { entities ->
+            entities.map { mapper.toDomain(it) }
+        }
     }
 }
