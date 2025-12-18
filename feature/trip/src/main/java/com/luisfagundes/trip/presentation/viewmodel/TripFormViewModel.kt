@@ -7,7 +7,7 @@ import com.luisfagundes.trip.domain.model.Trip
 import com.luisfagundes.trip.domain.model.TripStatus
 import com.luisfagundes.trip.domain.model.errorOrNull
 import com.luisfagundes.trip.domain.usecase.CreateTripUseCase
-import com.luisfagundes.trip.domain.usecase.GetTripImageUseCase
+import com.luisfagundes.common.domain.usecase.GetUnsplashImageUseCase
 import com.luisfagundes.trip.domain.usecase.ValidateDestinationUseCase
 import com.luisfagundes.trip.domain.usecase.ValidateDateUseCase
 import com.luisfagundes.trip.domain.usecase.ValidateTitleUseCase
@@ -29,7 +29,7 @@ internal class TripFormViewModel @Inject constructor(
     private val validateTitleUseCase: ValidateTitleUseCase,
     private val validateDateUseCase: ValidateDateUseCase,
     private val validateDestinationUseCase: ValidateDestinationUseCase,
-    private val getTripImageUseCase: GetTripImageUseCase,
+    private val getUnsplashImageUseCase: GetUnsplashImageUseCase,
     private val createTripUseCase: CreateTripUseCase,
     @param:IoDispatcher private val dispatcher: CoroutineDispatcher
 ) : ViewModel() {
@@ -80,7 +80,7 @@ internal class TripFormViewModel @Inject constructor(
 
         _uiState.update { it.copy(isLoading = true) }
 
-        val imageUrl = getTripImageUseCase(state.destination)
+        val imageUrl = getUnsplashImageUseCase(state.destination)
             .getOrNull()
             .orEmpty()
 

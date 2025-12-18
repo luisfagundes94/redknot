@@ -1,13 +1,12 @@
 package com.luisfagundes.trip.di
 
-import com.luisfagundes.trip.data.database.TripDatabase
+import com.luisfagundes.trip.data.dao.TripDao
+import com.luisfagundes.common.data.database.TripDatabase
+import com.luisfagundes.common.data.datasource.UnsplashRemoteDataSource
 import com.luisfagundes.trip.data.datasource.TripLocalDataSource
 import com.luisfagundes.trip.data.datasource.TripLocalDataSourceImpl
-import com.luisfagundes.trip.data.datasource.TripRemoteDataSource
-import com.luisfagundes.trip.data.datasource.TripRemoteDataSourceImpl
 import com.luisfagundes.trip.data.mapper.TripMapper
 import com.luisfagundes.trip.data.repository.TripRepositoryImpl
-import com.luisfagundes.trip.data.service.UnsplashApiService
 import com.luisfagundes.trip.domain.repository.TripRepository
 import dagger.Module
 import dagger.Provides
@@ -20,18 +19,16 @@ import javax.inject.Singleton
 internal object TripDataModule {
     @Provides
     @Singleton
-    fun provideTripLocalDataSource(
-        database: TripDatabase
-    ): TripLocalDataSource {
-        return TripLocalDataSourceImpl(database)
+    fun provideTripDao(database: TripDatabase): TripDao {
+        return database.tripDao()
     }
 
     @Provides
     @Singleton
-    fun provideTripRemoteDataSource(
-        apiService: UnsplashApiService
-    ): TripRemoteDataSource {
-        return TripRemoteDataSourceImpl(apiService)
+    fun provideTripLocalDataSource(
+        tripDao: TripDao
+    ): TripLocalDataSource {
+        return TripLocalDataSourceImpl(tripDao)
     }
 
     @Provides
@@ -43,13 +40,13 @@ internal object TripDataModule {
     @Provides
     @Singleton
     fun provideTripRepository(
-        localDataSource: TripLocalDataSource,
-        remoteDataSource: TripRemoteDataSource,
+        tripDataSource: TripLocalDataSource,
+        unsplashDataSource: UnsplashRemoteDataSource,
         mapper: TripMapper
     ): TripRepository {
         return TripRepositoryImpl(
-            localDataSource = localDataSource,
-            remoteDataSource = remoteDataSource,
+            tripDataSource = tripDataSource,
+            unsplashDataSource = unsplashDataSource,
             mapper = mapper
         )
     }

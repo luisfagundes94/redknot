@@ -1,5 +1,6 @@
 package com.luisfagundes.trip.domain.usecase
 
+import com.luisfagundes.common.domain.usecase.GetUnsplashImageUseCase
 import com.luisfagundes.trip.domain.repository.TripRepository
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -13,11 +14,11 @@ import org.junit.jupiter.api.Test
 internal class GetTripImageUseCaseTest {
 
     private val repository: TripRepository = mockk()
-    private lateinit var useCase: GetTripImageUseCase
+    private lateinit var useCase: GetUnsplashImageUseCase
 
     @BeforeEach
     fun setup() {
-        useCase = GetTripImageUseCase(repository)
+        useCase = GetUnsplashImageUseCase(repository)
     }
 
     @Test

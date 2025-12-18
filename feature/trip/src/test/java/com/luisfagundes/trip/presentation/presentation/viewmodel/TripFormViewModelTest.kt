@@ -5,7 +5,7 @@ import com.luisfagundes.trip.domain.model.TripStatus
 import com.luisfagundes.trip.domain.model.ValidationError
 import com.luisfagundes.trip.domain.model.ValidationResult
 import com.luisfagundes.trip.domain.usecase.CreateTripUseCase
-import com.luisfagundes.trip.domain.usecase.GetTripImageUseCase
+import com.luisfagundes.common.domain.usecase.GetUnsplashImageUseCase
 import com.luisfagundes.trip.domain.usecase.ValidateDateUseCase
 import com.luisfagundes.trip.domain.usecase.ValidateDestinationUseCase
 import com.luisfagundes.trip.domain.usecase.ValidateTitleUseCase
@@ -39,7 +39,7 @@ internal class TripFormViewModelTest {
     private val validateTitleUseCase: ValidateTitleUseCase = mockk()
     private val validateDateUseCase: ValidateDateUseCase = mockk()
     private val validateDestinationUseCase: ValidateDestinationUseCase = mockk()
-    private val getTripImageUseCase: GetTripImageUseCase = mockk()
+    private val getUnsplashImageUseCase: GetUnsplashImageUseCase = mockk()
     private val createTripUseCase: CreateTripUseCase = mockk()
 
     private lateinit var viewModel: TripFormViewModel
@@ -187,7 +187,7 @@ internal class TripFormViewModelTest {
     @Test
     fun `onSubmit sets isLoading to true while processing`() = runTest {
         // Given
-        coEvery { getTripImageUseCase(any()) } coAnswers {
+        coEvery { getUnsplashImageUseCase(any()) } coAnswers {
             delay(100)
             Result.success("https://example.com/image.jpg")
         }
@@ -205,7 +205,7 @@ internal class TripFormViewModelTest {
         // Given
         val imageUrl = "https://example.com/image.jpg"
 
-        coEvery { getTripImageUseCase(any()) } returns Result.success(imageUrl)
+        coEvery { getUnsplashImageUseCase(any()) } returns Result.success(imageUrl)
         coEvery { createTripUseCase(any()) } returns Result.success(Unit)
 
         // When
@@ -223,7 +223,7 @@ internal class TripFormViewModelTest {
         // Given
         val exception = Exception("Creation failed")
 
-        coEvery { getTripImageUseCase(any()) } returns Result.success("")
+        coEvery { getUnsplashImageUseCase(any()) } returns Result.success("")
         coEvery { createTripUseCase(any()) } returns Result.failure(exception)
 
         // When
@@ -239,7 +239,7 @@ internal class TripFormViewModelTest {
     @Test
     fun `onSubmit with failed image fetch continues with empty imageUrl`() = runTest {
         // Given
-        coEvery { getTripImageUseCase(any()) } returns Result.failure(Exception("Image fetch failed"))
+        coEvery { getUnsplashImageUseCase(any()) } returns Result.failure(Exception("Image fetch failed"))
         coEvery { createTripUseCase(any()) } returns Result.success(Unit)
 
         // When
@@ -262,7 +262,7 @@ internal class TripFormViewModelTest {
         every { validateTitleUseCase(any()) } returns ValidationResult.Valid
         every { validateDateUseCase(any()) } returns ValidationResult.Valid
         every { validateDestinationUseCase(any()) } returns ValidationResult.Valid
-        coEvery { getTripImageUseCase("Paris") } returns Result.success(imageUrl)
+        coEvery { getUnsplashImageUseCase("Paris") } returns Result.success(imageUrl)
         coEvery { createTripUseCase(any()) } returns Result.success(Unit)
 
         viewModel.onTitleChange("Paris Trip")
@@ -292,7 +292,7 @@ internal class TripFormViewModelTest {
         validateTitleUseCase = validateTitleUseCase,
         validateDateUseCase = validateDateUseCase,
         validateDestinationUseCase = validateDestinationUseCase,
-        getTripImageUseCase = getTripImageUseCase,
+        getUnsplashImageUseCase = getUnsplashImageUseCase,
         createTripUseCase = createTripUseCase,
         dispatcher = dispatcherRule.testDispatcher
     )
