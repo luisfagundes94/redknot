@@ -35,9 +35,22 @@ internal fun ItineraryScreen(
         viewModel.getItineraryItemList(tripId)
     }
 
-    when (val state = uiState) {
+    ItineraryContent(
+        uiState = uiState,
+        onNewItineraryItemClick = onNewItineraryItemClick,
+        modifier = Modifier.fillMaxSize()
+    )
+}
+
+@Composable
+private fun ItineraryContent(
+    uiState: ItineraryUiState,
+    onNewItineraryItemClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    when (uiState) {
         ItineraryUiState.Loading -> ItineraryLoadingContent(
-            modifier = Modifier.fillMaxSize()
+            modifier = modifier
         )
         ItineraryUiState.Empty -> ItineraryEmptyContent(
             onNewItineraryItemClick = onNewItineraryItemClick,

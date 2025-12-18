@@ -65,7 +65,22 @@ internal fun TripListScreen(
         viewModel.getTripList()
     }
 
-    when (val state = uiState) {
+    TripListContent(
+        uiState = uiState,
+        onTripClick = onTripClick,
+        onCreateTripClick = onCreateTripClick,
+        onTryAgainClick = viewModel::getTripList
+    )
+}
+
+@Composable
+private fun TripListContent(
+    uiState: TripListUiState,
+    onTryAgainClick: () -> Unit,
+    onTripClick: (id: Int) -> Unit,
+    onCreateTripClick: () -> Unit
+) {
+    when (uiState) {
         is TripListUiState.Loading -> TripListLoadingContent(
             modifier = Modifier.fillMaxSize()
         )
@@ -78,14 +93,14 @@ internal fun TripListScreen(
         )
 
         is TripListUiState.Error -> TripListErrorContent(
-            onTryAgainClick = { viewModel.getTripList() },
+            onTryAgainClick = onTryAgainClick,
             modifier = Modifier
                 .padding(MaterialTheme.spacing.default)
                 .fillMaxSize()
         )
 
-        is TripListUiState.Success -> TripListContent(
-            tripsByStatus = state.tripsByStatus,
+        is TripListUiState.Success -> TripListSuccessContent(
+            tripsByStatus = uiState.tripsByStatus,
             onTripClick = onTripClick,
             onCreateTripClick = onCreateTripClick,
             modifier = Modifier.fillMaxWidth()
@@ -171,7 +186,7 @@ private fun TripListErrorContent(
 }
 
 @Composable
-private fun TripListContent(
+private fun TripListSuccessContent(
     tripsByStatus: Map<TripStatus, List<Trip>>,
     onTripClick: (id: Int) -> Unit,
     onCreateTripClick: () -> Unit,
@@ -277,12 +292,12 @@ private fun TripContent(
 
 @RedknotPreview
 @Composable
-private fun TripListContentPreview(
+private fun TripListSuccessContentPreview(
     @PreviewParameter(TripListPreviewParameterProvider::class)
     uiState: TripListUiState.Success
 ) {
     RedknotThemePreview {
-        TripListContent(
+        TripListSuccessContent(
             tripsByStatus = uiState.tripsByStatus,
             onTripClick = {},
             onCreateTripClick = {},

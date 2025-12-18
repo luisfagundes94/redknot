@@ -62,17 +62,30 @@ internal fun TripDetailsScreen(
         viewModel.getTripById(id = tripId)
     }
 
-    when (val state = uiState) {
+    TripDetailsContent(
+        uiState = uiState,
+        onNewItineraryItemClick = onNewItineraryItemClick,
+        onBackClick = onBackClick
+    )
+}
+
+@Composable
+private fun TripDetailsContent(
+    uiState: TripDetailsUiState,
+    onNewItineraryItemClick: () -> Unit,
+    onBackClick: () -> Unit,
+) {
+    when (uiState) {
         is TripDetailsUiState.Loading -> TripDetailsLoadingContent(
             modifier = Modifier.fillMaxSize()
         )
 
         is TripDetailsUiState.Error -> TripDetailsErrorContent(
-            message = state.message
+            message = uiState.message
         )
 
-        is TripDetailsUiState.Success -> TripDetailsContent(
-            trip = state.trip,
+        is TripDetailsUiState.Success -> TripDetailsSuccessContent(
+            trip = uiState.trip,
             onNewItineraryItemClick = onNewItineraryItemClick,
             onBackClick = onBackClick,
             modifier = Modifier.fillMaxWidth()
@@ -108,7 +121,7 @@ private fun TripDetailsErrorContent(
 }
 
 @Composable
-private fun TripDetailsContent(
+private fun TripDetailsSuccessContent(
     trip: Trip,
     onNewItineraryItemClick: () -> Unit,
     onBackClick: () -> Unit,
@@ -143,6 +156,7 @@ private fun TripDetailsContent(
                     tripId = trip.id,
                     onNewItineraryItemClick = onNewItineraryItemClick
                 )
+
                 TripDetailsTabs.BUDGET -> Unit
                 TripDetailsTabs.DOCUMENTS -> Unit
             }
@@ -235,12 +249,12 @@ private fun TripDetailsTabRow(
 
 @RedknotPreview
 @Composable
-private fun TripDetailsPreviewScreen(
+private fun TripDetailsSuccessContentPreview(
     @PreviewParameter(TripDetailsPreviewParameterProvider::class)
     uiState: TripDetailsUiState.Success
 ) {
     RedknotThemePreview {
-        TripDetailsContent(
+        TripDetailsSuccessContent(
             trip = uiState.trip,
             onNewItineraryItemClick = {},
             onBackClick = {},
