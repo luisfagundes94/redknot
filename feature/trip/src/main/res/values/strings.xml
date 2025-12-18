@@ -32,6 +32,8 @@
     <string name="budget">Budget</string>
     <string name="documents">Documents</string>
     <string name="saved_places">Saved Places</string>
+    <string name="empty_itinerary_message">You don\'t have an itinerary yet, would you like to add a new item?</string>
+    <string name="add_itinerary_item">Add item</string>
     <plurals name="trip_duration_days">
         <item quantity="one">%d day</item>
         <item quantity="other">%d days</item>

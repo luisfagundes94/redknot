@@ -18,6 +18,7 @@ fun AppNavDisplay(
         tripSection(
             onTripCreationClick = { navigator.navigate(TripCreationRoute) },
             onTripClick = { tripId -> navigator.navigate(TripDetailsRoute(tripId)) },
+            onNewItineraryItemClick = {},
             onBackClick = { navigator.goBack() }
         )
     }

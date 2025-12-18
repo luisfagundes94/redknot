@@ -19,6 +19,7 @@ data class TripDetailsRoute(val tripId: Int) : NavKey
 fun EntryProviderScope<NavKey>.tripSection(
     onTripCreationClick: () -> Unit,
     onTripClick: (tripId: Int) -> Unit,
+    onNewItineraryItemClick: () -> Unit,
     onBackClick: () -> Unit
 ) {
     entry<TripListRoute> {
@@ -35,6 +36,7 @@ fun EntryProviderScope<NavKey>.tripSection(
     entry<TripDetailsRoute> { key ->
         TripDetailsScreen(
             tripId = key.tripId,
+            onNewItineraryItemClick = onNewItineraryItemClick,
             onBackClick = onBackClick
         )
     }

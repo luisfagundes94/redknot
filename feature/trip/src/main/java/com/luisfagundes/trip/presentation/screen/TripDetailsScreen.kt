@@ -52,6 +52,7 @@ import com.luisfagundes.trip.tools.extensions.getTripDurationInDays
 @Composable
 internal fun TripDetailsScreen(
     tripId: Int,
+    onNewItineraryItemClick: () -> Unit,
     onBackClick: () -> Unit,
     viewModel: TripDetailsViewModel = hiltViewModel()
 ) {
@@ -72,6 +73,7 @@ internal fun TripDetailsScreen(
 
         is TripDetailsUiState.Success -> TripDetailsContent(
             trip = state.trip,
+            onNewItineraryItemClick = onNewItineraryItemClick,
             onBackClick = onBackClick,
             modifier = Modifier.fillMaxWidth()
         )
@@ -108,6 +110,7 @@ private fun TripDetailsErrorContent(
 @Composable
 private fun TripDetailsContent(
     trip: Trip,
+    onNewItineraryItemClick: () -> Unit,
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -136,7 +139,10 @@ private fun TripDetailsContent(
                     .fillMaxWidth()
             )
             when (currentSelectedTab) {
-                TripDetailsTabs.ITINERARY -> ItineraryScreen()
+                TripDetailsTabs.ITINERARY -> ItineraryScreen(
+                    tripId = trip.id,
+                    onNewItineraryItemClick = onNewItineraryItemClick
+                )
                 TripDetailsTabs.BUDGET -> Unit
                 TripDetailsTabs.DOCUMENTS -> Unit
             }
@@ -235,6 +241,7 @@ private fun TripDetailsPreviewScreen(
     RedknotThemePreview {
         TripDetailsContent(
             trip = uiState.trip,
+            onNewItineraryItemClick = {},
             onBackClick = {},
             modifier = Modifier.fillMaxSize()
         )
