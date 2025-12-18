@@ -7,6 +7,12 @@ import com.luisfagundes.itinerary.data.mapper.ItineraryItemMapper
 import com.luisfagundes.itinerary.data.repository.ItineraryRepositoryImpl
 import com.luisfagundes.itinerary.domain.repository.ItineraryRepository
 import com.luisfagundes.common.data.database.TripDatabase
+import com.luisfagundes.itinerary.data.dao.AccommodationDao
+import com.luisfagundes.itinerary.data.dao.ActivityDao
+import com.luisfagundes.itinerary.data.dao.FlightDao
+import com.luisfagundes.itinerary.data.dao.ItineraryItemDaoFactory
+import com.luisfagundes.itinerary.data.dao.ItineraryItemDaoFactoryImpl
+import com.luisfagundes.itinerary.data.dao.RestaurantDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -15,7 +21,23 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-internal object ItineraryDataModule {
+internal object ItineraryModule {
+    @Provides
+    @Singleton
+    fun provideItineraryItemDaoFactory(
+        flightDao: FlightDao,
+        accommodationDao: AccommodationDao,
+        restaurantDao: RestaurantDao,
+        activityDao: ActivityDao
+    ): ItineraryItemDaoFactory {
+        return ItineraryItemDaoFactoryImpl(
+            flightDao = flightDao,
+            accommodationDao = accommodationDao,
+            restaurantDao = restaurantDao,
+            activityDao = activityDao
+        )
+    }
+
     @Provides
     @Singleton
     fun provideItineraryDataSource(

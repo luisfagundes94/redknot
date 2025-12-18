@@ -25,5 +25,4 @@ internal class ItineraryRepositoryImpl @Inject constructor(
     override suspend fun deleteItineraryItem(item: ItineraryItem): Result<Unit> {
         TODO("Not yet implemented")
     }
-
 }
