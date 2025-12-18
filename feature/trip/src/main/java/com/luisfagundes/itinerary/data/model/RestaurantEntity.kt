@@ -5,6 +5,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import com.luisfagundes.itinerary.domain.model.ItineraryItemType
 import com.luisfagundes.trip.data.model.TripEntity
 import java.time.LocalDate
 import java.time.LocalTime
@@ -22,9 +23,11 @@ import java.time.LocalTime
     indices = [Index("trip_id")]
 )
 internal data class RestaurantEntity(
-    @PrimaryKey val id: String,
-    @ColumnInfo("trip_id") val tripId: Int,
-    @ColumnInfo("date") val date: LocalDate,
-    @ColumnInfo("time") val time: LocalTime,
+    @PrimaryKey override val id: String,
+    @ColumnInfo("trip_id") override val tripId: Int,
+    @ColumnInfo("date") override val date: LocalDate,
+    @ColumnInfo("time") override val time: LocalTime,
     @ColumnInfo("name") val name: String,
-)
+): ItineraryItemEntity {
+    override fun toItineraryItemType() = ItineraryItemType.RESTAURANT
+}
