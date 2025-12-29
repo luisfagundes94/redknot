@@ -3,7 +3,6 @@ package com.luisfagundes.trip.presentation.screen
 import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -11,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
@@ -19,7 +17,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -40,7 +37,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
-import com.luisfagundes.designsystem.components.LottieAnimationLoader
 import com.luisfagundes.designsystem.components.RedknotEmptyTemplate
 import com.luisfagundes.designsystem.components.RedknotLoadingTemplate
 import com.luisfagundes.designsystem.theme.RedknotPreview
@@ -52,8 +48,8 @@ import com.luisfagundes.trip.domain.model.TripStatus
 import com.luisfagundes.trip.presentation.mapper.toStringResId
 import com.luisfagundes.trip.presentation.provider.TripListPreviewParameterProvider
 import com.luisfagundes.trip.presentation.state.TripListUiState
-import com.luisfagundes.trip.tools.extensions.formatTripPeriod
 import com.luisfagundes.trip.presentation.viewmodel.TripListViewModel
+import com.luisfagundes.trip.tools.extensions.formatTripPeriod
 
 @Composable
 internal fun TripListScreen(
