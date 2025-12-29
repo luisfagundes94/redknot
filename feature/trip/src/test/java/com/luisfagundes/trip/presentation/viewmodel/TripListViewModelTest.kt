@@ -1,4 +1,4 @@
-package com.luisfagundes.trip.presentation.presentation.viewmodel
+package com.luisfagundes.trip.presentation.viewmodel
 
 import com.luisfagundes.core.testing.MainDispatcherRule
 import com.luisfagundes.trip.domain.model.TripStatus
@@ -6,7 +6,6 @@ import com.luisfagundes.trip.domain.usecase.GetTripListUseCase
 import com.luisfagundes.trip.presentation.fixtures.fakePastTrip
 import com.luisfagundes.trip.presentation.fixtures.fakeUpcomingTrip
 import com.luisfagundes.trip.presentation.state.TripListUiState
-import com.luisfagundes.trip.presentation.viewmodel.TripListViewModel
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi

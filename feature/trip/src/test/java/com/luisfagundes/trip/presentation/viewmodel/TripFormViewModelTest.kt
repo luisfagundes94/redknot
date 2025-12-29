@@ -1,4 +1,4 @@
-package com.luisfagundes.trip.presentation.presentation.viewmodel
+package com.luisfagundes.trip.presentation.viewmodel
 
 import com.luisfagundes.core.testing.MainDispatcherRule
 import com.luisfagundes.trip.domain.model.TripStatus
@@ -11,7 +11,6 @@ import com.luisfagundes.trip.domain.usecase.ValidateDestinationUseCase
 import com.luisfagundes.trip.domain.usecase.ValidateTitleUseCase
 import com.luisfagundes.trip.presentation.effect.TripFormUiEffect
 import com.luisfagundes.trip.presentation.state.TripFormUiState
-import com.luisfagundes.trip.presentation.viewmodel.TripFormViewModel
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
