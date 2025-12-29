@@ -1,4 +1,4 @@
-package com.luisfagundes.trip.presentation.components
+package com.luisfagundes.trip.presentation.components.details
 
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
