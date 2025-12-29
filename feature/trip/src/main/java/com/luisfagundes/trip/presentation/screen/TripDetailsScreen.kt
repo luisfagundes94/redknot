@@ -1,36 +1,22 @@
 package com.luisfagundes.trip.presentation.screen
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.pluralStringResource
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -39,15 +25,13 @@ import com.luisfagundes.designsystem.theme.RedknotPreview
 import com.luisfagundes.designsystem.theme.RedknotThemePreview
 import com.luisfagundes.designsystem.theme.spacing
 import com.luisfagundes.itinerary.presentation.ItineraryScreen
-import com.luisfagundes.trip.R
 import com.luisfagundes.trip.domain.model.Trip
-import com.luisfagundes.trip.presentation.mapper.toStringResId
+import com.luisfagundes.trip.presentation.components.TripDetailsHeader
+import com.luisfagundes.trip.presentation.components.TripDetailsTabRow
 import com.luisfagundes.trip.presentation.model.TripDetailsTabs
 import com.luisfagundes.trip.presentation.provider.TripDetailsPreviewParameterProvider
 import com.luisfagundes.trip.presentation.state.TripDetailsUiState
 import com.luisfagundes.trip.presentation.viewmodel.TripDetailsViewModel
-import com.luisfagundes.trip.tools.extensions.formatTripPeriod
-import com.luisfagundes.trip.tools.extensions.getTripDurationInDays
 
 @Composable
 internal fun TripDetailsScreen(
@@ -144,7 +128,11 @@ private fun TripDetailsSuccessContent(
                 .padding(MaterialTheme.spacing.default)
                 .fillMaxWidth()
         ) {
-            TripDetailsHeader(trip)
+            TripDetailsHeader(
+                status = trip.status,
+                startDate = trip.startDate,
+                endDate = trip.endDate
+            )
             TripDetailsTabRow(
                 onTabSelect = { currentSelectedTab = it },
                 modifier = Modifier
@@ -160,89 +148,6 @@ private fun TripDetailsSuccessContent(
                 TripDetailsTabs.BUDGET -> Unit
                 TripDetailsTabs.DOCUMENTS -> Unit
             }
-        }
-    }
-}
-
-@Composable
-private fun TripDetailsHeader(trip: Trip) {
-    Text(
-        text = stringResource(trip.status.toStringResId()),
-        style = MaterialTheme.typography.titleMedium,
-        color = MaterialTheme.colorScheme.primary,
-        modifier = Modifier
-            .background(
-                color = MaterialTheme.colorScheme.onPrimary,
-                shape = RoundedCornerShape(MaterialTheme.spacing.default)
-            )
-            .padding(horizontal = MaterialTheme.spacing.small)
-    )
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
-            .padding(top = MaterialTheme.spacing.small)
-            .fillMaxWidth(),
-    ) {
-        Icon(
-            imageVector = Icons.Default.CalendarMonth,
-            contentDescription = null,
-        )
-        Spacer(
-            modifier = Modifier.width(MaterialTheme.spacing.small)
-        )
-        Text(
-            text = formatTripPeriod(trip.startDate, trip.endDate),
-            style = MaterialTheme.typography.titleMedium
-        )
-        Text(
-            text = stringResource(R.string.dot),
-            modifier = Modifier.padding(horizontal = MaterialTheme.spacing.small)
-        )
-        Text(
-            text = pluralStringResource(
-                id = R.plurals.trip_duration_days,
-                count = getTripDurationInDays(trip.startDate, trip.endDate),
-                getTripDurationInDays(trip.startDate, trip.endDate)
-            ),
-            fontWeight = FontWeight.Bold
-        )
-    }
-}
-
-@Composable
-private fun TripDetailsTabRow(
-    modifier: Modifier = Modifier,
-    onTabSelect: (TripDetailsTabs) -> Unit
-) {
-    var selectedTabIndex by rememberSaveable { mutableIntStateOf(0) }
-
-    PrimaryTabRow(
-        selectedTabIndex = selectedTabIndex,
-        modifier = modifier
-    ) {
-        val selectedColor = MaterialTheme.colorScheme.primary
-        val unselectedColor = MaterialTheme.colorScheme.onSurface
-
-        TripDetailsTabs.entries.forEachIndexed { index, tab ->
-            val tabColor = if (selectedTabIndex == index) selectedColor else unselectedColor
-
-            Tab(
-                selected = selectedTabIndex == index,
-                onClick = { selectedTabIndex = index; onTabSelect(tab) },
-                icon = {
-                    Icon(
-                        imageVector = tab.icon,
-                        contentDescription = null,
-                        tint = tabColor
-                    )
-                },
-                text = {
-                    Text(
-                        text = stringResource(tab.titleResId),
-                        color = tabColor
-                    )
-                }
-            )
         }
     }
 }
