@@ -70,7 +70,12 @@ private fun TripDetailsContent(
 
         is TripDetailsUiState.Success -> TripDetailsSuccessContent(
             trip = uiState.trip,
-            onNewItineraryItemClick = onNewItineraryItemClick,
+            itineraryContent = {
+                ItineraryScreen(
+                    tripId = uiState.trip.id,
+                    onNewItineraryItemClick = onNewItineraryItemClick
+                )
+            },
             onBackClick = onBackClick,
             modifier = Modifier.fillMaxWidth()
         )
@@ -107,7 +112,7 @@ private fun TripDetailsErrorContent(
 @Composable
 private fun TripDetailsSuccessContent(
     trip: Trip,
-    onNewItineraryItemClick: () -> Unit,
+    itineraryContent: @Composable () -> Unit,
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -140,11 +145,7 @@ private fun TripDetailsSuccessContent(
                     .fillMaxWidth()
             )
             when (currentSelectedTab) {
-                TripDetailsTabs.ITINERARY -> ItineraryScreen(
-                    tripId = trip.id,
-                    onNewItineraryItemClick = onNewItineraryItemClick
-                )
-
+                TripDetailsTabs.ITINERARY -> itineraryContent()
                 TripDetailsTabs.BUDGET -> Unit
                 TripDetailsTabs.DOCUMENTS -> Unit
             }
@@ -161,7 +162,7 @@ private fun TripDetailsSuccessContentPreview(
     RedknotThemePreview {
         TripDetailsSuccessContent(
             trip = uiState.trip,
-            onNewItineraryItemClick = {},
+            itineraryContent = {},
             onBackClick = {},
             modifier = Modifier.fillMaxSize()
         )
