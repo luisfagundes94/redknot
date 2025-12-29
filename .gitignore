@@ -13,5 +13,6 @@
 .externalNativeBuild
 .cxx
 local.properties
-.github
-/.github/copilot-instructions.md
+.claude
+.kotlin
+.idea
