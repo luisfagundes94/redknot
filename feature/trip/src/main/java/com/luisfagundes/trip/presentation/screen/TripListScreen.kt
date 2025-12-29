@@ -41,6 +41,8 @@ import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.luisfagundes.designsystem.components.LottieAnimationLoader
+import com.luisfagundes.designsystem.components.RedknotEmptyTemplate
+import com.luisfagundes.designsystem.components.RedknotLoadingTemplate
 import com.luisfagundes.designsystem.theme.RedknotPreview
 import com.luisfagundes.designsystem.theme.RedknotThemePreview
 import com.luisfagundes.designsystem.theme.spacing
@@ -81,12 +83,16 @@ private fun TripListContent(
     onCreateTripClick: () -> Unit
 ) {
     when (uiState) {
-        is TripListUiState.Loading -> TripListLoadingContent(
+        is TripListUiState.Loading -> RedknotLoadingTemplate(
             modifier = Modifier.fillMaxSize()
         )
 
-        is TripListUiState.Empty -> TripListEmptyContent(
-            onTripCreationClick = onCreateTripClick,
+        is TripListUiState.Empty -> RedknotEmptyTemplate(
+            lottieAnimationResId = R.raw.bird_flapping_animation,
+            title = stringResource(R.string.no_trips_found_description),
+            primaryButtonLabel = stringResource(R.string.create_new_trip),
+            primaryButtonIcon = Icons.Default.Add,
+            onPrimaryButtonClick = onCreateTripClick,
             modifier = Modifier
                 .padding(MaterialTheme.spacing.default)
                 .fillMaxSize()
@@ -105,56 +111,6 @@ private fun TripListContent(
             onCreateTripClick = onCreateTripClick,
             modifier = Modifier.fillMaxWidth()
         )
-    }
-}
-
-@Composable
-private fun TripListLoadingContent(
-    modifier: Modifier = Modifier
-) {
-    Box(
-        modifier = modifier,
-        contentAlignment = Alignment.Center
-    ) {
-        CircularProgressIndicator()
-    }
-}
-
-@Composable
-private fun TripListEmptyContent(
-    onTripCreationClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        LottieAnimationLoader(
-            animationResId = R.raw.bird_flapping_animation
-        )
-        Spacer(
-            modifier = Modifier.height(MaterialTheme.spacing.default)
-        )
-        Text(
-            text = stringResource(R.string.no_trips_found_description),
-            textAlign = TextAlign.Center,
-        )
-        Spacer(
-            modifier = Modifier.height(MaterialTheme.spacing.default)
-        )
-        Button(
-            onClick = onTripCreationClick,
-        ) {
-            Icon(
-                painter = rememberVectorPainter(Icons.Default.Add),
-                contentDescription = null
-            )
-            Spacer(Modifier.width(MaterialTheme.spacing.small))
-            Text(
-                text = stringResource(R.string.create_new_trip)
-            )
-        }
     }
 }
 

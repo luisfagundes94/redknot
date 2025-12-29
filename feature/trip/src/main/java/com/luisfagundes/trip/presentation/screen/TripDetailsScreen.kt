@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -20,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.luisfagundes.designsystem.components.RedknotLoadingTemplate
 import com.luisfagundes.designsystem.components.RedknotTopBar
 import com.luisfagundes.designsystem.theme.RedknotPreview
 import com.luisfagundes.designsystem.theme.RedknotThemePreview
@@ -60,7 +60,7 @@ private fun TripDetailsContent(
     onBackClick: () -> Unit,
 ) {
     when (uiState) {
-        is TripDetailsUiState.Loading -> TripDetailsLoadingContent(
+        is TripDetailsUiState.Loading -> RedknotLoadingTemplate(
             modifier = Modifier.fillMaxSize()
         )
 
@@ -79,18 +79,6 @@ private fun TripDetailsContent(
             onBackClick = onBackClick,
             modifier = Modifier.fillMaxWidth()
         )
-    }
-}
-
-@Composable
-private fun TripDetailsLoadingContent(
-    modifier: Modifier = Modifier
-) {
-    Box(
-        contentAlignment = Alignment.Center,
-        modifier = modifier,
-    ) {
-        CircularProgressIndicator()
     }
 }
 
