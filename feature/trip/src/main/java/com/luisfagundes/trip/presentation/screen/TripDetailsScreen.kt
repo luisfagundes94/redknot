@@ -1,6 +1,5 @@
 package com.luisfagundes.trip.presentation.screen
 
-import androidx.appcompat.R
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -27,6 +26,7 @@ import com.luisfagundes.designsystem.theme.RedknotPreview
 import com.luisfagundes.designsystem.theme.RedknotThemePreview
 import com.luisfagundes.designsystem.theme.spacing
 import com.luisfagundes.itinerary.presentation.ItineraryScreen
+import com.luisfagundes.trip.R
 import com.luisfagundes.trip.domain.model.Trip
 import com.luisfagundes.trip.presentation.components.details.TripDetailsHeader
 import com.luisfagundes.trip.presentation.components.details.TripDetailsTabRow
