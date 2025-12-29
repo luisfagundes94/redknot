@@ -34,6 +34,7 @@
     <string name="saved_places">Saved Places</string>
     <string name="empty_itinerary_message">You don\'t have an itinerary yet, would you like to add a new item?</string>
     <string name="add_itinerary_item">Add item</string>
+    <string name="generic_error_message">Oops! Something went wrong :(</string>
     <plurals name="trip_duration_days">
         <item quantity="one">%d day</item>
         <item quantity="other">%d days</item>

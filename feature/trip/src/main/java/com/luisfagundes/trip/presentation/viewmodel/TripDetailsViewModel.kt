@@ -29,7 +29,7 @@ internal class TripDetailsViewModel @Inject constructor(
                 _uiState.update { TripDetailsUiState.Success(trip) }
             },
             onFailure = { throwable ->
-                _uiState.update { TripDetailsUiState.Error(throwable.message.toString()) }
+                _uiState.update { TripDetailsUiState.Error(throwable.message) }
             }
         )
     }

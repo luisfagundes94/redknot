@@ -1,5 +1,6 @@
 package com.luisfagundes.trip.presentation.screen
 
+import androidx.appcompat.R
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,6 +17,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -65,7 +67,7 @@ private fun TripDetailsContent(
         )
 
         is TripDetailsUiState.Error -> TripDetailsErrorContent(
-            message = uiState.message
+            message = uiState.message ?: stringResource(R.string.generic_error_message)
         )
 
         is TripDetailsUiState.Success -> TripDetailsSuccessContent(
