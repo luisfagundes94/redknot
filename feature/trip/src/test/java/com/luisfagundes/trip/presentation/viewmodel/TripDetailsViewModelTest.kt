@@ -1,5 +1,6 @@
 package com.luisfagundes.trip.presentation.viewmodel
 
+import app.cash.turbine.test
 import com.luisfagundes.core.testing.MainDispatcherRule
 import com.luisfagundes.trip.domain.usecase.GetTripByIdUseCase
 import com.luisfagundes.trip.presentation.fixtures.fakeTrip
@@ -7,54 +8,48 @@ import com.luisfagundes.trip.presentation.viewmodel.state.TripDetailsUiState
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.toList
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
-import org.junit.jupiter.api.BeforeEach
-import org.junit.Rule
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.RegisterExtension
 
 @OptIn(ExperimentalCoroutinesApi::class)
 internal class TripDetailsViewModelTest {
-    @get:Rule
-    val dispatcherRule = MainDispatcherRule(UnconfinedTestDispatcher())
+    @RegisterExtension
+    val dispatcher = MainDispatcherRule()
 
     private val getTripByIdUseCase: GetTripByIdUseCase = mockk()
 
-    private lateinit var viewModel: TripDetailsViewModel
-
-    @BeforeEach
-    fun setUp() {
-        viewModel = createViewModel()
-    }
+    private val viewModel = TripDetailsViewModel(
+        getTripByIdUseCase = getTripByIdUseCase,
+        dispatcher = dispatcher.testDispatcher
+    )
 
     @Test
-    fun `initial state is loading`() {
+    fun `initial state is loading`() = runTest {
         // Then
-        val currentState = viewModel.uiState.value
-        val expectedState = TripDetailsUiState.Loading
-
-        assertEquals(currentState, expectedState)
+        viewModel.uiState.test {
+            assertEquals(TripDetailsUiState.Loading, awaitItem())
+            cancelAndIgnoreRemainingEvents()
+        }
     }
 
     @Test
     fun `getTripById with valid id returns success state`() = runTest {
         // Given
         val tripId = 1
-        val expectedTrip = fakeTrip
-        coEvery { getTripByIdUseCase.invoke(tripId) } returns Result.success(expectedTrip)
+        coEvery { getTripByIdUseCase.invoke(tripId) } returns Result.success(fakeTrip)
 
-        // When
-        viewModel.getTripById(tripId)
+        viewModel.uiState.test {
+            awaitItem() // consume initial Loading
 
-        // Then
-        val currentState = viewModel.uiState.value
-        val expectedState = TripDetailsUiState.Success(expectedTrip)
+            // When
+            viewModel.getTripById(tripId)
 
-        assertEquals(currentState, expectedState)
+            // Then
+            assertEquals(TripDetailsUiState.Success(fakeTrip), awaitItem())
+            cancelAndIgnoreRemainingEvents()
+        }
     }
 
     @Test
@@ -62,41 +57,35 @@ internal class TripDetailsViewModelTest {
         // Given
         val tripId = 1
         val errorMessage = "Trip not found"
-        val exception = Exception(errorMessage)
-        coEvery { getTripByIdUseCase.invoke(tripId) } returns Result.failure(exception)
+        coEvery { getTripByIdUseCase.invoke(tripId) } returns Result.failure(Exception(errorMessage))
 
-        // When
-        viewModel.getTripById(tripId)
+        viewModel.uiState.test {
+            awaitItem() // consume initial Loading
 
-        // Then
-        val currentState = viewModel.uiState.value
-        val expectedState = TripDetailsUiState.Error(errorMessage)
+            // When
+            viewModel.getTripById(tripId)
 
-        assertEquals(currentState, expectedState)
+            // Then
+            assertEquals(TripDetailsUiState.Error(errorMessage), awaitItem())
+            cancelAndIgnoreRemainingEvents()
+        }
     }
 
     @Test
     fun `getTripById sets Loading state before fetching`() = runTest {
         // Given
         val tripId = 1
-        val states = mutableListOf<TripDetailsUiState>()
         coEvery { getTripByIdUseCase.invoke(tripId) } returns Result.success(fakeTrip)
 
-        val job = launch(UnconfinedTestDispatcher()) {
-            viewModel.uiState.toList(states)
+        viewModel.uiState.test {
+            // Then (Loading is confirmed before fetch)
+            assertEquals(TripDetailsUiState.Loading, awaitItem())
+
+            // When
+            viewModel.getTripById(tripId)
+
+            assertEquals(TripDetailsUiState.Success(fakeTrip), awaitItem())
+            cancelAndIgnoreRemainingEvents()
         }
-
-        // When
-        viewModel.getTripById(tripId)
-
-        // Then
-        assertTrue(states.contains(TripDetailsUiState.Loading))
-
-        job.cancel()
     }
-
-    private fun createViewModel() = TripDetailsViewModel(
-        getTripByIdUseCase = getTripByIdUseCase,
-        dispatcher = dispatcherRule.testDispatcher
-    )
 }
