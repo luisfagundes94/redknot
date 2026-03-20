@@ -47,7 +47,7 @@ import com.luisfagundes.trip.domain.model.Trip
 import com.luisfagundes.trip.domain.model.TripStatus
 import com.luisfagundes.trip.presentation.mapper.toStringResId
 import com.luisfagundes.trip.presentation.provider.TripListPreviewParameterProvider
-import com.luisfagundes.trip.presentation.state.TripListUiState
+import com.luisfagundes.trip.presentation.viewmodel.state.TripListUiState
 import com.luisfagundes.trip.presentation.viewmodel.TripListViewModel
 import com.luisfagundes.trip.tools.extensions.formatTripPeriod
 

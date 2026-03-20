@@ -3,7 +3,7 @@ package com.luisfagundes.trip.presentation.provider
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import com.luisfagundes.trip.domain.model.Trip
 import com.luisfagundes.trip.domain.model.TripStatus
-import com.luisfagundes.trip.presentation.state.TripDetailsUiState
+import com.luisfagundes.trip.presentation.viewmodel.state.TripDetailsUiState
 import java.time.LocalDate
 import java.time.Month
 

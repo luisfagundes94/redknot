@@ -32,7 +32,7 @@ import com.luisfagundes.trip.presentation.components.details.TripDetailsHeader
 import com.luisfagundes.trip.presentation.components.details.TripDetailsTabRow
 import com.luisfagundes.trip.presentation.model.TripDetailsTabs
 import com.luisfagundes.trip.presentation.provider.TripDetailsPreviewParameterProvider
-import com.luisfagundes.trip.presentation.state.TripDetailsUiState
+import com.luisfagundes.trip.presentation.viewmodel.state.TripDetailsUiState
 import com.luisfagundes.trip.presentation.viewmodel.TripDetailsViewModel
 
 @Composable

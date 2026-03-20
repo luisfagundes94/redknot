@@ -3,7 +3,7 @@ package com.luisfagundes.trip.presentation.viewmodel
 import com.luisfagundes.core.testing.MainDispatcherRule
 import com.luisfagundes.trip.domain.usecase.GetTripByIdUseCase
 import com.luisfagundes.trip.presentation.fixtures.fakeTrip
-import com.luisfagundes.trip.presentation.state.TripDetailsUiState
+import com.luisfagundes.trip.presentation.viewmodel.state.TripDetailsUiState
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi

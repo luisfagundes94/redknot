@@ -1,4 +1,4 @@
-package com.luisfagundes.trip.presentation.state
+package com.luisfagundes.trip.presentation.viewmodel.state
 
 import com.luisfagundes.trip.domain.model.ValidationError
 import java.time.LocalDate

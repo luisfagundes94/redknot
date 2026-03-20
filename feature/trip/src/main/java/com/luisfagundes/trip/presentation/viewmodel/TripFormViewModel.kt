@@ -11,8 +11,8 @@ import com.luisfagundes.common.domain.usecase.GetUnsplashImageUseCase
 import com.luisfagundes.trip.domain.usecase.ValidateDestinationUseCase
 import com.luisfagundes.trip.domain.usecase.ValidateDateUseCase
 import com.luisfagundes.trip.domain.usecase.ValidateTitleUseCase
-import com.luisfagundes.trip.presentation.effect.TripFormUiEffect
-import com.luisfagundes.trip.presentation.state.TripFormUiState
+import com.luisfagundes.trip.presentation.viewmodel.action.TripFormUiEffect
+import com.luisfagundes.trip.presentation.viewmodel.state.TripFormUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.channels.Channel

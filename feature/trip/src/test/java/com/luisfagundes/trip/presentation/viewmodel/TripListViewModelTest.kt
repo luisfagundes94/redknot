@@ -5,7 +5,7 @@ import com.luisfagundes.trip.domain.model.TripStatus
 import com.luisfagundes.trip.domain.usecase.GetTripListUseCase
 import com.luisfagundes.trip.presentation.fixtures.fakePastTrip
 import com.luisfagundes.trip.presentation.fixtures.fakeUpcomingTrip
-import com.luisfagundes.trip.presentation.state.TripListUiState
+import com.luisfagundes.trip.presentation.viewmodel.state.TripListUiState
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi

@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.luisfagundes.core.di.IoDispatcher
 import com.luisfagundes.trip.domain.usecase.GetTripListUseCase
-import com.luisfagundes.trip.presentation.state.TripListUiState
+import com.luisfagundes.trip.presentation.viewmodel.state.TripListUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
