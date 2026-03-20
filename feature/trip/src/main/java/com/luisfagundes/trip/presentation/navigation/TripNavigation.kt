@@ -18,7 +18,7 @@ data object TripCreationRoute : NavKey
 data class TripDetailsRoute(val tripId: Int) : NavKey
 
 fun EntryProviderScope<NavKey>.tripSection(
-    onTripCreationClick: () -> Unit,
+    onCreateTripClick: () -> Unit,
     onTripClick: (tripId: Int) -> Unit,
     onNewItineraryItemClick: () -> Unit,
     onBackClick: () -> Unit
@@ -27,7 +27,7 @@ fun EntryProviderScope<NavKey>.tripSection(
         TripListScreen(
             onAction = { action ->
                 when (action) {
-                    is TripListUiAction.NavigateToTripForm -> onTripCreationClick()
+                    is TripListUiAction.NavigateToTripForm -> onCreateTripClick()
                     is TripListUiAction.NavigateToTripDetails -> onTripClick(action.id)
                 }
             }

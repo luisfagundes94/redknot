@@ -16,7 +16,7 @@ fun AppNavDisplay(
 ) {
     val entryProvider = entryProvider {
         tripSection(
-            onTripCreationClick = { navigator.navigate(TripCreationRoute) },
+            onCreateTripClick = { navigator.navigate(TripCreationRoute) },
             onTripClick = { tripId -> navigator.navigate(TripDetailsRoute(tripId)) },
             onNewItineraryItemClick = {},
             onBackClick = { navigator.goBack() }
