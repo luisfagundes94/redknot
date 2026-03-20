@@ -39,10 +39,10 @@ internal class TripListViewModel @Inject constructor(
     }
 
     fun onTripClick(id: Int) {
-        sendAction(TripListUiAction.NavigateToTripDetails(id = id))
+        sendAction { TripListUiAction.NavigateToTripDetails(id = id) }
     }
 
     fun onCreateTripClick() {
-        sendAction(TripListUiAction.NavigateToTripForm)
+        sendAction { TripListUiAction.NavigateToTripForm }
     }
 }
