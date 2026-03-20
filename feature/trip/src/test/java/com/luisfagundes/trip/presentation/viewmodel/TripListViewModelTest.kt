@@ -1,40 +1,41 @@
 package com.luisfagundes.trip.presentation.viewmodel
 
+import app.cash.turbine.test
 import com.luisfagundes.core.testing.MainDispatcherRule
 import com.luisfagundes.trip.domain.model.TripStatus
 import com.luisfagundes.trip.domain.usecase.GetTripListUseCase
 import com.luisfagundes.trip.presentation.fixtures.fakePastTrip
 import com.luisfagundes.trip.presentation.fixtures.fakeUpcomingTrip
+import com.luisfagundes.trip.presentation.viewmodel.action.TripListUiAction
 import com.luisfagundes.trip.presentation.viewmodel.state.TripListUiState
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
-import org.junit.Rule
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.RegisterExtension
 
 @OptIn(ExperimentalCoroutinesApi::class)
 internal class TripListViewModelTest {
-
-    @get:Rule
-    val dispatcherRule = MainDispatcherRule(UnconfinedTestDispatcher())
+    @RegisterExtension
+    val dispatcher = MainDispatcherRule(UnconfinedTestDispatcher())
 
     private val getTripListUseCase: GetTripListUseCase = mockk()
 
-    private lateinit var viewModel: TripListViewModel
+    private val viewModel = TripListViewModel(
+        getTripListUseCase = getTripListUseCase,
+        dispatcher = dispatcher.testDispatcher
+    )
 
     @Test
-    fun `initial state is Loading`() {
-        // Given & When
-        viewModel = createViewModel()
-
+    fun `initial state is Loading`() = runTest {
         // Then
-        val currentState = viewModel.uiState.value
-        val expectedState = TripListUiState.Loading
-
-        assertEquals(currentState, expectedState)
+        viewModel.uiState.test {
+            assertEquals(TripListUiState.Loading, awaitItem())
+            cancelAndIgnoreRemainingEvents()
+        }
     }
 
     @Test
@@ -46,16 +47,16 @@ internal class TripListViewModelTest {
         )
         coEvery { getTripListUseCase.invoke() } returns Result.success(tripsByStatus)
 
-        viewModel = createViewModel()
+        viewModel.uiState.test {
+            awaitItem() // Consume initial loading
 
-        // When
-        viewModel.getTripList()
+            // When
+            viewModel.getTripList()
 
-        // Then
-        val currentState = viewModel.uiState.value
-        val expectedState = TripListUiState.Success(tripsByStatus)
-
-        assertEquals(currentState, expectedState)
+            // Then
+            assertEquals(TripListUiState.Success(tripsByStatus), awaitItem())
+            cancelAndIgnoreRemainingEvents()
+        }
     }
 
     @Test
@@ -63,16 +64,16 @@ internal class TripListViewModelTest {
         // Given
         coEvery { getTripListUseCase.invoke() } returns Result.success(emptyMap())
 
-        viewModel = createViewModel()
+        viewModel.uiState.test {
+            awaitItem() // Consume initial loading
 
-        // When
-        viewModel.getTripList()
+            // When
+            viewModel.getTripList()
 
-        // Then
-        val currentState = viewModel.uiState.value
-        val expectedState = TripListUiState.Empty
-
-        assertEquals(currentState, expectedState)
+            // Then
+            assertEquals(TripListUiState.Empty, awaitItem())
+            cancelAndIgnoreRemainingEvents()
+        }
     }
 
     @Test
@@ -81,20 +82,40 @@ internal class TripListViewModelTest {
         val exception = Exception("Network error")
         coEvery { getTripListUseCase.invoke() } returns Result.failure(exception)
 
-        viewModel = createViewModel()
+        viewModel.uiState.test {
+            awaitItem() // Consume initial loading
 
-        // When
-        viewModel.getTripList()
+            // When
+            viewModel.getTripList()
 
-        // Then
-        val currentState = viewModel.uiState.value
-        val expectedState = TripListUiState.Error
-
-        assertEquals(currentState, expectedState)
+            // Then
+            assertEquals(TripListUiState.Error, awaitItem())
+            cancelAndIgnoreRemainingEvents()
+        }
     }
 
-    private fun createViewModel() = TripListViewModel(
-        getTripListUseCase = getTripListUseCase,
-        dispatcher = dispatcherRule.testDispatcher
-    )
+    @Test
+    fun `onTripClick should send NavigateToTripForm action`() = runTest {
+        // Given
+        val id = 123
+
+        viewModel.uiAction.test {
+            // When
+            viewModel.onTripClick(id = id)
+
+            // Then
+            assertEquals(TripListUiAction.NavigateToTripDetails(id), awaitItem())
+        }
+    }
+
+    @Test
+    fun `onCreateTripClick should send NavigateToTripForm action`() = runTest {
+        viewModel.uiAction.test {
+            // When
+            viewModel.onCreateTripClick()
+
+            // Then
+            assertEquals(TripListUiAction.NavigateToTripForm, awaitItem())
+        }
+    }
 }
