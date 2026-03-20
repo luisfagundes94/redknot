@@ -49,6 +49,9 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
 
+    // Lifecycle
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+
     // Testing
     implementation(libs.kotlinx.coroutines.test)
     implementation(libs.junit)
