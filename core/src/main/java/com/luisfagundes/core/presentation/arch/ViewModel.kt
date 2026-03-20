@@ -35,9 +35,9 @@ abstract class ViewModel<State : UiState, Action : UiAction> : ViewModel() {
         }
     }
 
-    protected fun sendAction(action: Action) = viewModelScope.launch {
+    protected fun sendAction(action: () -> Action) = viewModelScope.launch {
         runCatching {
-            _uiAction.send(action)
+            _uiAction.send(action())
         }.onFailure { throwable ->
             Log.w("Failed to send action: ${throwable.message}", throwable)
         }
