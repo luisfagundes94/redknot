@@ -9,9 +9,7 @@ plugins {
 
 android {
     namespace = "com.luisfagundes.core"
-    compileSdk {
-        version = release(36)
-    }
+    compileSdk = 36
 
     defaultConfig {
         minSdk = 24
@@ -53,8 +51,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
 
     // Testing
-    implementation(libs.kotlinx.coroutines.test)
-    implementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
+    compileOnly(libs.kotlinx.coroutines.test)
+    compileOnly(libs.junit5.jupiter.api)
+    compileOnly(libs.junit5.jupiter.engine)
 }
