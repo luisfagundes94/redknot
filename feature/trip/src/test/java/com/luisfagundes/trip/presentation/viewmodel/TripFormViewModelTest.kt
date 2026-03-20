@@ -9,7 +9,7 @@ import com.luisfagundes.common.domain.usecase.GetUnsplashImageUseCase
 import com.luisfagundes.trip.domain.usecase.ValidateDateUseCase
 import com.luisfagundes.trip.domain.usecase.ValidateDestinationUseCase
 import com.luisfagundes.trip.domain.usecase.ValidateTitleUseCase
-import com.luisfagundes.trip.presentation.viewmodel.action.TripFormUiEffect
+import com.luisfagundes.trip.presentation.viewmodel.action.TripFormUiAction
 import com.luisfagundes.trip.presentation.viewmodel.state.TripFormUiState
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -213,7 +213,7 @@ internal class TripFormViewModelTest {
         // Then
         val effect = viewModel.uiEffect.first()
 
-        assertEquals(TripFormUiEffect.NavigateBack, effect)
+        assertEquals(TripFormUiAction.NavigateBack, effect)
         assertFalse(viewModel.uiState.value.isLoading)
     }
 
@@ -231,7 +231,7 @@ internal class TripFormViewModelTest {
         // Then
         val effect = viewModel.uiEffect.first()
 
-        assertTrue(effect is TripFormUiEffect.ShowErrorToast)
+        assertTrue(effect is TripFormUiAction.ShowErrorToast)
         assertFalse(viewModel.uiState.value.isLoading)
     }
 
@@ -248,7 +248,7 @@ internal class TripFormViewModelTest {
         coVerify { createTripUseCase(match { it.imageUrl.isEmpty() }) }
 
         val effect = viewModel.uiEffect.first()
-        assertEquals(TripFormUiEffect.NavigateBack, effect)
+        assertEquals(TripFormUiAction.NavigateBack, effect)
     }
 
     @Test
