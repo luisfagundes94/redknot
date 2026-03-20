@@ -1,4 +1,4 @@
-package com.luisfagundes.core.arch
+package com.luisfagundes.core.presentation.arch
 
 import android.util.Log
 import androidx.lifecycle.ViewModel

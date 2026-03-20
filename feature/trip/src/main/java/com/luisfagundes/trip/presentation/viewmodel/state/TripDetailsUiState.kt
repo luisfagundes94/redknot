@@ -1,6 +1,6 @@
 package com.luisfagundes.trip.presentation.viewmodel.state
 
-import com.luisfagundes.core.arch.UiState
+import com.luisfagundes.core.presentation.arch.UiState
 import com.luisfagundes.trip.domain.model.Trip
 
 internal sealed class TripDetailsUiState : UiState {

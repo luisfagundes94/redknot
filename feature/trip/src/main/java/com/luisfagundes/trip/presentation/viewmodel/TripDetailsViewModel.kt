@@ -1,7 +1,7 @@
 package com.luisfagundes.trip.presentation.viewmodel
 
 import androidx.lifecycle.viewModelScope
-import com.luisfagundes.core.arch.ViewModel
+import com.luisfagundes.core.presentation.arch.ViewModel
 import com.luisfagundes.core.di.IoDispatcher
 import com.luisfagundes.trip.domain.usecase.GetTripByIdUseCase
 import com.luisfagundes.trip.presentation.viewmodel.action.TripDetailsUiAction

@@ -50,6 +50,9 @@ dependencies {
     // Lifecycle
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
 
+    // Compose
+    implementation(libs.androidx.compose.foundation)
+
     // Testing
     compileOnly(libs.kotlinx.coroutines.test)
     compileOnly(libs.junit5.jupiter.api)
