@@ -10,15 +10,18 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-abstract class ViewModel<State : UiState, Action : UiAction> : ViewModel() {
+abstract class ViewModel<State : UiState, Event: UiEvent, Action : UiAction> : ViewModel() {
     private val initialState: State by lazy { initialState() }
 
     protected val state = MutableStateFlow(initialState)
     val uiState = state.asStateFlow()
 
-    private val _uiAction = Channel<Action>()
-    val uiAction = _uiAction.receiveAsFlow()
+    private val action = Channel<Action>()
+    val uiAction = action.receiveAsFlow()
+
     abstract fun initialState(): State
+
+    abstract fun dispatchEvent(event: Event)
 
     protected fun getCurrentState(): State = uiState.value
 
@@ -37,7 +40,7 @@ abstract class ViewModel<State : UiState, Action : UiAction> : ViewModel() {
 
     protected fun sendAction(action: () -> Action) = viewModelScope.launch {
         runCatching {
-            _uiAction.send(action())
+            this@ViewModel.action.send(action())
         }.onFailure { throwable ->
             Log.w("Failed to send action: ${throwable.message}", throwable)
         }
