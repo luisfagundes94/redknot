@@ -25,7 +25,8 @@ import com.luisfagundes.designsystem.components.RedknotTopBar
 import com.luisfagundes.designsystem.theme.RedknotPreview
 import com.luisfagundes.designsystem.theme.RedknotThemePreview
 import com.luisfagundes.designsystem.theme.spacing
-import com.luisfagundes.itinerary.presentation.ItineraryScreen
+import com.luisfagundes.itinerary.presentation.screen.ItineraryScreen
+import com.luisfagundes.itinerary.presentation.viewmodel.action.ItineraryUiAction
 import com.luisfagundes.trip.R
 import com.luisfagundes.trip.domain.model.Trip
 import com.luisfagundes.trip.presentation.components.details.TripDetailsHeader
@@ -76,7 +77,11 @@ private fun TripDetailsContent(
             itineraryContent = {
                 ItineraryScreen(
                     tripId = uiState.trip.id,
-                    onNewItineraryItemClick = onNewItineraryItemClick
+                    onAction = { action ->
+                        when (action) {
+                            is ItineraryUiAction.NavigateToItineraryItemForm -> Unit
+                        }
+                    }
                 )
             },
             onBackClick = onBackClick,
