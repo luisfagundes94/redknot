@@ -4,6 +4,7 @@ import app.cash.turbine.test
 import com.luisfagundes.core.testing.MainDispatcherRule
 import com.luisfagundes.trip.domain.usecase.GetTripByIdUseCase
 import com.luisfagundes.trip.presentation.fixtures.fakeTrip
+import com.luisfagundes.trip.presentation.viewmodel.event.TripDetailsUiEvent
 import com.luisfagundes.trip.presentation.viewmodel.state.TripDetailsUiState
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -38,13 +39,15 @@ internal class TripDetailsViewModelTest {
     fun `getTripById with valid id returns success state`() = runTest {
         // Given
         val tripId = 1
+        val event = TripDetailsUiEvent.OnGetTripById(tripId)
+
         coEvery { getTripByIdUseCase.invoke(tripId) } returns Result.success(fakeTrip)
 
         viewModel.uiState.test {
             awaitItem() // consume initial Loading
 
             // When
-            viewModel.getTripById(tripId)
+            viewModel.dispatchEvent(event)
 
             // Then
             assertEquals(TripDetailsUiState.Success(fakeTrip), awaitItem())
@@ -56,14 +59,16 @@ internal class TripDetailsViewModelTest {
     fun `getTripById with failure returns error state`() = runTest {
         // Given
         val tripId = 1
+        val event = TripDetailsUiEvent.OnGetTripById(tripId)
         val errorMessage = "Trip not found"
+
         coEvery { getTripByIdUseCase.invoke(tripId) } returns Result.failure(Exception(errorMessage))
 
         viewModel.uiState.test {
             awaitItem() // consume initial Loading
 
             // When
-            viewModel.getTripById(tripId)
+            viewModel.dispatchEvent(event)
 
             // Then
             assertEquals(TripDetailsUiState.Error(errorMessage), awaitItem())
@@ -75,6 +80,8 @@ internal class TripDetailsViewModelTest {
     fun `getTripById sets Loading state before fetching`() = runTest {
         // Given
         val tripId = 1
+        val event = TripDetailsUiEvent.OnGetTripById(tripId)
+
         coEvery { getTripByIdUseCase.invoke(tripId) } returns Result.success(fakeTrip)
 
         viewModel.uiState.test {
@@ -82,7 +89,7 @@ internal class TripDetailsViewModelTest {
             assertEquals(TripDetailsUiState.Loading, awaitItem())
 
             // When
-            viewModel.getTripById(tripId)
+            viewModel.dispatchEvent(event)
 
             assertEquals(TripDetailsUiState.Success(fakeTrip), awaitItem())
             cancelAndIgnoreRemainingEvents()

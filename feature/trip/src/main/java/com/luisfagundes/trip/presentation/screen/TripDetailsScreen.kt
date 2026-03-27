@@ -34,6 +34,7 @@ import com.luisfagundes.trip.presentation.model.TripDetailsTabs
 import com.luisfagundes.trip.presentation.provider.TripDetailsPreviewParameterProvider
 import com.luisfagundes.trip.presentation.viewmodel.state.TripDetailsUiState
 import com.luisfagundes.trip.presentation.viewmodel.TripDetailsViewModel
+import com.luisfagundes.trip.presentation.viewmodel.event.TripDetailsUiEvent
 
 @Composable
 internal fun TripDetailsScreen(
@@ -45,7 +46,7 @@ internal fun TripDetailsScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
-        viewModel.getTripById(id = tripId)
+        viewModel.dispatchEvent(TripDetailsUiEvent.OnGetTripById(tripId))
     }
 
     TripDetailsContent(

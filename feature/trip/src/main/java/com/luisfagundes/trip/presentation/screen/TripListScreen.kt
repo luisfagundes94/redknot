@@ -51,6 +51,7 @@ import com.luisfagundes.trip.presentation.provider.TripListPreviewParameterProvi
 import com.luisfagundes.trip.presentation.viewmodel.state.TripListUiState
 import com.luisfagundes.trip.presentation.viewmodel.TripListViewModel
 import com.luisfagundes.trip.presentation.viewmodel.action.TripListUiAction
+import com.luisfagundes.trip.presentation.viewmodel.event.TripListUiEvent
 import com.luisfagundes.trip.tools.extensions.formatTripPeriod
 
 @Composable
@@ -61,7 +62,7 @@ internal fun TripListScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
-        viewModel.getTripList()
+        viewModel.dispatchEvent(TripListUiEvent.OnGetTripList)
     }
 
     CollectUiActions(
@@ -71,18 +72,14 @@ internal fun TripListScreen(
 
     TripListContent(
         uiState = uiState,
-        onTripClick = viewModel::onTripClick,
-        onCreateTripClick = viewModel::onCreateTripClick,
-        onTryAgainClick = viewModel::getTripList
+        onEvent = viewModel::dispatchEvent
     )
 }
 
 @Composable
 private fun TripListContent(
     uiState: TripListUiState,
-    onTryAgainClick: () -> Unit,
-    onTripClick: (id: Int) -> Unit,
-    onCreateTripClick: () -> Unit
+    onEvent: (TripListUiEvent) -> Unit
 ) {
     when (uiState) {
         is TripListUiState.Loading -> RedknotLoadingTemplate(
@@ -94,14 +91,14 @@ private fun TripListContent(
             title = stringResource(R.string.no_trips_found_description),
             primaryButtonLabel = stringResource(R.string.create_new_trip),
             primaryButtonIcon = Icons.Default.Add,
-            onPrimaryButtonClick = onCreateTripClick,
+            onPrimaryButtonClick = { onEvent(TripListUiEvent.OnCreateTripClick) },
             modifier = Modifier
                 .padding(MaterialTheme.spacing.default)
                 .fillMaxSize()
         )
 
         is TripListUiState.Error -> TripListErrorContent(
-            onTryAgainClick = onTryAgainClick,
+            onEvent = onEvent,
             modifier = Modifier
                 .padding(MaterialTheme.spacing.default)
                 .fillMaxSize()
@@ -109,8 +106,7 @@ private fun TripListContent(
 
         is TripListUiState.Success -> TripListSuccessContent(
             tripsByStatus = uiState.tripsByStatus,
-            onTripClick = onTripClick,
-            onCreateTripClick = onCreateTripClick,
+            onEvent = onEvent,
             modifier = Modifier.fillMaxWidth()
         )
     }
@@ -118,7 +114,7 @@ private fun TripListContent(
 
 @Composable
 private fun TripListErrorContent(
-    onTryAgainClick: () -> Unit,
+    onEvent: (TripListUiEvent) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -134,7 +130,7 @@ private fun TripListErrorContent(
             modifier = Modifier.height(MaterialTheme.spacing.default)
         )
         Button(
-            onClick = onTryAgainClick
+            onClick = { onEvent(TripListUiEvent.OnTryAgainClick) }
         ) {
             Text(
                 text = stringResource(R.string.try_again)
@@ -146,15 +142,14 @@ private fun TripListErrorContent(
 @Composable
 private fun TripListSuccessContent(
     tripsByStatus: Map<TripStatus, List<Trip>>,
-    onTripClick: (id: Int) -> Unit,
-    onCreateTripClick: () -> Unit,
+    onEvent: (TripListUiEvent) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Scaffold(
         modifier = modifier,
         floatingActionButton = {
             Button(
-                onClick = onCreateTripClick
+                onClick = { onEvent(TripListUiEvent.OnCreateTripClick) }
             ) {
                 Icon(
                     painter = rememberVectorPainter(Icons.Default.Add),
@@ -175,7 +170,7 @@ private fun TripListSuccessContent(
                         tripSection(
                             titleResId = state.toStringResId(),
                             trips = trips,
-                            onTripClick = onTripClick
+                            onTripClick = { id -> onEvent(TripListUiEvent.OnTripClick(id = id)) }
                         )
                     }
                 }
@@ -257,8 +252,7 @@ private fun TripListSuccessContentPreview(
     RedknotThemePreview {
         TripListSuccessContent(
             tripsByStatus = uiState.tripsByStatus,
-            onTripClick = {},
-            onCreateTripClick = {},
+            onEvent = {},
             modifier = Modifier.fillMaxWidth()
         )
     }

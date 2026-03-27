@@ -7,6 +7,7 @@ import com.luisfagundes.trip.domain.usecase.GetTripListUseCase
 import com.luisfagundes.trip.presentation.fixtures.fakePastTrip
 import com.luisfagundes.trip.presentation.fixtures.fakeUpcomingTrip
 import com.luisfagundes.trip.presentation.viewmodel.action.TripListUiAction
+import com.luisfagundes.trip.presentation.viewmodel.event.TripListUiEvent
 import com.luisfagundes.trip.presentation.viewmodel.state.TripListUiState
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -45,13 +46,15 @@ internal class TripListViewModelTest {
             TripStatus.UPCOMING to listOf(fakeUpcomingTrip),
             TripStatus.PAST to listOf(fakePastTrip)
         )
+        val event = TripListUiEvent.OnGetTripList
+
         coEvery { getTripListUseCase.invoke() } returns Result.success(tripsByStatus)
 
         viewModel.uiState.test {
             awaitItem() // Consume initial loading
 
             // When
-            viewModel.getTripList()
+            viewModel.dispatchEvent(event)
 
             // Then
             assertEquals(TripListUiState.Success(tripsByStatus), awaitItem())
@@ -62,13 +65,14 @@ internal class TripListViewModelTest {
     @Test
     fun `getTripList with empty list returns empty state`() = runTest {
         // Given
+        val event = TripListUiEvent.OnGetTripList
         coEvery { getTripListUseCase.invoke() } returns Result.success(emptyMap())
 
         viewModel.uiState.test {
             awaitItem() // Consume initial loading
 
             // When
-            viewModel.getTripList()
+            viewModel.dispatchEvent(event)
 
             // Then
             assertEquals(TripListUiState.Empty, awaitItem())
@@ -79,6 +83,8 @@ internal class TripListViewModelTest {
     @Test
     fun `getTripList with failure returns Error state`() = runTest {
         // Given
+        val event = TripListUiEvent.OnGetTripList
+
         val exception = Exception("Network error")
         coEvery { getTripListUseCase.invoke() } returns Result.failure(exception)
 
@@ -86,7 +92,7 @@ internal class TripListViewModelTest {
             awaitItem() // Consume initial loading
 
             // When
-            viewModel.getTripList()
+            viewModel.dispatchEvent(event)
 
             // Then
             assertEquals(TripListUiState.Error, awaitItem())
@@ -95,13 +101,14 @@ internal class TripListViewModelTest {
     }
 
     @Test
-    fun `onTripClick should send NavigateToTripForm action`() = runTest {
+    fun `onTripClick event should send NavigateToTripForm action`() = runTest {
         // Given
         val id = 123
+        val event = TripListUiEvent.OnTripClick(id)
 
         viewModel.uiAction.test {
             // When
-            viewModel.onTripClick(id = id)
+            viewModel.dispatchEvent(event)
 
             // Then
             assertEquals(TripListUiAction.NavigateToTripDetails(id), awaitItem())
@@ -110,9 +117,12 @@ internal class TripListViewModelTest {
 
     @Test
     fun `onCreateTripClick should send NavigateToTripForm action`() = runTest {
+        // Given
+        val event = TripListUiEvent.OnCreateTripClick
+
         viewModel.uiAction.test {
             // When
-            viewModel.onCreateTripClick()
+            viewModel.dispatchEvent(event)
 
             // Then
             assertEquals(TripListUiAction.NavigateToTripForm, awaitItem())
