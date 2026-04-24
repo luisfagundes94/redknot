@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.luisfagundes.core.presentation.arch.action.UiAction
-import com.luisfagundes.core.presentation.arch.event.UiEvent
 import com.luisfagundes.core.presentation.arch.state.UiState
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
