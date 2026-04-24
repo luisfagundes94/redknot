@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-abstract class ViewModel<State : UiState, Event: UiEvent, Action : UiAction> : ViewModel() {
+abstract class ViewModel<State : UiState, Action : UiAction> : ViewModel() {
     private val initialState: State by lazy { initialState() }
 
     protected val state = MutableStateFlow(initialState)
@@ -23,8 +23,6 @@ abstract class ViewModel<State : UiState, Event: UiEvent, Action : UiAction> : V
     val uiAction = action.receiveAsFlow()
 
     abstract fun initialState(): State
-
-    abstract fun dispatchEvent(event: Event)
 
     protected fun getCurrentState(): State = uiState.value
 

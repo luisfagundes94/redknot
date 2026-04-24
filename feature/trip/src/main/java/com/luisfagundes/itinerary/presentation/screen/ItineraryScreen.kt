@@ -30,7 +30,7 @@ internal fun ItineraryScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
-        viewModel.dispatchEvent(ItineraryUiEvent.OnGetItineraryList(tripId = tripId))
+        viewModel.getItineraryList(tripId)
     }
 
     CollectUiActions(
@@ -40,7 +40,7 @@ internal fun ItineraryScreen(
 
     ItineraryContent(
         uiState = uiState,
-        onEvent = viewModel::dispatchEvent,
+        onNewItineraryItemClick = viewModel::onNewItineraryItemClick,
         modifier = Modifier.fillMaxSize()
     )
 }
@@ -48,7 +48,7 @@ internal fun ItineraryScreen(
 @Composable
 private fun ItineraryContent(
     uiState: ItineraryUiState,
-    onEvent: (ItineraryUiEvent) -> Unit,
+    onNewItineraryItemClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     when (uiState) {
@@ -58,7 +58,7 @@ private fun ItineraryContent(
         ItineraryUiState.Empty -> RedknotEmptyTemplate(
             title = stringResource(R.string.empty_itinerary_message),
             primaryButtonLabel = stringResource(R.string.add_itinerary_item),
-            onPrimaryButtonClick = { onEvent(ItineraryUiEvent.OnNewItineraryItemClick) },
+            onPrimaryButtonClick = onNewItineraryItemClick,
             modifier = Modifier
                 .padding(MaterialTheme.spacing.default)
                 .fillMaxSize()

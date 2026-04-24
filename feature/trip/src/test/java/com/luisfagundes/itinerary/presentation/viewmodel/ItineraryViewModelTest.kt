@@ -53,7 +53,7 @@ internal class ItineraryViewModelTest {
             awaitItem() // consume Loading
 
             // When
-            viewModel.dispatchEvent(ItineraryUiEvent.OnGetItineraryList(tripId))
+            viewModel.getItineraryList(tripId)
 
             // Then
             assertEquals(ItineraryUiState.Content(items), awaitItem())
@@ -72,7 +72,7 @@ internal class ItineraryViewModelTest {
             awaitItem() // consume Loading
 
             // When
-            viewModel.dispatchEvent(ItineraryUiEvent.OnGetItineraryList(tripId))
+            viewModel.getItineraryList(tripId)
 
             // Then
             assertEquals(ItineraryUiState.Empty, awaitItem())
@@ -92,7 +92,7 @@ internal class ItineraryViewModelTest {
             awaitItem() // consume Loading
 
             // When
-            viewModel.dispatchEvent(ItineraryUiEvent.OnGetItineraryList(tripId))
+            viewModel.getItineraryList(tripId)
 
             // Then
             expectNoEvents()
@@ -103,7 +103,7 @@ internal class ItineraryViewModelTest {
     fun `OnNewItineraryItemClick sends NavigateToItineraryItemForm action`() = runTest {
         viewModel.uiAction.test {
             // When
-            viewModel.dispatchEvent(ItineraryUiEvent.OnNewItineraryItemClick)
+            viewModel.onNewItineraryItemClick()
 
             // Then
             assertEquals(ItineraryUiAction.NavigateToItineraryItemForm, awaitItem())

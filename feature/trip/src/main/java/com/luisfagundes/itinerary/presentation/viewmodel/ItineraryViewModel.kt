@@ -5,7 +5,6 @@ import com.luisfagundes.core.di.IoDispatcher
 import com.luisfagundes.core.presentation.arch.viewmodel.ViewModel
 import com.luisfagundes.itinerary.domain.usecase.GetItineraryItemListUseCase
 import com.luisfagundes.itinerary.presentation.viewmodel.action.ItineraryUiAction
-import com.luisfagundes.itinerary.presentation.viewmodel.event.ItineraryUiEvent
 import com.luisfagundes.itinerary.presentation.viewmodel.state.ItineraryUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -16,16 +15,10 @@ import javax.inject.Inject
 internal class ItineraryViewModel @Inject constructor(
     private val getItineraryItemListUseCase: GetItineraryItemListUseCase,
     @param:IoDispatcher private val dispatcher: CoroutineDispatcher
-): ViewModel<ItineraryUiState, ItineraryUiEvent, ItineraryUiAction>() {
+): ViewModel<ItineraryUiState, ItineraryUiAction>() {
     override fun initialState() = ItineraryUiState.Loading
 
-    override fun dispatchEvent(event: ItineraryUiEvent) {
-        when (event) {
-            is ItineraryUiEvent.OnNewItineraryItemClick -> onNewItineraryItemClick()
-            is ItineraryUiEvent.OnGetItineraryList -> getItineraryList(event.tripId)
-        }
-    }
-    private fun getItineraryList(tripId: Int) = viewModelScope.launch(dispatcher) {
+    fun getItineraryList(tripId: Int) = viewModelScope.launch(dispatcher) {
         getItineraryItemListUseCase(tripId).onSuccess { itineraryItemList ->
             setState {
                 if (itineraryItemList.isEmpty()) {
@@ -37,7 +30,7 @@ internal class ItineraryViewModel @Inject constructor(
         }
     }
 
-    private fun onNewItineraryItemClick() {
+    fun onNewItineraryItemClick() {
         sendAction { ItineraryUiAction.NavigateToItineraryItemForm }
     }
 }
