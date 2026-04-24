@@ -47,7 +47,7 @@ internal fun TripDetailsScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
-        viewModel.dispatchEvent(TripDetailsUiEvent.OnGetTripById(tripId))
+        viewModel.getTripById(id = tripId)
     }
 
     TripDetailsContent(

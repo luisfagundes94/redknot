@@ -39,7 +39,6 @@ internal class TripDetailsViewModelTest {
     fun `getTripById with valid id returns success state`() = runTest {
         // Given
         val tripId = 1
-        val event = TripDetailsUiEvent.OnGetTripById(tripId)
 
         coEvery { getTripByIdUseCase.invoke(tripId) } returns Result.success(fakeTrip)
 
@@ -47,7 +46,7 @@ internal class TripDetailsViewModelTest {
             awaitItem() // consume initial Loading
 
             // When
-            viewModel.dispatchEvent(event)
+            viewModel.getTripById(tripId)
 
             // Then
             assertEquals(TripDetailsUiState.Success(fakeTrip), awaitItem())
@@ -59,7 +58,6 @@ internal class TripDetailsViewModelTest {
     fun `getTripById with failure returns error state`() = runTest {
         // Given
         val tripId = 1
-        val event = TripDetailsUiEvent.OnGetTripById(tripId)
         val errorMessage = "Trip not found"
 
         coEvery { getTripByIdUseCase.invoke(tripId) } returns Result.failure(Exception(errorMessage))
@@ -68,7 +66,7 @@ internal class TripDetailsViewModelTest {
             awaitItem() // consume initial Loading
 
             // When
-            viewModel.dispatchEvent(event)
+            viewModel.getTripById(tripId)
 
             // Then
             assertEquals(TripDetailsUiState.Error(errorMessage), awaitItem())
@@ -80,7 +78,6 @@ internal class TripDetailsViewModelTest {
     fun `getTripById sets Loading state before fetching`() = runTest {
         // Given
         val tripId = 1
-        val event = TripDetailsUiEvent.OnGetTripById(tripId)
 
         coEvery { getTripByIdUseCase.invoke(tripId) } returns Result.success(fakeTrip)
 
@@ -89,8 +86,9 @@ internal class TripDetailsViewModelTest {
             assertEquals(TripDetailsUiState.Loading, awaitItem())
 
             // When
-            viewModel.dispatchEvent(event)
+            viewModel.getTripById(tripId)
 
+            // Then
             assertEquals(TripDetailsUiState.Success(fakeTrip), awaitItem())
             cancelAndIgnoreRemainingEvents()
         }
