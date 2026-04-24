@@ -1,8 +1,11 @@
-package com.luisfagundes.core.presentation.arch
+package com.luisfagundes.core.presentation.arch.viewmodel
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.luisfagundes.core.presentation.arch.action.UiAction
+import com.luisfagundes.core.presentation.arch.event.UiEvent
+import com.luisfagundes.core.presentation.arch.state.UiState
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -26,15 +29,14 @@ abstract class ViewModel<State : UiState, Event: UiEvent, Action : UiAction> : V
     protected fun getCurrentState(): State = uiState.value
 
     protected fun setState(reducer: (State) -> State) {
-        state.value = reducer(state.value)
+        state.update(reducer)
     }
 
     protected inline fun <reified UiStateType : State> setStateOf(
         noinline reducer: (UiStateType) -> State
     ) {
-        val currentState = uiState.value
-        if (currentState is UiStateType) {
-            state.update { reducer(currentState) }
+        state.update { current ->
+            if (current is UiStateType) reducer(current) else current
         }
     }
 

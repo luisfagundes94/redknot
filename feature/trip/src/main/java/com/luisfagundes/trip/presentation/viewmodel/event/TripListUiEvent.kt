@@ -1,6 +1,6 @@
 package com.luisfagundes.trip.presentation.viewmodel.event
 
-import com.luisfagundes.core.presentation.arch.UiEvent
+import com.luisfagundes.core.presentation.arch.event.UiEvent
 
 internal sealed interface TripListUiEvent : UiEvent {
     data object OnGetTripList : TripListUiEvent

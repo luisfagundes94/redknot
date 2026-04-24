@@ -2,7 +2,7 @@ package com.luisfagundes.trip.presentation.viewmodel
 
 import androidx.lifecycle.viewModelScope
 import com.luisfagundes.core.di.IoDispatcher
-import com.luisfagundes.core.presentation.arch.StateViewModel
+import com.luisfagundes.core.presentation.arch.viewmodel.EventViewModel
 import com.luisfagundes.trip.domain.usecase.GetTripByIdUseCase
 import com.luisfagundes.trip.presentation.viewmodel.event.TripDetailsUiEvent
 import com.luisfagundes.trip.presentation.viewmodel.state.TripDetailsUiState
@@ -15,7 +15,7 @@ import javax.inject.Inject
 internal class TripDetailsViewModel @Inject constructor(
     private val getTripByIdUseCase: GetTripByIdUseCase,
     @param:IoDispatcher private val dispatcher: CoroutineDispatcher
-) : StateViewModel<TripDetailsUiState, TripDetailsUiEvent>() {
+) : EventViewModel<TripDetailsUiState, TripDetailsUiEvent>() {
     override fun initialState() = TripDetailsUiState.Loading
 
     override fun dispatchEvent(event: TripDetailsUiEvent) {

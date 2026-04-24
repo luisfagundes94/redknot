@@ -2,16 +2,13 @@ package com.luisfagundes.itinerary.presentation.viewmodel
 
 import androidx.lifecycle.viewModelScope
 import com.luisfagundes.core.di.IoDispatcher
-import com.luisfagundes.core.presentation.arch.ViewModel
+import com.luisfagundes.core.presentation.arch.viewmodel.ViewModel
 import com.luisfagundes.itinerary.domain.usecase.GetItineraryItemListUseCase
 import com.luisfagundes.itinerary.presentation.viewmodel.action.ItineraryUiAction
 import com.luisfagundes.itinerary.presentation.viewmodel.event.ItineraryUiEvent
 import com.luisfagundes.itinerary.presentation.viewmodel.state.ItineraryUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 

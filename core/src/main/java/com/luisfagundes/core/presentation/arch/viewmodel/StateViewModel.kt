@@ -1,11 +1,12 @@
-package com.luisfagundes.core.presentation.arch
+package com.luisfagundes.core.presentation.arch.viewmodel
 
 import androidx.lifecycle.ViewModel
+import com.luisfagundes.core.presentation.arch.state.UiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
-abstract class StateViewModel<State: UiState, Event: UiEvent> : ViewModel() {
+abstract class StateViewModel<State: UiState> : ViewModel() {
     private val initialState: State by lazy { initialState() }
 
     protected val state = MutableStateFlow(initialState)
@@ -13,20 +14,17 @@ abstract class StateViewModel<State: UiState, Event: UiEvent> : ViewModel() {
 
     abstract fun initialState(): State
 
-    abstract fun dispatchEvent(event: Event)
-
     protected fun getCurrentState(): State = uiState.value
 
     protected fun setState(reducer: (State) -> State) {
-        state.value = reducer(state.value)
+        state.update(reducer)
     }
 
     protected inline fun <reified UiStateType : State> setStateOf(
         noinline reducer: (UiStateType) -> State
     ) {
-        val currentState = uiState.value
-        if (currentState is UiStateType) {
-            state.update { reducer(currentState) }
+        state.update { current ->
+            if (current is UiStateType) reducer(current) else current
         }
     }
 }

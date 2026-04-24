@@ -1,6 +1,6 @@
 package com.luisfagundes.itinerary.presentation.viewmodel.event
 
-import com.luisfagundes.core.presentation.arch.UiEvent
+import com.luisfagundes.core.presentation.arch.event.UiEvent
 
 internal sealed interface ItineraryUiEvent : UiEvent {
     data object OnNewItineraryItemClick : ItineraryUiEvent
