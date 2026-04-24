@@ -6,8 +6,7 @@ import com.luisfagundes.trip.domain.model.TripStatus
 import com.luisfagundes.trip.domain.usecase.GetTripListUseCase
 import com.luisfagundes.trip.presentation.fixtures.fakePastTrip
 import com.luisfagundes.trip.presentation.fixtures.fakeUpcomingTrip
-import com.luisfagundes.trip.presentation.viewmodel.action.TripListUiAction
-import com.luisfagundes.trip.presentation.viewmodel.event.TripListUiEvent
+import com.luisfagundes.trip.presentation.viewmodel.effect.TripListUiEffect
 import com.luisfagundes.trip.presentation.viewmodel.state.TripListUiState
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -97,27 +96,27 @@ internal class TripListViewModelTest {
     }
 
     @Test
-    fun `onTripClick event should send NavigateToTripForm action`() = runTest {
+    fun `onTripClick event should send NavigateToTripForm effect`() = runTest {
         // Given
         val id = 123
 
-        viewModel.uiAction.test {
+        viewModel.uiEffect.test {
             // When
             viewModel.onTripClick(id)
 
             // Then
-            assertEquals(TripListUiAction.NavigateToTripDetails(id), awaitItem())
+            assertEquals(TripListUiEffect.NavigateToTripDetails(id), awaitItem())
         }
     }
 
     @Test
-    fun `onCreateTripClick should send NavigateToTripForm action`() = runTest {
-        viewModel.uiAction.test {
+    fun `onCreateTripClick should send NavigateToTripForm effect`() = runTest {
+        viewModel.uiEffect.test {
             // When
             viewModel.onCreateTripClick()
 
             // Then
-            assertEquals(TripListUiAction.NavigateToTripForm, awaitItem())
+            assertEquals(TripListUiEffect.NavigateToTripForm, awaitItem())
         }
     }
 }

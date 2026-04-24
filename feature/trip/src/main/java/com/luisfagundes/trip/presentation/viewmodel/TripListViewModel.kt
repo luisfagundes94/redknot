@@ -4,7 +4,7 @@ import androidx.lifecycle.viewModelScope
 import com.luisfagundes.core.di.IoDispatcher
 import com.luisfagundes.core.presentation.arch.viewmodel.ViewModel
 import com.luisfagundes.trip.domain.usecase.GetTripListUseCase
-import com.luisfagundes.trip.presentation.viewmodel.action.TripListUiAction
+import com.luisfagundes.trip.presentation.viewmodel.effect.TripListUiEffect
 import com.luisfagundes.trip.presentation.viewmodel.state.TripListUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -16,7 +16,7 @@ import javax.inject.Inject
 internal class TripListViewModel @Inject constructor(
     private val getTripListUseCase: GetTripListUseCase,
     @param:IoDispatcher private val dispatcher: CoroutineDispatcher = Dispatchers.IO
-) : ViewModel<TripListUiState, TripListUiAction>() {
+) : ViewModel<TripListUiState, TripListUiEffect>() {
     override fun initialState() = TripListUiState.Loading
 
     fun getTripList() = viewModelScope.launch(dispatcher) {
@@ -39,10 +39,10 @@ internal class TripListViewModel @Inject constructor(
     }
 
     fun onCreateTripClick() {
-        sendAction { TripListUiAction.NavigateToTripForm }
+        sendEffect { TripListUiEffect.NavigateToTripForm }
     }
 
     fun onTripClick(id: Int) {
-        sendAction { TripListUiAction.NavigateToTripDetails(id = id) }
+        sendEffect { TripListUiEffect.NavigateToTripDetails(id = id) }
     }
 }

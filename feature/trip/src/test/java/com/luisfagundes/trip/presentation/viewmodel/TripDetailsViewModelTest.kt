@@ -4,7 +4,6 @@ import app.cash.turbine.test
 import com.luisfagundes.core.testing.MainDispatcherRule
 import com.luisfagundes.trip.domain.usecase.GetTripByIdUseCase
 import com.luisfagundes.trip.presentation.fixtures.fakeTrip
-import com.luisfagundes.trip.presentation.viewmodel.event.TripDetailsUiEvent
 import com.luisfagundes.trip.presentation.viewmodel.state.TripDetailsUiState
 import io.mockk.coEvery
 import io.mockk.mockk

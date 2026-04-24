@@ -14,19 +14,19 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.withContext
 
 @Composable
-fun <T> CollectUiActions(
+fun <T> CollectUiEffects(
     flow: Flow<T>,
-    onAction: (T) -> Unit
+    onEffect: (T) -> Unit
 ) {
     val lifecycleOwner = LocalLifecycleOwner.current
-    val currentOnAction by rememberUpdatedState(onAction)
+    val currentOnEffect by rememberUpdatedState(onEffect)
 
     LaunchedEffect(lifecycleOwner.lifecycle, flow) {
         lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
             withContext(Dispatchers.Main.immediate) {
                 flow
-                    .catch { Log.w("Failed to handle action: ${it.message}", it) }
-                    .collect { currentOnAction(it) }
+                    .catch { Log.w("Failed to handle effect: ${it.message}", it) }
+                    .collect { currentOnEffect(it) }
 
             }
         }

@@ -3,7 +3,7 @@ package com.luisfagundes.core.presentation.arch.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.luisfagundes.core.presentation.arch.action.UiAction
+import com.luisfagundes.core.presentation.arch.effect.UiEffect
 import com.luisfagundes.core.presentation.arch.state.UiState
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -12,14 +12,14 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-abstract class ViewModel<State : UiState, Action : UiAction> : ViewModel() {
+abstract class ViewModel<State : UiState, Effect : UiEffect> : ViewModel() {
     private val initialState: State by lazy { initialState() }
 
     protected val state = MutableStateFlow(initialState)
     val uiState = state.asStateFlow()
 
-    private val action = Channel<Action>()
-    val uiAction = action.receiveAsFlow()
+    private val effect = Channel<Effect>()
+    val uiEffect = effect.receiveAsFlow()
 
     abstract fun initialState(): State
 
@@ -37,11 +37,11 @@ abstract class ViewModel<State : UiState, Action : UiAction> : ViewModel() {
         }
     }
 
-    protected fun sendAction(action: () -> Action) = viewModelScope.launch {
+    protected fun sendEffect(effect: () -> Effect) = viewModelScope.launch {
         runCatching {
-            this@ViewModel.action.send(action())
+            this@ViewModel.effect.send(effect())
         }.onFailure { throwable ->
-            Log.w("Failed to send action: ${throwable.message}", throwable)
+            Log.w("Failed to send effect: ${throwable.message}", throwable)
         }
     }
 }

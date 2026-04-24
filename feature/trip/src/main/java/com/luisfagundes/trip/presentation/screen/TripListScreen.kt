@@ -37,7 +37,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
-import com.luisfagundes.core.presentation.arch.compose.CollectUiActions
+import com.luisfagundes.core.presentation.arch.compose.CollectUiEffects
 import com.luisfagundes.designsystem.components.RedknotEmptyTemplate
 import com.luisfagundes.designsystem.components.RedknotLoadingTemplate
 import com.luisfagundes.designsystem.theme.RedknotPreview
@@ -49,13 +49,13 @@ import com.luisfagundes.trip.domain.model.TripStatus
 import com.luisfagundes.trip.presentation.mapper.toStringResId
 import com.luisfagundes.trip.presentation.provider.TripListPreviewParameterProvider
 import com.luisfagundes.trip.presentation.viewmodel.TripListViewModel
-import com.luisfagundes.trip.presentation.viewmodel.action.TripListUiAction
+import com.luisfagundes.trip.presentation.viewmodel.effect.TripListUiEffect
 import com.luisfagundes.trip.presentation.viewmodel.state.TripListUiState
 import com.luisfagundes.trip.tools.extensions.formatTripPeriod
 
 @Composable
 internal fun TripListScreen(
-    onAction: (TripListUiAction) -> Unit,
+    onEffect: (TripListUiEffect) -> Unit,
     viewModel: TripListViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -64,9 +64,9 @@ internal fun TripListScreen(
         viewModel.getTripList()
     }
 
-    CollectUiActions(
-        flow = viewModel.uiAction,
-        onAction = onAction
+    CollectUiEffects(
+        flow = viewModel.uiEffect,
+        onEffect = onEffect
     )
 
     TripListContent(

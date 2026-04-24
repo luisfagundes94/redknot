@@ -5,8 +5,7 @@ import com.luisfagundes.core.testing.MainDispatcherRule
 import com.luisfagundes.itinerary.domain.model.Activity
 import com.luisfagundes.itinerary.domain.model.ItineraryItem
 import com.luisfagundes.itinerary.domain.usecase.GetItineraryItemListUseCase
-import com.luisfagundes.itinerary.presentation.viewmodel.action.ItineraryUiAction
-import com.luisfagundes.itinerary.presentation.viewmodel.event.ItineraryUiEvent
+import com.luisfagundes.itinerary.presentation.viewmodel.effect.ItineraryUiEffect
 import com.luisfagundes.itinerary.presentation.viewmodel.state.ItineraryUiState
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -100,13 +99,13 @@ internal class ItineraryViewModelTest {
     }
 
     @Test
-    fun `OnNewItineraryItemClick sends NavigateToItineraryItemForm action`() = runTest {
-        viewModel.uiAction.test {
+    fun `OnNewItineraryItemClick sends NavigateToItineraryItemForm effect`() = runTest {
+        viewModel.uiEffect.test {
             // When
             viewModel.onNewItineraryItemClick()
 
             // Then
-            assertEquals(ItineraryUiAction.NavigateToItineraryItemForm, awaitItem())
+            assertEquals(ItineraryUiEffect.NavigateToItineraryItemForm, awaitItem())
         }
     }
 }

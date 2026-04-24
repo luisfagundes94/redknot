@@ -26,7 +26,7 @@ import com.luisfagundes.designsystem.theme.RedknotPreview
 import com.luisfagundes.designsystem.theme.RedknotThemePreview
 import com.luisfagundes.designsystem.theme.spacing
 import com.luisfagundes.itinerary.presentation.screen.ItineraryScreen
-import com.luisfagundes.itinerary.presentation.viewmodel.action.ItineraryUiAction
+import com.luisfagundes.itinerary.presentation.viewmodel.effect.ItineraryUiEffect
 import com.luisfagundes.trip.R
 import com.luisfagundes.trip.domain.model.Trip
 import com.luisfagundes.trip.presentation.components.details.TripDetailsHeader
@@ -35,7 +35,6 @@ import com.luisfagundes.trip.presentation.model.TripDetailsTabs
 import com.luisfagundes.trip.presentation.provider.TripDetailsPreviewParameterProvider
 import com.luisfagundes.trip.presentation.viewmodel.state.TripDetailsUiState
 import com.luisfagundes.trip.presentation.viewmodel.TripDetailsViewModel
-import com.luisfagundes.trip.presentation.viewmodel.event.TripDetailsUiEvent
 
 @Composable
 internal fun TripDetailsScreen(
@@ -77,9 +76,9 @@ private fun TripDetailsContent(
             itineraryContent = {
                 ItineraryScreen(
                     tripId = uiState.trip.id,
-                    onAction = { action ->
-                        when (action) {
-                            is ItineraryUiAction.NavigateToItineraryItemForm -> Unit
+                    onEffect = { effect ->
+                        when (effect) {
+                            is ItineraryUiEffect.NavigateToItineraryItemForm -> Unit
                         }
                     }
                 )

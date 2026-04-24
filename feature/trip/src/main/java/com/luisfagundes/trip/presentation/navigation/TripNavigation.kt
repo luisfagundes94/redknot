@@ -5,7 +5,7 @@ import androidx.navigation3.runtime.NavKey
 import com.luisfagundes.trip.presentation.screen.TripDetailsScreen
 import com.luisfagundes.trip.presentation.screen.TripFormScreen
 import com.luisfagundes.trip.presentation.screen.TripListScreen
-import com.luisfagundes.trip.presentation.viewmodel.action.TripListUiAction
+import com.luisfagundes.trip.presentation.viewmodel.effect.TripListUiEffect
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -25,10 +25,10 @@ fun EntryProviderScope<NavKey>.tripSection(
 ) {
     entry<TripListRoute> {
         TripListScreen(
-            onAction = { action ->
-                when (action) {
-                    is TripListUiAction.NavigateToTripForm -> onCreateTripClick()
-                    is TripListUiAction.NavigateToTripDetails -> onTripClick(action.id)
+            onEffect = { effect ->
+                when (effect) {
+                    is TripListUiEffect.NavigateToTripForm -> onCreateTripClick()
+                    is TripListUiEffect.NavigateToTripDetails -> onTripClick(effect.id)
                 }
             }
         )

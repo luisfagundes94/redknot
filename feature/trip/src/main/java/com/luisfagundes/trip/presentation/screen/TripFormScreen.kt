@@ -45,7 +45,7 @@ import com.luisfagundes.designsystem.theme.RedknotPreview
 import com.luisfagundes.designsystem.theme.RedknotThemePreview
 import com.luisfagundes.designsystem.theme.spacing
 import com.luisfagundes.trip.R
-import com.luisfagundes.trip.presentation.viewmodel.action.TripFormUiAction
+import com.luisfagundes.trip.presentation.viewmodel.effect.TripFormUiEffect
 import com.luisfagundes.trip.presentation.mapper.toErrorMessage
 import com.luisfagundes.trip.presentation.viewmodel.state.TripFormUiState
 import com.luisfagundes.trip.presentation.viewmodel.TripFormViewModel
@@ -68,11 +68,11 @@ internal fun TripFormScreen(
     LaunchedEffect(Unit) {
         viewModel.uiEffect.collect { effect ->
             when (effect) {
-                is TripFormUiAction.NavigateBack -> {
+                is TripFormUiEffect.NavigateBack -> {
                     currentOnBackClick()
                 }
 
-                is TripFormUiAction.ShowErrorToast -> {
+                is TripFormUiEffect.ShowErrorToast -> {
                     Toast.makeText(context, effect.error, Toast.LENGTH_LONG).show()
                 }
             }

@@ -10,21 +10,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.luisfagundes.core.presentation.arch.compose.CollectUiActions
+import com.luisfagundes.core.presentation.arch.compose.CollectUiEffects
 import com.luisfagundes.designsystem.components.RedknotEmptyTemplate
 import com.luisfagundes.designsystem.components.RedknotLoadingTemplate
 import com.luisfagundes.designsystem.theme.spacing
 import com.luisfagundes.itinerary.presentation.viewmodel.state.ItineraryUiState
 import com.luisfagundes.itinerary.presentation.viewmodel.ItineraryViewModel
-import com.luisfagundes.itinerary.presentation.viewmodel.action.ItineraryUiAction
-import com.luisfagundes.itinerary.presentation.viewmodel.event.ItineraryUiEvent
+import com.luisfagundes.itinerary.presentation.viewmodel.effect.ItineraryUiEffect
 import com.luisfagundes.trip.R
-import com.luisfagundes.trip.presentation.viewmodel.event.TripDetailsUiEvent
 
 @Composable
 internal fun ItineraryScreen(
     tripId: Int,
-    onAction: (ItineraryUiAction) -> Unit,
+    onEffect: (ItineraryUiEffect) -> Unit,
     viewModel: ItineraryViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -33,9 +31,9 @@ internal fun ItineraryScreen(
         viewModel.getItineraryList(tripId)
     }
 
-    CollectUiActions(
-        flow = viewModel.uiAction,
-        onAction = onAction
+    CollectUiEffects(
+        flow = viewModel.uiEffect,
+        onEffect = onEffect
     )
 
     ItineraryContent(

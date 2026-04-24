@@ -11,7 +11,7 @@ import com.luisfagundes.common.domain.usecase.GetUnsplashImageUseCase
 import com.luisfagundes.trip.domain.usecase.ValidateDestinationUseCase
 import com.luisfagundes.trip.domain.usecase.ValidateDateUseCase
 import com.luisfagundes.trip.domain.usecase.ValidateTitleUseCase
-import com.luisfagundes.trip.presentation.viewmodel.action.TripFormUiAction
+import com.luisfagundes.trip.presentation.viewmodel.effect.TripFormUiEffect
 import com.luisfagundes.trip.presentation.viewmodel.state.TripFormUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -36,7 +36,7 @@ internal class TripFormViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(TripFormUiState())
     val uiState = _uiState.asStateFlow()
 
-    private val _uiEffect = Channel<TripFormUiAction>()
+    private val _uiEffect = Channel<TripFormUiEffect>()
     val uiEffect = _uiEffect.receiveAsFlow()
 
     fun onTitleChange(title: String) {
@@ -87,8 +87,8 @@ internal class TripFormViewModel @Inject constructor(
         val trip = state.toTripWith(imageUrl)
 
         createTripUseCase(trip).fold(
-            onSuccess = { _uiEffect.send(TripFormUiAction.NavigateBack) },
-            onFailure = { _uiEffect.send(TripFormUiAction.ShowErrorToast(it.toString())) }
+            onSuccess = { _uiEffect.send(TripFormUiEffect.NavigateBack) },
+            onFailure = { _uiEffect.send(TripFormUiEffect.ShowErrorToast(it.toString())) }
         )
 
         _uiState.update { it.copy(isLoading = false) }
