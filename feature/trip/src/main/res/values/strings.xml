@@ -52,7 +52,7 @@
     <string name="create_activity">Add Activity</string>
     <string name="activity_title_label">Title</string>
     <string name="activity_title_placeholder">e.g. Visit Colosseum</string>
-    <string name="activity_description_label">Description (optional)</string>
+    <string name="activity_description_label">Description (Optional)</string>
     <string name="activity_description_placeholder">Optional details</string>
     <string name="activity_location_label">Location</string>
     <string name="activity_location_placeholder">e.g. Rome, Italy</string>
