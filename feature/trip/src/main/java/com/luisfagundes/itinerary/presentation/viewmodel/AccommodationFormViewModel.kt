@@ -28,9 +28,9 @@ internal class AccommodationFormViewModel @Inject constructor(
     private val validateTimeUseCase: ValidateTimeUseCase,
     private val createItineraryItemUseCase: CreateItineraryItemUseCase,
     @param:IoDispatcher private val dispatcher: CoroutineDispatcher
-) : ViewModel<AccommodationFormUiState, AccommodationFormUiEffect>() {
-    override fun initialState() = AccommodationFormUiState()
-
+) : ViewModel<AccommodationFormUiState, AccommodationFormUiEffect>(
+    initialState = AccommodationFormUiState()
+) {
     fun onNameChange(name: String) {
         setState { it.copy(name = name, nameError = validateNameUseCase(name)) }
     }

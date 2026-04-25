@@ -25,9 +25,9 @@ internal class RestaurantFormViewModel @Inject constructor(
     private val validateTimeUseCase: ValidateTimeUseCase,
     private val createItineraryItemUseCase: CreateItineraryItemUseCase,
     @param:IoDispatcher private val dispatcher: CoroutineDispatcher
-) : ViewModel<RestaurantFormUiState, RestaurantFormUiEffect>() {
-    override fun initialState() = RestaurantFormUiState()
-
+) : ViewModel<RestaurantFormUiState, RestaurantFormUiEffect>(
+    initialState = RestaurantFormUiState()
+) {
     fun onNameChange(name: String) {
         setState { it.copy(name = name, nameError = validateNameUseCase(name)) }
     }

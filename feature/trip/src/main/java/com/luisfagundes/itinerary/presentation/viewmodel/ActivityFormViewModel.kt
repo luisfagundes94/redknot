@@ -25,8 +25,9 @@ internal class ActivityFormViewModel @Inject constructor(
     private val validateTimeUseCase: ValidateTimeUseCase,
     private val createItineraryItemUseCase: CreateItineraryItemUseCase,
     @param:IoDispatcher private val dispatcher: CoroutineDispatcher
-) : ViewModel<ActivityFormUiState, ActivityFormUiEffect>() {
-    override fun initialState() = ActivityFormUiState()
+) : ViewModel<ActivityFormUiState, ActivityFormUiEffect>(
+    initialState = ActivityFormUiState()
+) {
     fun onTitleChange(title: String) {
         setState { it.copy(title = title, titleError = validateTitleUseCase(title)) }
     }

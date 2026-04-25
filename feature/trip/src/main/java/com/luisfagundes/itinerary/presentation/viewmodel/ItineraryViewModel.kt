@@ -15,9 +15,9 @@ import javax.inject.Inject
 internal class ItineraryViewModel @Inject constructor(
     private val getItineraryItemListUseCase: GetItineraryItemListUseCase,
     @param:IoDispatcher private val dispatcher: CoroutineDispatcher
-): ViewModel<ItineraryUiState, ItineraryUiEffect>() {
-    override fun initialState() = ItineraryUiState.Loading
-
+): ViewModel<ItineraryUiState, ItineraryUiEffect>(
+    initialState = ItineraryUiState.Loading
+) {
     fun getItineraryList(tripId: Int) = viewModelScope.launch(dispatcher) {
         getItineraryItemListUseCase(tripId).onSuccess { itineraryItemList ->
             setState {

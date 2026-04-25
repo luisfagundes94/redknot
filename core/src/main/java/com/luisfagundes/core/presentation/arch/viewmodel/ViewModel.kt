@@ -12,16 +12,15 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-abstract class ViewModel<State : UiState, Effect : UiEffect> : ViewModel() {
-    private val initialState: State by lazy { initialState() }
+abstract class ViewModel<State : UiState, Effect : UiEffect>(
+    initialState: State
+) : ViewModel() {
 
     protected val state = MutableStateFlow(initialState)
     val uiState = state.asStateFlow()
 
     private val effect = Channel<Effect>()
     val uiEffect = effect.receiveAsFlow()
-
-    abstract fun initialState(): State
 
     protected fun getCurrentState(): State = uiState.value
 

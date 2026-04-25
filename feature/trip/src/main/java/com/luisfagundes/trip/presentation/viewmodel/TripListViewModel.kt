@@ -16,9 +16,9 @@ import javax.inject.Inject
 internal class TripListViewModel @Inject constructor(
     private val getTripListUseCase: GetTripListUseCase,
     @param:IoDispatcher private val dispatcher: CoroutineDispatcher = Dispatchers.IO
-) : ViewModel<TripListUiState, TripListUiEffect>() {
-    override fun initialState() = TripListUiState.Loading
-
+) : ViewModel<TripListUiState, TripListUiEffect>(
+    initialState = TripListUiState.Loading
+) {
     fun getTripList() = viewModelScope.launch(dispatcher) {
         setState { TripListUiState.Loading }
 

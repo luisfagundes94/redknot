@@ -32,9 +32,9 @@ internal class FlightFormViewModel @Inject constructor(
     private val validateTimeUseCase: ValidateTimeUseCase,
     private val createItineraryItemUseCase: CreateItineraryItemUseCase,
     @param:IoDispatcher private val dispatcher: CoroutineDispatcher
-) : ViewModel<FlightFormUiState, FlightFormUiEffect>() {
-    override fun initialState() = FlightFormUiState()
-
+) : ViewModel<FlightFormUiState, FlightFormUiEffect>(
+    initialState = FlightFormUiState()
+) {
     fun onFlightNumberChange(value: String) {
         setState {
             it.copy(
