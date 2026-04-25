@@ -108,4 +108,9 @@
         <item quantity="one">%d day</item>
         <item quantity="other">%d days</item>
     </plurals>
+    <string name="delete_trip">Delete trip</string>
+    <string name="delete_trip_dialog_title">Delete trip?</string>
+    <string name="delete_trip_dialog_message">This will permanently remove the trip and all its itinerary items.</string>
+    <string name="delete_trip_dialog_confirm">Delete</string>
+    <string name="delete_trip_dialog_cancel">Cancel</string>
 </resources>

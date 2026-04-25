@@ -19,7 +19,7 @@ internal class TripLocalDataSourceImpl @Inject constructor(
         return runCatching { tripDao.createTrip(tripEntity) }
     }
 
-    override suspend fun deleteTrip(tripEntity: TripEntity): Result<Unit> {
-        return runCatching { tripDao.deleteTrip(tripEntity) }
+    override suspend fun deleteTripById(id: Int): Result<Unit> {
+        return runCatching { tripDao.deleteTripById(id) }
     }
 }

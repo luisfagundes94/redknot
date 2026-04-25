@@ -1,5 +1,6 @@
 package com.luisfagundes.designsystem.components
 
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -16,7 +17,8 @@ import androidx.compose.ui.Modifier
 fun RedknotTopBar(
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier,
-    title: String? = null
+    title: String? = null,
+    actions: @Composable RowScope.() -> Unit = {}
 ) {
     TopAppBar(
         modifier = modifier,
@@ -29,6 +31,7 @@ fun RedknotTopBar(
                 )
             }
         },
+        actions = actions,
         windowInsets = WindowInsets(0, 0, 0, 0)
     )
 }

@@ -6,5 +6,5 @@ internal interface TripLocalDataSource {
     suspend fun getAllTrips(): Result<List<TripEntity>>
     suspend fun getTripById(id: Int): Result<TripEntity>
     suspend fun createTrip(tripEntity: TripEntity): Result<Unit>
-    suspend fun deleteTrip(tripEntity: TripEntity): Result<Unit>
+    suspend fun deleteTripById(id: Int): Result<Unit>
 }

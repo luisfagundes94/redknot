@@ -28,6 +28,10 @@ internal class TripRepositoryImpl @Inject constructor(
         return tripDataSource.createTrip(tripEntity = mapper.mapToEntity(trip))
     }
 
+    override suspend fun deleteTripById(id: Int): Result<Unit> {
+        return tripDataSource.deleteTripById(id)
+    }
+
     override suspend fun getTripImageUrl(location: String): Result<String> {
         return unsplashDataSource.getImageUrl(location)
     }

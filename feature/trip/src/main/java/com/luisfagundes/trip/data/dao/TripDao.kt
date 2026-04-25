@@ -1,7 +1,6 @@
 package com.luisfagundes.trip.data.dao
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -18,6 +17,6 @@ internal interface TripDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun createTrip(tripEntity: TripEntity)
 
-    @Delete
-    suspend fun deleteTrip(tripEntity: TripEntity)
+    @Query("DELETE FROM trips WHERE id = :id")
+    suspend fun deleteTripById(id: Int)
 }

@@ -2,8 +2,10 @@ package com.luisfagundes.trip.presentation.viewmodel
 
 import app.cash.turbine.test
 import com.luisfagundes.core.testing.MainDispatcherRule
+import com.luisfagundes.trip.domain.usecase.DeleteTripUseCase
 import com.luisfagundes.trip.domain.usecase.GetTripByIdUseCase
 import com.luisfagundes.trip.presentation.fixtures.fakeTrip
+import com.luisfagundes.trip.presentation.viewmodel.effect.TripDetailsUiEffect
 import com.luisfagundes.trip.presentation.viewmodel.state.TripDetailsUiState
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -19,9 +21,11 @@ internal class TripDetailsViewModelTest {
     val dispatcher = MainDispatcherRule()
 
     private val getTripByIdUseCase: GetTripByIdUseCase = mockk()
+    private val deleteTripUseCase: DeleteTripUseCase = mockk()
 
     private val viewModel = TripDetailsViewModel(
         getTripByIdUseCase = getTripByIdUseCase,
+        deleteTripUseCase = deleteTripUseCase,
         dispatcher = dispatcher.testDispatcher
     )
 
@@ -89,6 +93,40 @@ internal class TripDetailsViewModelTest {
 
             // Then
             assertEquals(TripDetailsUiState.Success(fakeTrip), awaitItem())
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `deleteTrip on success emits NavigateBack effect`() = runTest {
+        // Given
+        val tripId = 1
+        coEvery { deleteTripUseCase.invoke(tripId) } returns Result.success(Unit)
+
+        viewModel.uiEffect.test {
+            // When
+            viewModel.deleteTrip(tripId)
+
+            // Then
+            assertEquals(TripDetailsUiEffect.NavigateBack, awaitItem())
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `deleteTrip on failure emits ShowErrorToast effect`() = runTest {
+        // Given
+        val tripId = 1
+        val errorMessage = "Delete failed"
+        coEvery { deleteTripUseCase.invoke(tripId) } returns Result.failure(Exception(errorMessage))
+
+        viewModel.uiEffect.test {
+            // When
+            viewModel.deleteTrip(tripId)
+
+            // Then
+            val effect = awaitItem() as TripDetailsUiEffect.ShowErrorToast
+            assertEquals("java.lang.Exception: $errorMessage", effect.error)
             cancelAndIgnoreRemainingEvents()
         }
     }
