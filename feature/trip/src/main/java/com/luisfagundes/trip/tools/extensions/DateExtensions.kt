@@ -37,3 +37,8 @@ fun LocalDate?.toFormattedString(
     val formatter = DateTimeFormatter.ofPattern(pattern)
     return this.format(formatter)
 }
+
+fun java.time.LocalTime?.toFormattedString(fallback: String = ""): String {
+    if (this == null) return fallback
+    return this.format(DateTimeFormatter.ofPattern("HH:mm"))
+}

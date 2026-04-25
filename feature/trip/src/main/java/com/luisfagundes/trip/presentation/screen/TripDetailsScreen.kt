@@ -78,7 +78,7 @@ private fun TripDetailsContent(
                     tripId = uiState.trip.id,
                     onEffect = { effect ->
                         when (effect) {
-                            is ItineraryUiEffect.NavigateToItineraryItemForm -> Unit
+                            is ItineraryUiEffect.NavigateToItineraryItemForm -> onNewItineraryItemClick()
                         }
                     }
                 )

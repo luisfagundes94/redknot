@@ -9,3 +9,10 @@ internal sealed class ItineraryItem {
     abstract val date: LocalDate
     abstract val time: LocalTime
 }
+
+internal fun ItineraryItem.toItineraryItemType() = when (this) {
+    is Activity -> ItineraryItemType.ACTIVITY
+    is Accommodation -> ItineraryItemType.ACCOMMODATION
+    is Flight -> ItineraryItemType.FLIGHT
+    is Restaurant -> ItineraryItemType.RESTAURANT
+}

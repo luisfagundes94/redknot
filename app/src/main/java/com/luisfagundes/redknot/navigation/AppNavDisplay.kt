@@ -4,6 +4,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
+import com.luisfagundes.itinerary.presentation.navigation.AccommodationFormRoute
+import com.luisfagundes.itinerary.presentation.navigation.ActivityFormRoute
+import com.luisfagundes.itinerary.presentation.navigation.FlightFormRoute
+import com.luisfagundes.itinerary.presentation.navigation.ItineraryItemTypePickerRoute
+import com.luisfagundes.itinerary.presentation.navigation.RestaurantFormRoute
+import com.luisfagundes.itinerary.presentation.navigation.itinerarySection
 import com.luisfagundes.trip.presentation.navigation.TripCreationRoute
 import com.luisfagundes.trip.presentation.navigation.TripDetailsRoute
 import com.luisfagundes.trip.presentation.navigation.tripSection
@@ -18,7 +24,18 @@ fun AppNavDisplay(
         tripSection(
             onCreateTripClick = { navigator.navigate(TripCreationRoute) },
             onTripClick = { tripId -> navigator.navigate(TripDetailsRoute(tripId)) },
-            onNewItineraryItemClick = {},
+            onNewItineraryItemClick = { tripId ->
+                navigator.navigate(ItineraryItemTypePickerRoute(tripId))
+            },
+            onBackClick = { navigator.goBack() }
+        )
+        itinerarySection(
+            onActivityFormClick = { tripId -> navigator.navigate(ActivityFormRoute(tripId)) },
+            onAccommodationFormClick = { tripId ->
+                navigator.navigate(AccommodationFormRoute(tripId))
+            },
+            onFlightFormClick = { tripId -> navigator.navigate(FlightFormRoute(tripId)) },
+            onRestaurantFormClick = { tripId -> navigator.navigate(RestaurantFormRoute(tripId)) },
             onBackClick = { navigator.goBack() }
         )
     }

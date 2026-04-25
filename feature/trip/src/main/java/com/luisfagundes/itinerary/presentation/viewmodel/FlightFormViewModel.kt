@@ -1,0 +1,121 @@
+package com.luisfagundes.itinerary.presentation.viewmodel
+
+import com.luisfagundes.core.presentation.arch.viewmodel.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.luisfagundes.core.di.IoDispatcher
+import com.luisfagundes.itinerary.domain.model.Airport
+import com.luisfagundes.itinerary.domain.model.Flight
+import com.luisfagundes.itinerary.domain.usecase.CreateItineraryItemUseCase
+import com.luisfagundes.itinerary.domain.usecase.ValidateAirportCodeUseCase
+import com.luisfagundes.itinerary.domain.usecase.ValidateDurationErrorUseCase
+import com.luisfagundes.itinerary.domain.usecase.ValidateFlightNumberUseCase
+import com.luisfagundes.itinerary.domain.usecase.ValidateItineraryDateUseCase
+import com.luisfagundes.itinerary.domain.usecase.ValidateTimeUseCase
+import com.luisfagundes.itinerary.presentation.viewmodel.effect.FlightFormUiEffect
+import com.luisfagundes.itinerary.presentation.viewmodel.state.FlightFormUiState
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import java.time.LocalDate
+import java.time.LocalTime
+import java.util.UUID
+import javax.inject.Inject
+import kotlin.time.Duration.Companion.hours
+import kotlin.time.Duration.Companion.minutes
+
+@HiltViewModel
+internal class FlightFormViewModel @Inject constructor(
+    private val validateFlightNumberUseCase: ValidateFlightNumberUseCase,
+    private val validateAirportCodeUseCase: ValidateAirportCodeUseCase,
+    private val validateDurationErrorUseCase: ValidateDurationErrorUseCase,
+    private val validateDateUseCase: ValidateItineraryDateUseCase,
+    private val validateTimeUseCase: ValidateTimeUseCase,
+    private val createItineraryItemUseCase: CreateItineraryItemUseCase,
+    @param:IoDispatcher private val dispatcher: CoroutineDispatcher
+) : ViewModel<FlightFormUiState, FlightFormUiEffect>() {
+    override fun initialState() = FlightFormUiState()
+
+    fun onFlightNumberChange(value: String) {
+        setState {
+            it.copy(
+                flightNumber = value,
+                flightNumberError = validateFlightNumberUseCase(value)
+            )
+        }
+    }
+
+    fun onOriginChange(code: String, city: String) {
+        val upperCode = code.uppercase()
+
+        setState {
+            it.copy(
+                originCode = upperCode,
+                originCodeError = validateAirportCodeUseCase(upperCode),
+                originCity = city
+            )
+        }
+    }
+
+    fun onDestinationChange(code: String, city: String) {
+        val upperCode = code.uppercase()
+
+        setState {
+            it.copy(
+                destinationCode = upperCode,
+                destinationCodeError = validateAirportCodeUseCase(upperCode),
+                destinationCity = city
+            )
+        }
+    }
+
+    fun onDurationChange(hoursStr: String, minutesStr: String) {
+        val hour = hoursStr.toIntOrNull() ?: 0
+        val minutes = minutesStr.toIntOrNull() ?: 0
+
+        setState {
+            it.copy(
+                durationHours = hoursStr,
+                durationMinutes = minutesStr,
+                durationError = validateDurationErrorUseCase(hour, minutes)
+            )
+        }
+    }
+
+    fun onSeatNumberChange(value: String) {
+        setState { it.copy(seatNumber = value) }
+    }
+
+    fun onDateChange(date: LocalDate?) {
+        setState { it.copy(date = date, dateError = validateDateUseCase(date)) }
+    }
+
+    fun onTimeChange(time: LocalTime) {
+        setState { it.copy(time = time, timeError = validateTimeUseCase(time)) }
+    }
+
+    fun onSubmit(tripId: Int) = viewModelScope.launch(dispatcher) {
+        val state = getCurrentState()
+        setState { it.copy(isLoading = true) }
+
+        val flight = Flight(
+            id = UUID.randomUUID().toString(),
+            tripId = tripId,
+            date = state.date ?: LocalDate.now(),
+            time = state.time ?: LocalTime.now(),
+            flightNumber = state.flightNumber,
+            origin = Airport(code = state.originCode, city = state.originCity),
+            destination = Airport(code = state.destinationCode, city = state.destinationCity),
+            duration = (state.durationHours.toIntOrNull() ?: 0).hours +
+                    (state.durationMinutes.toIntOrNull() ?: 0).minutes,
+            seatNumber = state.seatNumber
+        )
+
+        createItineraryItemUseCase(flight).fold(
+            onSuccess = { sendEffect { FlightFormUiEffect.NavigateBack } },
+            onFailure = { sendEffect { FlightFormUiEffect.ShowErrorToast(it.toString()) } }
+        )
+
+        setState { it.copy(isLoading = false) }
+    }
+}

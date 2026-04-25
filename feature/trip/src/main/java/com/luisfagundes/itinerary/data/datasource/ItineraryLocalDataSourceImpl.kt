@@ -15,4 +15,11 @@ internal class ItineraryLocalDataSourceImpl @Inject constructor(
             }.sortedWith(compareBy({ it.date }, { it.time }))
         }
     }
+
+    @Suppress("UNCHECKED_CAST")
+    override suspend fun createItineraryItem(entity: Any, type: ItineraryItemType): Result<Unit> {
+        return runCatching {
+            itineraryDaoFactory.getDao<Any>(type).insert(entity)
+        }
+    }
 }

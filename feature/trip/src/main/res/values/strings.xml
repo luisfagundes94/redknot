@@ -35,6 +35,66 @@
     <string name="empty_itinerary_message">You don\'t have an itinerary yet, would you like to add a new item?</string>
     <string name="add_itinerary_item">Add item</string>
     <string name="generic_error_message">Oops! Something went wrong :(</string>
+    <!-- Shared form -->
+    <string name="date_label">Date</string>
+    <string name="date_placeholder">DD/MM/YYYY</string>
+    <string name="time_label">Time</string>
+    <string name="time_placeholder">HH:MM</string>
+    <string name="select_time_icon_description">Select time</string>
+    <string name="add_item">Add Item</string>
+    <!-- Type picker -->
+    <string name="pick_itinerary_item_type">What are you adding?</string>
+    <string name="itinerary_item_type_activity">Activity</string>
+    <string name="itinerary_item_type_accommodation">Accommodation</string>
+    <string name="itinerary_item_type_flight">Flight</string>
+    <string name="itinerary_item_type_restaurant">Restaurant</string>
+    <!-- Activity form -->
+    <string name="create_activity">Add Activity</string>
+    <string name="activity_title_label">Title</string>
+    <string name="activity_title_placeholder">e.g. Visit Colosseum</string>
+    <string name="activity_description_label">Description</string>
+    <string name="activity_description_placeholder">Optional details</string>
+    <string name="activity_location_label">Location</string>
+    <string name="activity_location_placeholder">e.g. Rome, Italy</string>
+    <!-- Accommodation form -->
+    <string name="create_accommodation">Add Accommodation</string>
+    <string name="accommodation_name_label">Name</string>
+    <string name="accommodation_name_placeholder">e.g. Hotel Roma</string>
+    <string name="accommodation_address_label">Address</string>
+    <string name="accommodation_address_placeholder">e.g. Via Veneto 1, Rome</string>
+    <string name="check_in_type_label">Type</string>
+    <string name="check_in">Check In</string>
+    <string name="check_out">Check Out</string>
+    <!-- Flight form -->
+    <string name="create_flight">Add Flight</string>
+    <string name="flight_number_label">Flight Number</string>
+    <string name="flight_number_placeholder">e.g. AZ610</string>
+    <string name="origin_airport_code_label">From (Code)</string>
+    <string name="origin_airport_code_placeholder">e.g. GRU</string>
+    <string name="origin_airport_city_label">From (City)</string>
+    <string name="origin_airport_city_placeholder">e.g. São Paulo</string>
+    <string name="destination_airport_code_label">To (Code)</string>
+    <string name="destination_airport_code_placeholder">e.g. FCO</string>
+    <string name="destination_airport_city_label">To (City)</string>
+    <string name="destination_airport_city_placeholder">e.g. Rome</string>
+    <string name="flight_duration_label">Duration</string>
+    <string name="flight_duration_hours_label">Hours</string>
+    <string name="flight_duration_minutes_label">Minutes</string>
+    <string name="seat_number_label">Seat (optional)</string>
+    <string name="seat_number_placeholder">e.g. 24A</string>
+    <!-- Restaurant form -->
+    <string name="create_restaurant">Add Restaurant</string>
+    <string name="restaurant_name_label">Name</string>
+    <string name="restaurant_name_placeholder">e.g. Trattoria da Mario</string>
+    <!-- Itinerary validation errors -->
+    <string name="empty_name_error_message">Name cannot be empty</string>
+    <string name="empty_address_error_message">Address cannot be empty</string>
+    <string name="empty_flight_number_error_message">Flight number cannot be empty</string>
+    <string name="empty_airport_code_error_message">Airport code cannot be empty</string>
+    <string name="invalid_airport_code_error_message">Enter a valid 3-letter IATA code</string>
+    <string name="invalid_duration_error_message">Duration must be greater than 0</string>
+    <string name="missing_time_error_message">Time must be selected</string>
+
     <plurals name="trip_duration_days">
         <item quantity="one">%d day</item>
         <item quantity="other">%d days</item>

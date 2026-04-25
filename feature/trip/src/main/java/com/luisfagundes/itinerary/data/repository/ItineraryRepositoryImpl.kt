@@ -3,6 +3,7 @@ package com.luisfagundes.itinerary.data.repository
 import com.luisfagundes.itinerary.data.datasource.ItineraryLocalDataSource
 import com.luisfagundes.itinerary.data.mapper.ItineraryItemMapper
 import com.luisfagundes.itinerary.domain.model.ItineraryItem
+import com.luisfagundes.itinerary.domain.model.toItineraryItemType
 import com.luisfagundes.itinerary.domain.repository.ItineraryRepository
 import javax.inject.Inject
 
@@ -14,5 +15,11 @@ internal class ItineraryRepositoryImpl @Inject constructor(
         return dataSource.getItineraryItemList(tripId).map { entities ->
             entities.map { mapper.toDomain(it) }
         }
+    }
+
+    override suspend fun createItineraryItem(item: ItineraryItem): Result<Unit> {
+        val entity = mapper.toEntity(item)
+        val type = item.toItineraryItemType()
+        return dataSource.createItineraryItem(entity, type)
     }
 }
