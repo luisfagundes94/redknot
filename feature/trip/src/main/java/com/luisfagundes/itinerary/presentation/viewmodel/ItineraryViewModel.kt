@@ -24,7 +24,7 @@ internal class ItineraryViewModel @Inject constructor(
                 if (itineraryItemList.isEmpty()) {
                     ItineraryUiState.Empty
                 } else {
-                    ItineraryUiState.Content(itineraryItemList)
+                    ItineraryUiState.Content(itineraryItemList.groupBy { it.date })
                 }
             }
         }

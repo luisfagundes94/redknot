@@ -166,19 +166,17 @@ private fun TripDetailsSuccessContent(
         Column(
             modifier = Modifier
                 .padding(padding)
-                .padding(MaterialTheme.spacing.default)
                 .fillMaxWidth()
         ) {
             TripDetailsHeader(
                 status = trip.status,
                 startDate = trip.startDate,
-                endDate = trip.endDate
+                endDate = trip.endDate,
+                modifier = Modifier.padding(MaterialTheme.spacing.default)
             )
             TripDetailsTabRow(
                 onTabSelect = { currentSelectedTab = it },
-                modifier = Modifier
-                    .padding(top = MaterialTheme.spacing.default)
-                    .fillMaxWidth()
+                modifier = Modifier.fillMaxWidth()
             )
             when (currentSelectedTab) {
                 TripDetailsTabs.ITINERARY -> itineraryContent()

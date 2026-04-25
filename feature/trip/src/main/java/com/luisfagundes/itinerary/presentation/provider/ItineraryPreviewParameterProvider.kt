@@ -56,7 +56,7 @@ internal class ItineraryPreviewParameterProvider :
 
     override val values = sequenceOf(
         ItineraryUiState.Content(
-            items = items
+            itemsByDay = items.groupBy { it.date }
         )
     )
 }

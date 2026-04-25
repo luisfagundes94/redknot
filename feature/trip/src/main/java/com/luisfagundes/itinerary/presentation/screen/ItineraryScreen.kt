@@ -1,6 +1,5 @@
 package com.luisfagundes.itinerary.presentation.screen
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -30,7 +29,9 @@ import com.luisfagundes.designsystem.theme.RedknotThemePreview
 import com.luisfagundes.designsystem.theme.spacing
 import com.luisfagundes.itinerary.domain.model.ItineraryItem
 import com.luisfagundes.itinerary.presentation.provider.ItineraryPreviewParameterProvider
+import com.luisfagundes.itinerary.presentation.components.ItineraryDayHeader
 import com.luisfagundes.itinerary.presentation.components.ItineraryTimeline
+import java.time.LocalDate
 import com.luisfagundes.itinerary.presentation.viewmodel.ItineraryViewModel
 import com.luisfagundes.itinerary.presentation.viewmodel.effect.ItineraryUiEffect
 import com.luisfagundes.itinerary.presentation.viewmodel.state.ItineraryUiState
@@ -56,7 +57,6 @@ internal fun ItineraryScreen(
     ItineraryContent(
         uiState = uiState,
         onAddItem = viewModel::onAddItineraryItem,
-        modifier = Modifier.fillMaxSize()
     )
 }
 
@@ -64,11 +64,10 @@ internal fun ItineraryScreen(
 private fun ItineraryContent(
     uiState: ItineraryUiState,
     onAddItem: () -> Unit,
-    modifier: Modifier = Modifier
 ) {
     when (uiState) {
         ItineraryUiState.Loading -> RedknotLoadingTemplate(
-            modifier = modifier
+            modifier = Modifier.fillMaxSize()
         )
 
         ItineraryUiState.Empty -> RedknotEmptyTemplate(
@@ -81,7 +80,7 @@ private fun ItineraryContent(
         )
 
         is ItineraryUiState.Content -> ItineraryTimelineContent(
-            items = uiState.items,
+            itemsByDay = uiState.itemsByDay,
             onAddItem = onAddItem,
             modifier = Modifier.fillMaxWidth()
         )
@@ -91,7 +90,7 @@ private fun ItineraryContent(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ItineraryTimelineContent(
-    items: List<ItineraryItem>,
+    itemsByDay: Map<LocalDate, List<ItineraryItem>>,
     onAddItem: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -110,17 +109,23 @@ private fun ItineraryTimelineContent(
         }
     ) { padding ->
         LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding),
+            modifier = Modifier.fillMaxWidth(),
             contentPadding = PaddingValues(MaterialTheme.spacing.default)
         ) {
-            itemsIndexed(items, key = { _, item -> item.id }) { index, item ->
-                ItineraryTimeline(
-                    item = item,
-                    isFirst = index == 0,
-                    isLast = index == items.lastIndex
-                )
+            itemsByDay.forEach { (date, dayItems) ->
+                item(key = date) {
+                    ItineraryDayHeader(
+                        date = date,
+                        modifier = Modifier.padding(vertical = MaterialTheme.spacing.small)
+                    )
+                }
+                itemsIndexed(dayItems, key = { _, item -> item.id }) { index, item ->
+                    ItineraryTimeline(
+                        item = item,
+                        isFirst = index == 0,
+                        isLast = index == dayItems.lastIndex
+                    )
+                }
             }
         }
     }
@@ -134,7 +139,7 @@ private fun ItineraryContentPreview(
 ) {
     RedknotThemePreview {
         ItineraryTimelineContent(
-            items = uiState.items,
+            itemsByDay = uiState.itemsByDay,
             onAddItem = {},
             modifier = Modifier.fillMaxWidth()
         )
