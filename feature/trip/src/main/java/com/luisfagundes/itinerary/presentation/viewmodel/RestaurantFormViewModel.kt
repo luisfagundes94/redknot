@@ -55,7 +55,7 @@ internal class RestaurantFormViewModel @Inject constructor(
         val restaurant = createRestaurant(tripId)
 
         createItineraryItemUseCase(restaurant).fold(
-            onSuccess = { sendEffect { RestaurantFormUiEffect.NavigateBack } },
+            onSuccess = { sendEffect { RestaurantFormUiEffect.NavigateBackToTripDetails } },
             onFailure = { sendEffect { RestaurantFormUiEffect.ShowErrorToast(it.toString()) } }
         )
 

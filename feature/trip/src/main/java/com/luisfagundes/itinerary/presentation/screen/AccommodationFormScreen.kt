@@ -30,6 +30,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.luisfagundes.core.presentation.arch.compose.CollectUiEffects
 import com.luisfagundes.designsystem.components.RedknotTopBar
 import com.luisfagundes.designsystem.theme.spacing
 import com.luisfagundes.itinerary.domain.model.CheckInType
@@ -45,19 +46,22 @@ import java.time.LocalTime
 internal fun AccommodationFormScreen(
     tripId: Int,
     onBackClick: () -> Unit,
+    onNavigateBackToTripDetails: () -> Unit,
     viewModel: AccommodationFormViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
-    val currentOnBackClick by rememberUpdatedState(onBackClick)
 
-    LaunchedEffect(Unit) {
-        viewModel.uiEffect.collect { effect ->
-            when (effect) {
-                is AccommodationFormUiEffect.NavigateBack -> currentOnBackClick()
-                is AccommodationFormUiEffect.ShowErrorToast -> {
-                    Toast.makeText(context, effect.error, Toast.LENGTH_LONG).show()
-                }
+    CollectUiEffects(viewModel.uiEffect) { effect ->
+        when (effect) {
+            is AccommodationFormUiEffect.NavigateBack -> {
+                onBackClick()
+            }
+            is AccommodationFormUiEffect.NavigateBackToTripDetails -> {
+                onNavigateBackToTripDetails()
+            }
+            is AccommodationFormUiEffect.ShowErrorToast -> {
+                Toast.makeText(context, effect.error, Toast.LENGTH_LONG).show()
             }
         }
     }

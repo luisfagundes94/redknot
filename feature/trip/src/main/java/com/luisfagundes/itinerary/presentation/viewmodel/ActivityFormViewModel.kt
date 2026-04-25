@@ -54,7 +54,7 @@ internal class ActivityFormViewModel @Inject constructor(
         val activity = createActivity(tripId)
 
         createItineraryItemUseCase(activity).fold(
-            onSuccess = { sendEffect { ActivityFormUiEffect.NavigateBack } },
+            onSuccess = { sendEffect { ActivityFormUiEffect.NavigateBackToTripDetails } },
             onFailure = { sendEffect { ActivityFormUiEffect.ShowErrorToast(it.toString()) } }
         )
 

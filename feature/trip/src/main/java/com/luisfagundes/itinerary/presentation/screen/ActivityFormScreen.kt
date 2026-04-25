@@ -40,16 +40,21 @@ import java.time.LocalTime
 internal fun ActivityFormScreen(
     tripId: Int,
     onBackClick: () -> Unit,
+    onNavigateBackToTripDetails: () -> Unit,
     viewModel: ActivityFormViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
-    val currentOnBackClick by rememberUpdatedState(onBackClick)
 
     LaunchedEffect(Unit) {
         viewModel.uiEffect.collect { effect ->
             when (effect) {
-                is ActivityFormUiEffect.NavigateBack -> currentOnBackClick()
+                is ActivityFormUiEffect.NavigateBack -> {
+                    onBackClick()
+                }
+                is ActivityFormUiEffect.NavigateBackToTripDetails -> {
+                    onNavigateBackToTripDetails()
+                }
                 is ActivityFormUiEffect.ShowErrorToast -> {
                     Toast.makeText(context, effect.error, Toast.LENGTH_LONG).show()
                 }

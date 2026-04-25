@@ -20,9 +20,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -30,6 +28,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.luisfagundes.core.presentation.arch.compose.CollectUiEffects
 import com.luisfagundes.designsystem.components.RedknotTopBar
 import com.luisfagundes.designsystem.theme.spacing
 import com.luisfagundes.itinerary.presentation.mapper.toErrorMessage
@@ -44,22 +43,25 @@ import java.time.LocalTime
 internal fun FlightFormScreen(
     tripId: Int,
     onBackClick: () -> Unit,
+    onNavigateBackToTripDetails: () -> Unit,
     viewModel: FlightFormViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
-    val currentOnBackClick by rememberUpdatedState(onBackClick)
 
-    LaunchedEffect(Unit) {
-        viewModel.uiEffect.collect { effect ->
+    CollectUiEffects(
+        flow = viewModel.uiEffect,
+        onEffect = { effect ->
             when (effect) {
-                is FlightFormUiEffect.NavigateBack -> currentOnBackClick()
+                is FlightFormUiEffect.NavigateToTripDetails -> {
+                    onNavigateBackToTripDetails()
+                }
                 is FlightFormUiEffect.ShowErrorToast -> {
                     Toast.makeText(context, effect.error, Toast.LENGTH_LONG).show()
                 }
             }
         }
-    }
+    )
 
     Scaffold(
         topBar = {

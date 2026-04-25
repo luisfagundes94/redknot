@@ -50,6 +50,9 @@ fun AppNavDisplay(
             },
             onBackClick = {
                 navigator.goBack()
+            },
+            onNavigateBackToTripDetails = {
+                navigator.goBack(2)
             }
         )
     }

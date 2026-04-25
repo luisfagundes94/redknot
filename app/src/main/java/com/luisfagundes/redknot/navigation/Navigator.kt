@@ -22,4 +22,13 @@ class Navigator(val state: NavigationState){
             currentStack.removeLastOrNull()
         }
     }
+
+    fun goBack(steps: Int) {
+        val currentStack = state.backStacks[state.topLevelRoute]
+            ?: error("Stack for ${state.topLevelRoute} not found")
+
+        repeat(steps.coerceAtMost(currentStack.lastIndex)) {
+            currentStack.removeLastOrNull()
+        }
+    }
 }

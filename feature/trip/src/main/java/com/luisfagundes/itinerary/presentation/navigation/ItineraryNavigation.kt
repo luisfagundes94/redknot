@@ -29,7 +29,8 @@ fun EntryProviderScope<NavKey>.itinerarySection(
     onAccommodationFormClick: (Int) -> Unit,
     onFlightFormClick: (Int) -> Unit,
     onRestaurantFormClick: (Int) -> Unit,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    onNavigateBackToTripDetails: () -> Unit,
 ) {
     entry<ItineraryItemTypePickerRoute> { key ->
         ItineraryItemTypePickerScreen(
@@ -41,15 +42,31 @@ fun EntryProviderScope<NavKey>.itinerarySection(
         )
     }
     entry<ActivityFormRoute> { key ->
-        ActivityFormScreen(tripId = key.tripId, onBackClick = onBackClick)
+        ActivityFormScreen(
+            tripId = key.tripId,
+            onBackClick = onBackClick,
+            onNavigateBackToTripDetails = onNavigateBackToTripDetails
+        )
     }
     entry<AccommodationFormRoute> { key ->
-        AccommodationFormScreen(tripId = key.tripId, onBackClick = onBackClick)
+        AccommodationFormScreen(
+            tripId = key.tripId,
+            onBackClick = onBackClick,
+            onNavigateBackToTripDetails = onNavigateBackToTripDetails
+        )
     }
     entry<FlightFormRoute> { key ->
-        FlightFormScreen(tripId = key.tripId, onBackClick = onBackClick)
+        FlightFormScreen(
+            tripId = key.tripId,
+            onBackClick = onBackClick,
+            onNavigateBackToTripDetails = onNavigateBackToTripDetails
+        )
     }
     entry<RestaurantFormRoute> { key ->
-        RestaurantFormScreen(tripId = key.tripId, onBackClick = onBackClick)
+        RestaurantFormScreen(
+            tripId = key.tripId,
+            onBackClick = onBackClick,
+            onNavigateBackToTripDetails = onNavigateBackToTripDetails
+        )
     }
 }

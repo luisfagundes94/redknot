@@ -85,7 +85,7 @@ internal class FlightFormViewModel @Inject constructor(
         val flight = createFlight(tripId)
 
         createItineraryItemUseCase(flight).fold(
-            onSuccess = { sendEffect { FlightFormUiEffect.NavigateBack } },
+            onSuccess = { sendEffect { FlightFormUiEffect.NavigateToTripDetails } },
             onFailure = { sendEffect { FlightFormUiEffect.ShowErrorToast(it.toString()) } }
         )
 

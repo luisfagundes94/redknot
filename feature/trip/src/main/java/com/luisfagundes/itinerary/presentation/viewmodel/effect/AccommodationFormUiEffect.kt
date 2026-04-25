@@ -4,5 +4,6 @@ import com.luisfagundes.core.presentation.arch.effect.UiEffect
 
 internal sealed class AccommodationFormUiEffect : UiEffect {
     data object NavigateBack : AccommodationFormUiEffect()
+    data object NavigateBackToTripDetails : AccommodationFormUiEffect()
     data class ShowErrorToast(val error: String) : AccommodationFormUiEffect()
 }

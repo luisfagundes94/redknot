@@ -57,7 +57,7 @@ internal class AccommodationFormViewModel @Inject constructor(
         val accommodation = createAccommodation(tripId)
 
         createItineraryItemUseCase(accommodation).fold(
-            onSuccess = { sendEffect { AccommodationFormUiEffect.NavigateBack } },
+            onSuccess = { sendEffect { AccommodationFormUiEffect.NavigateBackToTripDetails } },
             onFailure = { sendEffect { AccommodationFormUiEffect.ShowErrorToast(it.toString()) } }
         )
 
