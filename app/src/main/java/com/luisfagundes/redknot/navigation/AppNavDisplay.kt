@@ -22,21 +22,35 @@ fun AppNavDisplay(
 ) {
     val entryProvider = entryProvider {
         tripSection(
-            onCreateTripClick = { navigator.navigate(TripCreationRoute) },
-            onTripClick = { tripId -> navigator.navigate(TripDetailsRoute(tripId)) },
+            onCreateTripClick = {
+                navigator.navigate(TripCreationRoute)
+            },
+            onTripClick = { tripId ->
+                navigator.navigate(TripDetailsRoute(tripId))
+            },
             onNewItineraryItemClick = { tripId ->
                 navigator.navigate(ItineraryItemTypePickerRoute(tripId))
             },
-            onBackClick = { navigator.goBack() }
+            onBackClick = {
+                navigator.goBack()
+            }
         )
         itinerarySection(
-            onActivityFormClick = { tripId -> navigator.navigate(ActivityFormRoute(tripId)) },
+            onActivityFormClick = { tripId ->
+                navigator.navigate(ActivityFormRoute(tripId))
+            },
             onAccommodationFormClick = { tripId ->
                 navigator.navigate(AccommodationFormRoute(tripId))
             },
-            onFlightFormClick = { tripId -> navigator.navigate(FlightFormRoute(tripId)) },
-            onRestaurantFormClick = { tripId -> navigator.navigate(RestaurantFormRoute(tripId)) },
-            onBackClick = { navigator.goBack() }
+            onFlightFormClick = { tripId ->
+                navigator.navigate(FlightFormRoute(tripId))
+            },
+            onRestaurantFormClick = { tripId ->
+                navigator.navigate(RestaurantFormRoute(tripId))
+            },
+            onBackClick = {
+                navigator.goBack()
+            }
         )
     }
 
