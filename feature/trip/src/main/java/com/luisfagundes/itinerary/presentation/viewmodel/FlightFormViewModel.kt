@@ -6,7 +6,6 @@ import com.luisfagundes.core.presentation.arch.viewmodel.ViewModel
 import com.luisfagundes.itinerary.domain.model.Airport
 import com.luisfagundes.itinerary.domain.model.Flight
 import com.luisfagundes.itinerary.domain.usecase.CreateItineraryItemUseCase
-import com.luisfagundes.itinerary.domain.usecase.ValidateAirportCodeUseCase
 import com.luisfagundes.itinerary.domain.usecase.ValidateDurationErrorUseCase
 import com.luisfagundes.itinerary.domain.usecase.ValidateFlightNumberUseCase
 import com.luisfagundes.itinerary.domain.usecase.ValidateItineraryDateUseCase
@@ -43,22 +42,12 @@ internal class FlightFormViewModel @Inject constructor(
         }
     }
 
-    fun onOriginChange(name: String, city: String) {
-        setState {
-            it.copy(
-                originAirportName = name,
-                originAirportCity = city
-            )
-        }
+    fun onOriginChange(city: String) {
+        setState { it.copy(originAirportCity = city) }
     }
 
-    fun onDestinationChange(name: String, city: String) {
-        setState {
-            it.copy(
-                destinationName = name,
-                destinationAirportCity = city
-            )
-        }
+    fun onDestinationChange(city: String) {
+        setState { it.copy(destinationAirportCity = city) }
     }
 
     fun onDurationChange(hoursStr: String, minutesStr: String) {
@@ -116,8 +105,8 @@ internal class FlightFormViewModel @Inject constructor(
             time = state.time ?: LocalTime.now(),
             flightNumber = state.flightNumber,
             companyName = state.companyName,
-            origin = Airport(name = state.originAirportName, city = state.originAirportCity),
-            destination = Airport(name = state.destinationName, city = state.destinationAirportCity),
+            origin = Airport(name = null, city = state.originAirportCity),
+            destination = Airport(name = null, city = state.destinationAirportCity),
             duration = hours + minutes,
             seatNumber = state.seatNumber
         )

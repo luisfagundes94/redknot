@@ -125,8 +125,7 @@ private fun AccommodationFormContent(
             )
             Text(
                 text = stringResource(R.string.check_in_type_label),
-                style = MaterialTheme.typography.labelMedium,
-                modifier = Modifier.padding(top = MaterialTheme.spacing.small)
+                modifier = Modifier.padding(vertical = MaterialTheme.spacing.small)
             )
             SingleChoiceSegmentedButtonRow(
                 modifier = Modifier

@@ -9,11 +9,8 @@ internal data class FlightFormUiState(
     val flightNumber: String = "",
     val flightNumberError: ItineraryValidationError? = null,
     val companyName: String = "",
-    val originAirportName: String = "",
-    val originNameError: ItineraryValidationError? = null,
     val originAirportCity: String = "",
     val destinationName: String = "",
-    val destinationAirportNameError: ItineraryValidationError? = null,
     val destinationAirportCity: String = "",
     val durationHours: String = "0",
     val durationMinutes: String = "0",
@@ -28,11 +25,13 @@ internal data class FlightFormUiState(
     val isFormValid: Boolean
         get() {
             val hasNoErrors = listOf(
-                flightNumberError, originNameError, destinationAirportNameError,
-                durationError, dateError, timeError
+                flightNumberError,
+                durationError,
+                dateError,
+                timeError
             ).all { it == null }
             val hasAllRequiredFields = flightNumber.isNotBlank() &&
-                    originAirportName.isNotBlank() && originAirportCity.isNotBlank() &&
+                    originAirportCity.isNotBlank() &&
                     destinationName.isNotBlank() && destinationAirportCity.isNotBlank() &&
                     date != null && time != null
             return hasNoErrors && hasAllRequiredFields

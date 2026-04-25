@@ -120,7 +120,9 @@ private fun ActivityFormContent(
                 label = { Text(stringResource(R.string.activity_location_label)) },
                 placeholder = { Text(stringResource(R.string.activity_location_placeholder)) },
                 singleLine = true,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = MaterialTheme.spacing.default)
             )
             DateSelectionField(
                 value = uiState.date,
@@ -129,7 +131,9 @@ private fun ActivityFormContent(
                 hasError = uiState.dateError != null,
                 supportingText = { uiState.dateError?.let { Text(it.toErrorMessage(context)) } },
                 onDateSelect = onDateChange,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = MaterialTheme.spacing.default)
             )
             TimeSelectionField(
                 value = uiState.time,

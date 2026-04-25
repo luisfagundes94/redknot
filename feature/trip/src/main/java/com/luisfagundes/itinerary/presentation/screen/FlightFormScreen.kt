@@ -90,8 +90,8 @@ private fun FlightFormFields(
     uiState: FlightFormUiState,
     onFlightNumberChange: (String) -> Unit,
     onCompanyNameChange: (String) -> Unit,
-    onOriginChange: (code: String, city: String) -> Unit,
-    onDestinationChange: (code: String, city: String) -> Unit,
+    onOriginChange: (city: String) -> Unit,
+    onDestinationChange: (city: String) -> Unit,
     onDurationChange: (hours: String, minutes: String) -> Unit,
     onSeatNumberChange: (String) -> Unit,
     onDateChange: (LocalDate?) -> Unit,
@@ -127,64 +127,31 @@ private fun FlightFormFields(
             singleLine = true,
             modifier = Modifier.fillMaxWidth()
         )
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small),
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            OutlinedTextField(
-                value = uiState.originAirportName,
-                onValueChange = { onOriginChange(it, uiState.originAirportCity) },
-                label = { Text(stringResource(R.string.origin_airport_code_label)) },
-                placeholder = { Text(stringResource(R.string.origin_airport_code_placeholder)) },
-                singleLine = true,
-                isError = uiState.originNameError != null,
-                supportingText = {
-                    uiState.originNameError?.let { Text(it.toErrorMessage(context)) }
-                },
-                modifier = Modifier.weight(1f)
-            )
-            OutlinedTextField(
-                value = uiState.originAirportCity,
-                onValueChange = { onOriginChange(uiState.originAirportName, it) },
-                label = { Text(stringResource(R.string.origin_airport_city_label)) },
-                placeholder = { Text(stringResource(R.string.origin_airport_city_placeholder)) },
-                singleLine = true,
-                modifier = Modifier.weight(2f)
-            )
-        }
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small),
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            OutlinedTextField(
-                value = uiState.destinationName,
-                onValueChange = { onDestinationChange(it, uiState.destinationAirportCity) },
-                label = { Text(stringResource(R.string.destination_airport_code_label)) },
-                placeholder = {
-                    Text(stringResource(R.string.destination_airport_code_placeholder))
-                },
-                singleLine = true,
-                isError = uiState.destinationAirportNameError != null,
-                supportingText = {
-                    uiState.destinationAirportNameError?.let { Text(it.toErrorMessage(context)) }
-                },
-                modifier = Modifier.weight(1f)
-            )
-            OutlinedTextField(
-                value = uiState.destinationAirportCity,
-                onValueChange = { onDestinationChange(uiState.destinationName, it) },
-                label = { Text(stringResource(R.string.destination_airport_city_label)) },
-                placeholder = {
-                    Text(stringResource(R.string.destination_airport_city_placeholder))
-                },
-                singleLine = true,
-                modifier = Modifier.weight(2f)
-            )
-        }
+        OutlinedTextField(
+            value = uiState.originAirportCity,
+            onValueChange = { onOriginChange(it) },
+            label = { Text(stringResource(R.string.origin_airport_city_label)) },
+            placeholder = { Text(stringResource(R.string.origin_airport_city_placeholder)) },
+            singleLine = true,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = MaterialTheme.spacing.default)
+        )
+        OutlinedTextField(
+            value = uiState.destinationAirportCity,
+            onValueChange = { onDestinationChange(it) },
+            label = { Text(stringResource(R.string.destination_airport_city_label)) },
+            placeholder = {
+                Text(stringResource(R.string.destination_airport_city_placeholder))
+            },
+            singleLine = true,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = MaterialTheme.spacing.default)
+        )
         Text(
             text = stringResource(R.string.flight_duration_label),
-            style = MaterialTheme.typography.labelMedium,
-            modifier = Modifier.padding(top = MaterialTheme.spacing.small)
+            modifier = Modifier.padding(vertical = MaterialTheme.spacing.default)
         )
         Row(
             horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small),
@@ -226,7 +193,9 @@ private fun FlightFormFields(
             hasError = uiState.dateError != null,
             supportingText = { uiState.dateError?.let { Text(it.toErrorMessage(context)) } },
             onDateSelect = onDateChange,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = MaterialTheme.spacing.default)
         )
         TimeSelectionField(
             value = uiState.time,
