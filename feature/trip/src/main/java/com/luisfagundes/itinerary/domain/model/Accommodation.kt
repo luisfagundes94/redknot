@@ -12,4 +12,4 @@ internal data class Accommodation(
     val address: String,
     val checkInType: CheckInType,
     val imageUrl: String
-) : ItineraryItem()
+) : ItineraryItem

@@ -10,6 +10,7 @@ import com.luisfagundes.itinerary.domain.model.Activity
 import com.luisfagundes.itinerary.domain.model.CheckInType
 import com.luisfagundes.itinerary.domain.model.Flight
 import com.luisfagundes.itinerary.domain.model.ItineraryItem
+import com.luisfagundes.itinerary.domain.model.ItineraryItemType
 import com.luisfagundes.itinerary.domain.model.Restaurant
 
 internal class ItineraryItemMapper(
@@ -20,6 +21,13 @@ internal class ItineraryItemMapper(
         is AccommodationEntity -> toDomain(entity)
         is RestaurantEntity -> toDomain(entity)
         is ActivityEntity -> toDomain(entity)
+    }
+
+    fun toType(item: ItineraryItem) = when (item) {
+        is Activity -> ItineraryItemType.ACTIVITY
+        is Accommodation -> ItineraryItemType.ACCOMMODATION
+        is Flight -> ItineraryItemType.FLIGHT
+        is Restaurant -> ItineraryItemType.RESTAURANT
     }
 
     private fun toDomain(entity: FlightEntity) = Flight(

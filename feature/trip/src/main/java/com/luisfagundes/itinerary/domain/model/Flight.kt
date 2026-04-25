@@ -14,4 +14,4 @@ internal data class Flight(
     val destination: Airport,
     val duration: Duration,
     val seatNumber: String
-) : ItineraryItem()
+) : ItineraryItem

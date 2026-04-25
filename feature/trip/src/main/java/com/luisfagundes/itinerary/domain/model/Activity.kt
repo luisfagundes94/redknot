@@ -12,4 +12,4 @@ internal data class Activity(
     val description: String?,
     val location: String?,
     val imageUrl: String?
-) : ItineraryItem()
+) : ItineraryItem
