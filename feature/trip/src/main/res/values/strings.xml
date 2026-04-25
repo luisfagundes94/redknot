@@ -55,7 +55,7 @@
     <string name="activity_description_label">Description (Optional)</string>
     <string name="activity_description_placeholder">Optional details</string>
     <string name="activity_location_label">Location</string>
-    <string name="activity_location_placeholder">e.g. Rome, Italy</string>
+    <string name="activity_location_placeholder">e.g. 7795 W Flagler Street</string>
     <!-- Accommodation form -->
     <string name="create_accommodation">Add Accommodation</string>
     <string name="accommodation_name_label">Name</string>
