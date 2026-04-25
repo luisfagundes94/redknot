@@ -48,10 +48,22 @@ internal class ActivityFormViewModel @Inject constructor(
     }
 
     fun onSubmit(tripId: Int) = viewModelScope.launch(dispatcher) {
-        val state = getCurrentState()
         setState { it.copy(isLoading = true) }
 
-        val activity = Activity(
+        val activity = createActivity(tripId)
+
+        createItineraryItemUseCase(activity).fold(
+            onSuccess = { sendEffect { ActivityFormUiEffect.NavigateBack } },
+            onFailure = { sendEffect { ActivityFormUiEffect.ShowErrorToast(it.toString()) } }
+        )
+
+        setState { it.copy(isLoading = false) }
+    }
+
+    private fun createActivity(tripId: Int): Activity {
+        val state = getCurrentState()
+
+        return Activity(
             id = UUID.randomUUID().toString(),
             tripId = tripId,
             date = state.date ?: LocalDate.now(),
@@ -61,12 +73,5 @@ internal class ActivityFormViewModel @Inject constructor(
             location = state.location.ifBlank { null },
             imageUrl = null
         )
-
-        createItineraryItemUseCase(activity).fold(
-            onSuccess = { sendEffect { ActivityFormUiEffect.NavigateBack } },
-            onFailure = { sendEffect { ActivityFormUiEffect.ShowErrorToast(it.toString()) } }
-        )
-
-        setState { it.copy(isLoading = false) }
     }
 }

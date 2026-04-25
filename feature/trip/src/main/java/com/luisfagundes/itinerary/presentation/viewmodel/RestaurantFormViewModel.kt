@@ -41,16 +41,9 @@ internal class RestaurantFormViewModel @Inject constructor(
     }
 
     fun onSubmit(tripId: Int) = viewModelScope.launch(dispatcher) {
-        val state = getCurrentState()
         setState { it.copy(isLoading = true) }
 
-        val restaurant = Restaurant(
-            id = UUID.randomUUID().toString(),
-            tripId = tripId,
-            date = state.date ?: LocalDate.now(),
-            time = state.time ?: LocalTime.now(),
-            name = state.name
-        )
+        val restaurant = createRestaurant(tripId)
 
         createItineraryItemUseCase(restaurant).fold(
             onSuccess = { sendEffect { RestaurantFormUiEffect.NavigateBack } },
@@ -58,5 +51,17 @@ internal class RestaurantFormViewModel @Inject constructor(
         )
 
         setState { it.copy(isLoading = false) }
+    }
+
+    private fun createRestaurant(tripId: Int): Restaurant {
+        val state = getCurrentState()
+
+        return Restaurant(
+            id = UUID.randomUUID().toString(),
+            tripId = tripId,
+            date = state.date ?: LocalDate.now(),
+            time = state.time ?: LocalTime.now(),
+            name = state.name
+        )
     }
 }

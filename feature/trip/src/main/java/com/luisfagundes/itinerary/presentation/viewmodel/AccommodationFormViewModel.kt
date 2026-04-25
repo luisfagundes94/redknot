@@ -52,10 +52,22 @@ internal class AccommodationFormViewModel @Inject constructor(
     }
 
     fun onSubmit(tripId: Int) = viewModelScope.launch(dispatcher) {
-        val state = getCurrentState()
         setState { it.copy(isLoading = true) }
 
-        val accommodation = Accommodation(
+        val accommodation = createAccommodation(tripId)
+
+        createItineraryItemUseCase(accommodation).fold(
+            onSuccess = { sendEffect { AccommodationFormUiEffect.NavigateBack } },
+            onFailure = { sendEffect { AccommodationFormUiEffect.ShowErrorToast(it.toString()) } }
+        )
+
+        setState { it.copy(isLoading = false) }
+    }
+
+    private fun createAccommodation(tripId: Int): Accommodation {
+        val state = getCurrentState()
+
+        return Accommodation(
             id = UUID.randomUUID().toString(),
             tripId = tripId,
             date = state.date ?: LocalDate.now(),
@@ -65,12 +77,5 @@ internal class AccommodationFormViewModel @Inject constructor(
             checkInType = state.checkInType,
             imageUrl = ""
         )
-
-        createItineraryItemUseCase(accommodation).fold(
-            onSuccess = { sendEffect { AccommodationFormUiEffect.NavigateBack } },
-            onFailure = { sendEffect { AccommodationFormUiEffect.ShowErrorToast(it.toString()) } }
-        )
-
-        setState { it.copy(isLoading = false) }
     }
 }

@@ -1,8 +1,8 @@
 package com.luisfagundes.itinerary.presentation.viewmodel
 
-import com.luisfagundes.core.presentation.arch.viewmodel.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.luisfagundes.core.di.IoDispatcher
+import com.luisfagundes.core.presentation.arch.viewmodel.ViewModel
 import com.luisfagundes.itinerary.domain.model.Airport
 import com.luisfagundes.itinerary.domain.model.Flight
 import com.luisfagundes.itinerary.domain.usecase.CreateItineraryItemUseCase
@@ -15,7 +15,6 @@ import com.luisfagundes.itinerary.presentation.viewmodel.effect.FlightFormUiEffe
 import com.luisfagundes.itinerary.presentation.viewmodel.state.FlightFormUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalTime
@@ -95,21 +94,9 @@ internal class FlightFormViewModel @Inject constructor(
     }
 
     fun onSubmit(tripId: Int) = viewModelScope.launch(dispatcher) {
-        val state = getCurrentState()
         setState { it.copy(isLoading = true) }
 
-        val flight = Flight(
-            id = UUID.randomUUID().toString(),
-            tripId = tripId,
-            date = state.date ?: LocalDate.now(),
-            time = state.time ?: LocalTime.now(),
-            flightNumber = state.flightNumber,
-            origin = Airport(code = state.originCode, city = state.originCity),
-            destination = Airport(code = state.destinationCode, city = state.destinationCity),
-            duration = (state.durationHours.toIntOrNull() ?: 0).hours +
-                    (state.durationMinutes.toIntOrNull() ?: 0).minutes,
-            seatNumber = state.seatNumber
-        )
+        val flight = createFlight(tripId)
 
         createItineraryItemUseCase(flight).fold(
             onSuccess = { sendEffect { FlightFormUiEffect.NavigateBack } },
@@ -117,5 +104,24 @@ internal class FlightFormViewModel @Inject constructor(
         )
 
         setState { it.copy(isLoading = false) }
+    }
+
+    private fun createFlight(tripId: Int): Flight {
+        val state = getCurrentState()
+
+        val hours = (state.durationHours.toIntOrNull() ?: 0).hours
+        val minutes = (state.durationMinutes.toIntOrNull() ?: 0).minutes
+
+        return Flight(
+            id = UUID.randomUUID().toString(),
+            tripId = tripId,
+            date = state.date ?: LocalDate.now(),
+            time = state.time ?: LocalTime.now(),
+            flightNumber = state.flightNumber,
+            origin = Airport(code = state.originCode, city = state.originCity),
+            destination = Airport(code = state.destinationCode, city = state.destinationCity),
+            duration = hours + minutes,
+            seatNumber = state.seatNumber
+        )
     }
 }
