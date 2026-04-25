@@ -3,6 +3,7 @@ package com.luisfagundes.itinerary.presentation.viewmodel
 import androidx.lifecycle.viewModelScope
 import com.luisfagundes.core.di.IoDispatcher
 import com.luisfagundes.core.presentation.arch.viewmodel.ViewModel
+import com.luisfagundes.itinerary.domain.model.MealType
 import com.luisfagundes.itinerary.domain.model.Restaurant
 import com.luisfagundes.itinerary.domain.usecase.CreateItineraryItemUseCase
 import com.luisfagundes.itinerary.domain.usecase.ValidateItineraryDateUseCase
@@ -30,6 +31,14 @@ internal class RestaurantFormViewModel @Inject constructor(
 ) {
     fun onNameChange(name: String) {
         setState { it.copy(name = name, nameError = validateNameUseCase(name)) }
+    }
+
+    fun onAddressChange(address: String) {
+        setState { it.copy(address = address) }
+    }
+    
+    fun onMealTypeChange(mealType: MealType) {
+        setState { it.copy(mealType = mealType) }
     }
 
     fun onDateChange(date: LocalDate?) {
@@ -61,7 +70,9 @@ internal class RestaurantFormViewModel @Inject constructor(
             tripId = tripId,
             date = state.date ?: LocalDate.now(),
             time = state.time ?: LocalTime.now(),
-            name = state.name
+            name = state.name,
+            address = state.address,
+            mealType = state.mealType
         )
     }
 }

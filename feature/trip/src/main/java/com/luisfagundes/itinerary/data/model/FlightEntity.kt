@@ -30,6 +30,7 @@ internal data class FlightEntity(
     @ColumnInfo("date") override val date: LocalDate,
     @ColumnInfo("time") override val time: LocalTime,
     @ColumnInfo("flight_number") val flightNumber: String,
+    @ColumnInfo("company_name") val companyName: String,
     @Embedded(prefix = "origin_") val origin: AirportEntity,
     @Embedded(prefix = "dest_") val destination: AirportEntity,
     @ColumnInfo("duration") val duration: Duration,

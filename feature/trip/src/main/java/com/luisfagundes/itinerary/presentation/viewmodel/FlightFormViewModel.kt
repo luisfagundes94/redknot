@@ -26,7 +26,6 @@ import kotlin.time.Duration.Companion.minutes
 @HiltViewModel
 internal class FlightFormViewModel @Inject constructor(
     private val validateFlightNumberUseCase: ValidateFlightNumberUseCase,
-    private val validateAirportCodeUseCase: ValidateAirportCodeUseCase,
     private val validateDurationErrorUseCase: ValidateDurationErrorUseCase,
     private val validateDateUseCase: ValidateItineraryDateUseCase,
     private val validateTimeUseCase: ValidateTimeUseCase,
@@ -44,26 +43,20 @@ internal class FlightFormViewModel @Inject constructor(
         }
     }
 
-    fun onOriginChange(code: String, city: String) {
-        val upperCode = code.uppercase()
-
+    fun onOriginChange(name: String, city: String) {
         setState {
             it.copy(
-                originCode = upperCode,
-                originCodeError = validateAirportCodeUseCase(upperCode),
-                originCity = city
+                originAirportName = name,
+                originAirportCity = city
             )
         }
     }
 
-    fun onDestinationChange(code: String, city: String) {
-        val upperCode = code.uppercase()
-
+    fun onDestinationChange(name: String, city: String) {
         setState {
             it.copy(
-                destinationCode = upperCode,
-                destinationCodeError = validateAirportCodeUseCase(upperCode),
-                destinationCity = city
+                destinationName = name,
+                destinationAirportCity = city
             )
         }
     }
@@ -93,6 +86,10 @@ internal class FlightFormViewModel @Inject constructor(
         setState { it.copy(time = time, timeError = validateTimeUseCase(time)) }
     }
 
+    fun onCompanyNameChange(name: String) {
+        setState { it.copy(companyName = name) }
+    }
+
     fun onSubmit(tripId: Int) = viewModelScope.launch(dispatcher) {
         setState { it.copy(isLoading = true) }
 
@@ -118,8 +115,9 @@ internal class FlightFormViewModel @Inject constructor(
             date = state.date ?: LocalDate.now(),
             time = state.time ?: LocalTime.now(),
             flightNumber = state.flightNumber,
-            origin = Airport(code = state.originCode, city = state.originCity),
-            destination = Airport(code = state.destinationCode, city = state.destinationCity),
+            companyName = state.companyName,
+            origin = Airport(name = state.originAirportName, city = state.originAirportCity),
+            destination = Airport(name = state.destinationName, city = state.destinationAirportCity),
             duration = hours + minutes,
             seatNumber = state.seatNumber
         )

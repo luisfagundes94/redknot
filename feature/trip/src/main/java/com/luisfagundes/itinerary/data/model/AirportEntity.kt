@@ -1,6 +1,9 @@
 package com.luisfagundes.itinerary.data.model
 
+import androidx.room.Entity
+
+@Entity
 internal data class AirportEntity(
-    val code: String,
+    val name: String,
     val city: String
 )

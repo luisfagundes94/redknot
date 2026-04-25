@@ -102,7 +102,7 @@ internal class ItineraryViewModelTest {
     fun `OnNewItineraryItemClick sends NavigateToItineraryItemForm effect`() = runTest {
         viewModel.uiEffect.test {
             // When
-            viewModel.onNewItineraryItemClick()
+            viewModel.onAddItineraryItem()
 
             // Then
             assertEquals(ItineraryUiEffect.NavigateToItineraryItemForm, awaitItem())
@@ -115,7 +115,7 @@ private val fakeActivity = Activity(
     tripId = 1,
     date = LocalDate.of(2025, 6, 10),
     time = LocalTime.of(10, 0),
-    title = "City Tour",
+    name = "City Tour",
     description = null,
     location = null,
     imageUrl = null

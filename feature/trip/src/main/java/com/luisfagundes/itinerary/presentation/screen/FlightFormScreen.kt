@@ -72,6 +72,7 @@ internal fun FlightFormScreen(
         FlightFormFields(
             uiState = uiState,
             onFlightNumberChange = viewModel::onFlightNumberChange,
+            onCompanyNameChange = viewModel::onCompanyNameChange,
             onOriginChange = viewModel::onOriginChange,
             onDestinationChange = viewModel::onDestinationChange,
             onDurationChange = viewModel::onDurationChange,
@@ -88,6 +89,7 @@ internal fun FlightFormScreen(
 private fun FlightFormFields(
     uiState: FlightFormUiState,
     onFlightNumberChange: (String) -> Unit,
+    onCompanyNameChange: (String) -> Unit,
     onOriginChange: (code: String, city: String) -> Unit,
     onDestinationChange: (code: String, city: String) -> Unit,
     onDurationChange: (hours: String, minutes: String) -> Unit,
@@ -117,25 +119,33 @@ private fun FlightFormFields(
             },
             modifier = Modifier.fillMaxWidth()
         )
+        OutlinedTextField(
+            value = uiState.companyName,
+            onValueChange = onCompanyNameChange,
+            label = { Text(stringResource(R.string.company_name_label)) },
+            placeholder = { Text(stringResource(R.string.company_name_placeholder)) },
+            singleLine = true,
+            modifier = Modifier.fillMaxWidth()
+        )
         Row(
             horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small),
             modifier = Modifier.fillMaxWidth()
         ) {
             OutlinedTextField(
-                value = uiState.originCode,
-                onValueChange = { onOriginChange(it, uiState.originCity) },
+                value = uiState.originAirportName,
+                onValueChange = { onOriginChange(it, uiState.originAirportCity) },
                 label = { Text(stringResource(R.string.origin_airport_code_label)) },
                 placeholder = { Text(stringResource(R.string.origin_airport_code_placeholder)) },
                 singleLine = true,
-                isError = uiState.originCodeError != null,
+                isError = uiState.originNameError != null,
                 supportingText = {
-                    uiState.originCodeError?.let { Text(it.toErrorMessage(context)) }
+                    uiState.originNameError?.let { Text(it.toErrorMessage(context)) }
                 },
                 modifier = Modifier.weight(1f)
             )
             OutlinedTextField(
-                value = uiState.originCity,
-                onValueChange = { onOriginChange(uiState.originCode, it) },
+                value = uiState.originAirportCity,
+                onValueChange = { onOriginChange(uiState.originAirportName, it) },
                 label = { Text(stringResource(R.string.origin_airport_city_label)) },
                 placeholder = { Text(stringResource(R.string.origin_airport_city_placeholder)) },
                 singleLine = true,
@@ -147,22 +157,22 @@ private fun FlightFormFields(
             modifier = Modifier.fillMaxWidth()
         ) {
             OutlinedTextField(
-                value = uiState.destinationCode,
-                onValueChange = { onDestinationChange(it, uiState.destinationCity) },
+                value = uiState.destinationName,
+                onValueChange = { onDestinationChange(it, uiState.destinationAirportCity) },
                 label = { Text(stringResource(R.string.destination_airport_code_label)) },
                 placeholder = {
                     Text(stringResource(R.string.destination_airport_code_placeholder))
                 },
                 singleLine = true,
-                isError = uiState.destinationCodeError != null,
+                isError = uiState.destinationAirportNameError != null,
                 supportingText = {
-                    uiState.destinationCodeError?.let { Text(it.toErrorMessage(context)) }
+                    uiState.destinationAirportNameError?.let { Text(it.toErrorMessage(context)) }
                 },
                 modifier = Modifier.weight(1f)
             )
             OutlinedTextField(
-                value = uiState.destinationCity,
-                onValueChange = { onDestinationChange(uiState.destinationCode, it) },
+                value = uiState.destinationAirportCity,
+                onValueChange = { onDestinationChange(uiState.destinationName, it) },
                 label = { Text(stringResource(R.string.destination_airport_city_label)) },
                 placeholder = {
                     Text(stringResource(R.string.destination_airport_city_placeholder))

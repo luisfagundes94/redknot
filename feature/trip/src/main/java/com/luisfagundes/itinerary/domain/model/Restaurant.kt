@@ -9,4 +9,6 @@ internal data class Restaurant(
     override val date: LocalDate,
     override val time: LocalTime,
     val name: String,
+    val address: String,
+    val mealType: MealType
 ) : ItineraryItem

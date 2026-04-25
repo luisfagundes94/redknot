@@ -28,6 +28,8 @@ internal data class RestaurantEntity(
     @ColumnInfo("date") override val date: LocalDate,
     @ColumnInfo("time") override val time: LocalTime,
     @ColumnInfo("name") val name: String,
+    @ColumnInfo("address") val address: String,
+    @ColumnInfo("meal_type") val mealType: String
 ): ItineraryItemEntity {
     override fun toItineraryItemType() = ItineraryItemType.RESTAURANT
 }

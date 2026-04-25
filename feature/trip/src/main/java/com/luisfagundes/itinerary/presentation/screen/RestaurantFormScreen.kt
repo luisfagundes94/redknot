@@ -28,6 +28,8 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.luisfagundes.designsystem.components.RedknotTopBar
 import com.luisfagundes.designsystem.theme.spacing
+import com.luisfagundes.itinerary.domain.model.MealType
+import com.luisfagundes.itinerary.presentation.components.MealTypeComboBox
 import com.luisfagundes.itinerary.presentation.mapper.toErrorMessage
 import com.luisfagundes.itinerary.presentation.viewmodel.RestaurantFormViewModel
 import com.luisfagundes.itinerary.presentation.viewmodel.effect.RestaurantFormUiEffect
@@ -59,7 +61,9 @@ internal fun RestaurantFormScreen(
 
     RestaurantFormContent(
         uiState = uiState,
+        onMealTypeChange = viewModel::onMealTypeChange,
         onNameChange = viewModel::onNameChange,
+        onAddressChange = viewModel::onAddressChange,
         onDateChange = viewModel::onDateChange,
         onTimeChange = viewModel::onTimeChange,
         onSubmit = { viewModel.onSubmit(tripId) },
@@ -70,7 +74,9 @@ internal fun RestaurantFormScreen(
 @Composable
 private fun RestaurantFormContent(
     uiState: RestaurantFormUiState,
+    onMealTypeChange: (MealType) -> Unit,
     onNameChange: (String) -> Unit,
+    onAddressChange: (String) -> Unit,
     onDateChange: (LocalDate?) -> Unit,
     onTimeChange: (LocalTime) -> Unit,
     onSubmit: () -> Unit,
@@ -93,11 +99,28 @@ private fun RestaurantFormContent(
                 .fillMaxWidth()
                 .verticalScroll(rememberScrollState())
         ) {
+            MealTypeComboBox(
+                selectedMealType = uiState.mealType,
+                onMealTypeSelected = onMealTypeChange,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = MaterialTheme.spacing.default)
+            )
             OutlinedTextField(
                 value = uiState.name,
                 onValueChange = onNameChange,
                 label = { Text(stringResource(R.string.restaurant_name_label)) },
                 placeholder = { Text(stringResource(R.string.restaurant_name_placeholder)) },
+                singleLine = true,
+                isError = uiState.nameError != null,
+                supportingText = { uiState.nameError?.let { Text(it.toErrorMessage(context)) } },
+                modifier = Modifier.fillMaxWidth()
+            )
+            OutlinedTextField(
+                value = uiState.address,
+                onValueChange = onAddressChange,
+                label = { Text(stringResource(R.string.address_label)) },
+                placeholder = { Text(stringResource(R.string.address_placeholder)) },
                 singleLine = true,
                 isError = uiState.nameError != null,
                 supportingText = { uiState.nameError?.let { Text(it.toErrorMessage(context)) } },

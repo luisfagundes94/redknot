@@ -30,7 +30,7 @@ internal class ItineraryViewModel @Inject constructor(
         }
     }
 
-    fun onNewItineraryItemClick() {
+    fun onAddItineraryItem() {
         sendEffect { ItineraryUiEffect.NavigateToItineraryItemForm }
     }
 }

@@ -94,6 +94,15 @@
     <string name="invalid_airport_code_error_message">Enter a valid 3-letter IATA code</string>
     <string name="invalid_duration_error_message">Duration must be greater than 0</string>
     <string name="missing_time_error_message">Time must be selected</string>
+    <string name="flight_to">Flight to %1$s</string>
+    <string name="hotel_check_in">Hotel Check-In</string>
+    <string name="hotel_check_out">Hotel Check-Out</string>
+    <string name="company">Company name</string>
+    <string name="company_name_placeholder">Air France</string>
+    <string name="company_name_label">Company</string>
+    <string name="address_label">Address</string>
+    <string name="address_placeholder">5489 Central Florida Pkwy</string>
+    <string name="meal_type">Meal Type</string>
 
     <plurals name="trip_duration_days">
         <item quantity="one">%d day</item>

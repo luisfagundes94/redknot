@@ -11,6 +11,7 @@ import com.luisfagundes.itinerary.domain.model.CheckInType
 import com.luisfagundes.itinerary.domain.model.Flight
 import com.luisfagundes.itinerary.domain.model.ItineraryItem
 import com.luisfagundes.itinerary.domain.model.ItineraryItemType
+import com.luisfagundes.itinerary.domain.model.MealType
 import com.luisfagundes.itinerary.domain.model.Restaurant
 
 internal class ItineraryItemMapper(
@@ -36,6 +37,7 @@ internal class ItineraryItemMapper(
         date = entity.date,
         time = entity.time,
         flightNumber = entity.flightNumber,
+        companyName = entity.companyName,
         origin = airportMapper.toDomain(entity.origin),
         destination = airportMapper.toDomain(entity.destination),
         duration = entity.duration,
@@ -58,7 +60,9 @@ internal class ItineraryItemMapper(
         tripId = entity.tripId,
         date = entity.date,
         time = entity.time,
-        name = entity.name
+        name = entity.name,
+        address = entity.address,
+        mealType = MealType.valueOf(entity.mealType)
     )
 
     private fun toDomain(entity: ActivityEntity) = Activity(
@@ -85,6 +89,7 @@ internal class ItineraryItemMapper(
         date = domain.date,
         time = domain.time,
         flightNumber = domain.flightNumber,
+        companyName = domain.companyName,
         origin = airportMapper.toEntity(domain.origin),
         destination = airportMapper.toEntity(domain.destination),
         duration = domain.duration,
@@ -107,7 +112,9 @@ internal class ItineraryItemMapper(
         tripId = domain.tripId,
         date = domain.date,
         time = domain.time,
-        name = domain.name
+        name = domain.name,
+        address = domain.address,
+        mealType = domain.mealType.name
     )
 
     private fun toEntity(domain: Activity) = ActivityEntity(

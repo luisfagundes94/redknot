@@ -8,12 +8,13 @@ import java.time.LocalTime
 internal data class FlightFormUiState(
     val flightNumber: String = "",
     val flightNumberError: ItineraryValidationError? = null,
-    val originCode: String = "",
-    val originCodeError: ItineraryValidationError? = null,
-    val originCity: String = "",
-    val destinationCode: String = "",
-    val destinationCodeError: ItineraryValidationError? = null,
-    val destinationCity: String = "",
+    val companyName: String = "",
+    val originAirportName: String = "",
+    val originNameError: ItineraryValidationError? = null,
+    val originAirportCity: String = "",
+    val destinationName: String = "",
+    val destinationAirportNameError: ItineraryValidationError? = null,
+    val destinationAirportCity: String = "",
     val durationHours: String = "0",
     val durationMinutes: String = "0",
     val durationError: ItineraryValidationError? = null,
@@ -27,12 +28,12 @@ internal data class FlightFormUiState(
     val isFormValid: Boolean
         get() {
             val hasNoErrors = listOf(
-                flightNumberError, originCodeError, destinationCodeError,
+                flightNumberError, originNameError, destinationAirportNameError,
                 durationError, dateError, timeError
             ).all { it == null }
             val hasAllRequiredFields = flightNumber.isNotBlank() &&
-                    originCode.isNotBlank() && originCity.isNotBlank() &&
-                    destinationCode.isNotBlank() && destinationCity.isNotBlank() &&
+                    originAirportName.isNotBlank() && originAirportCity.isNotBlank() &&
+                    destinationName.isNotBlank() && destinationAirportCity.isNotBlank() &&
                     date != null && time != null
             return hasNoErrors && hasAllRequiredFields
         }

@@ -6,15 +6,15 @@ import com.luisfagundes.itinerary.domain.model.Airport
 internal class AirportMapper {
     fun toDomain(entity: AirportEntity): Airport {
         return Airport(
-            code = entity.code,
+            name = entity.name,
             city = entity.city
         )
     }
 
     fun toEntity(domain: Airport): AirportEntity {
         return AirportEntity(
-            code = domain.code,
-            city = domain.city,
+            name = domain.name,
+            city = domain.city
         )
     }
 }

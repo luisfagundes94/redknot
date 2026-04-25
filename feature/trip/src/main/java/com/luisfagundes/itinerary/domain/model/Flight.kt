@@ -9,6 +9,7 @@ internal data class Flight(
     override val tripId: Int,
     override val date: LocalDate,
     override val time: LocalTime,
+    val companyName: String,
     val flightNumber: String,
     val origin: Airport,
     val destination: Airport,
