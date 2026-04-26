@@ -102,8 +102,7 @@ private fun ItineraryTimelineContent(
         modifier = modifier,
         floatingActionButton = {
             FloatingActionButton(
-                onClick = onAddItem,
-                containerColor = MaterialTheme.colorScheme.primary
+                onClick = onAddItem
             ) {
                 Icon(
                     imageVector = Icons.Default.Add,
