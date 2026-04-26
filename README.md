@@ -9,6 +9,7 @@ A trip planning Android app built with Kotlin and Jetpack Compose.
 
 ## Screenshots
 <p float="left">
+  <img src="screenshots/trip_form_empty.png" width="200" /> 
   <img src="screenshots/trip_form.png" width="200" /> 
   <img src="screenshots/trip_list.png" width="200" /> 
   <img src="screenshots/trip_itinerary.png" width="200" /> 
