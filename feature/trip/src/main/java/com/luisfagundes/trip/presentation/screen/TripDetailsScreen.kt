@@ -34,7 +34,6 @@ import com.luisfagundes.designsystem.theme.RedknotPreview
 import com.luisfagundes.designsystem.theme.RedknotThemePreview
 import com.luisfagundes.designsystem.theme.spacing
 import com.luisfagundes.itinerary.presentation.screen.ItineraryScreen
-import com.luisfagundes.itinerary.presentation.viewmodel.effect.ItineraryUiEffect
 import com.luisfagundes.trip.R
 import com.luisfagundes.trip.domain.model.Trip
 import com.luisfagundes.trip.presentation.components.details.DeleteTripConfirmationDialog
@@ -72,7 +71,7 @@ internal fun TripDetailsScreen(
 
     TripDetailsContent(
         uiState = uiState,
-        onNewItineraryItemClick = onNewItineraryItemClick,
+        onAddItineraryItemClick = onNewItineraryItemClick,
         onDeleteClick = { viewModel.deleteTrip(tripId) },
         onBackClick = onBackClick
     )
@@ -81,7 +80,7 @@ internal fun TripDetailsScreen(
 @Composable
 private fun TripDetailsContent(
     uiState: TripDetailsUiState,
-    onNewItineraryItemClick: () -> Unit,
+    onAddItineraryItemClick: () -> Unit,
     onDeleteClick: () -> Unit,
     onBackClick: () -> Unit,
 ) {
@@ -99,11 +98,7 @@ private fun TripDetailsContent(
             itineraryContent = {
                 ItineraryScreen(
                     tripId = uiState.trip.id,
-                    onEffect = { effect ->
-                        when (effect) {
-                            is ItineraryUiEffect.NavigateToItineraryItemForm -> onNewItineraryItemClick()
-                        }
-                    }
+                    onAddItineraryItemClick = onAddItineraryItemClick
                 )
             },
             onDeleteClick = onDeleteClick,

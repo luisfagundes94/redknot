@@ -40,7 +40,7 @@ import com.luisfagundes.trip.R
 @Composable
 internal fun ItineraryScreen(
     tripId: Int,
-    onEffect: (ItineraryUiEffect) -> Unit,
+    onAddItineraryItemClick: () -> Unit,
     viewModel: ItineraryViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -51,7 +51,11 @@ internal fun ItineraryScreen(
 
     CollectUiEffects(
         flow = viewModel.uiEffect,
-        onEffect = onEffect
+        onEffect = { effect ->
+            when (effect) {
+                is ItineraryUiEffect.NavigateToItineraryItemForm -> onAddItineraryItemClick()
+            }
+        }
     )
 
     ItineraryContent(
