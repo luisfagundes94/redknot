@@ -16,13 +16,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.navigation3.runtime.rememberNavBackStack
 import com.luisfagundes.designsystem.theme.RedknotTheme
 import com.luisfagundes.redknot.navigation.AppNavDisplay
 import com.luisfagundes.redknot.navigation.Navigator
 import com.luisfagundes.redknot.navigation.TopLevelDestinations
 import com.luisfagundes.redknot.navigation.rememberNavigationState
-import com.luisfagundes.trip.presentation.navigation.TripListRoute
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

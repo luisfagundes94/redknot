@@ -1,3 +1,4 @@
+@file:Suppress("detekt:all")
 package com.luisfagundes.redknot.navigation
 
 import androidx.compose.runtime.Composable

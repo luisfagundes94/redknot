@@ -41,7 +41,7 @@ internal class ItineraryPreviewParameterProvider :
             name = "Florida Alligator Hotel",
             address = "1500 Sand Lake Road",
             checkInType = CheckInType.CHECK_IN,
-            imageUrl = "https://cf.bstatic.com/xdata/images/hotel/max1024x768/277437040.jpg?k=777413f61aaf173f419daaf829a269a43564a8ae8f2d7fb6c14417728c2c27aa&o="
+            imageUrl = ""
         ),
         Restaurant(
             id = "1222",
