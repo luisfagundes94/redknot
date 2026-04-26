@@ -7,6 +7,14 @@ A trip planning Android app built with Kotlin and Jetpack Compose.
 - Create, view, edit, and delete trips
 - Manage itinerary items per trip: flights, accommodations, restaurants, and activities
 
+## Screenshots
+<p float="left">
+  <img src="screenshots/trip_form.png" width="200" /> 
+  <img src="screenshots/trip_list.png" width="200" /> 
+  <img src="screenshots/trip_itinerary.png" width="200" /> 
+  <img src="screenshots/trip_itinerary_type_picker.png" width="200" /> 
+</p>
+
 ## Tech Stack
 
 | Layer | Library |
