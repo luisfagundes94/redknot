@@ -110,9 +110,11 @@ private fun ItineraryTimelineContent(
                 )
             }
         }
-    ) { padding ->
+    ) { internalPadding ->
         LazyColumn(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .padding(internalPadding)
+                .fillMaxWidth(),
             contentPadding = PaddingValues(MaterialTheme.spacing.default)
         ) {
             itemsByDay.forEach { (date, dayItems) ->
