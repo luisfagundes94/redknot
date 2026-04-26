@@ -14,7 +14,6 @@
     <string name="start_date_label">Start Date</string>
     <string name="start_date_placeholder">DD/MM/YYYY</string>
     <string name="end_date_placeholder">DD/MM/YYYY</string>
-    <string name="select_date_icon_description">Select date</string>
     <string name="end_date_label">End Date</string>
     <string name="create_trip">Create Trip</string>
     <string name="error_occurred_try_again">Something wrong happened. Would you like to try again?</string>
@@ -22,7 +21,7 @@
     <string name="empty_title_error_message">Title cannot be empty</string>
     <string name="empty_destination_error_message">Destination cannot be empty</string>
     <string name="missing_date_error_message">Date must be selected</string>
-    <string name="date_before_today_error_message">Date must be today or later</string>
+    <string name="date_in_the_past_error_message">Date cannot be in the past"</string>
     <string name="invalid_destination_error_message">Destination can only contain letters</string>
     <string name="creating_trip">Creating trip…</string>
     <string name="dot">•</string>
@@ -111,4 +110,12 @@
     <string name="delete_trip_dialog_message">This will permanently remove the trip and all its itinerary items.</string>
     <string name="delete_trip_dialog_confirm">Delete</string>
     <string name="delete_trip_dialog_cancel">Cancel</string>
+    <string name="add_expense">Add Expense</string>
+    <string name="amount">AMOUNT</string>
+    <string name="date">DATE</string>
+    <string name="select_date_content_description">Select date</string>
+    <string name="description">Description</string>
+    <string name="expense_description_placeholder">What was this for?</string>
+    <string name="add_expense_error_message">Error Adding Expense</string>
+    <string name="category">CATEGORY</string>
 </resources>

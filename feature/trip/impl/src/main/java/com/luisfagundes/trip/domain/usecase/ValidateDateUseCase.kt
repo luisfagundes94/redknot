@@ -1,24 +1,17 @@
 package com.luisfagundes.trip.domain.usecase
 
+import com.luisfagundes.common.domain.model.DateValidationError
 import com.luisfagundes.trip.domain.model.ValidationError
 import com.luisfagundes.trip.domain.model.ValidationResult
 import java.time.LocalDate
 import javax.inject.Inject
 
 internal class ValidateDateUseCase @Inject constructor() {
-    operator fun invoke(date: LocalDate?): ValidationResult {
+    operator fun invoke(date: LocalDate?): DateValidationError? {
         return when {
-            date == null -> {
-                ValidationResult.Invalid(ValidationError.MISSING_DATE)
-            }
-
-            date.isBefore(LocalDate.now()) -> {
-                ValidationResult.Invalid(ValidationError.DATE_BEFORE_TODAY)
-            }
-
-            else -> {
-                ValidationResult.Valid
-            }
+            date == null -> DateValidationError.UNDEFINED_DATE
+            date.isBefore(LocalDate.now()) -> DateValidationError.DATE_IN_THE_PAST
+            else -> null
         }
     }
 }

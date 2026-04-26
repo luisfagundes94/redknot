@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.luisfagundes.core.common.presentation.arch.compose.CollectUiEffects
+import com.luisfagundes.designsystem.components.RedknotDateSelectionField
 import com.luisfagundes.designsystem.components.RedknotTopBar
 import com.luisfagundes.designsystem.theme.spacing
 import com.luisfagundes.itinerary.domain.model.CheckInType
@@ -153,8 +154,8 @@ private fun AccommodationFormContent(
                     }
                 }
             }
-            DateSelectionField(
-                value = uiState.date,
+            RedknotDateSelectionField(
+                date = uiState.date,
                 label = stringResource(R.string.date_label),
                 placeholder = stringResource(R.string.date_placeholder),
                 hasError = uiState.dateError != null,

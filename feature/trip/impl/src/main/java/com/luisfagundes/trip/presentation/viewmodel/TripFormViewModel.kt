@@ -43,7 +43,7 @@ internal class TripFormViewModel @Inject constructor(
         setState { state ->
             state.copy(
                 startDate = startDate,
-                startDateError = validateDateUseCase(startDate).errorOrNull()
+                startDateError = validateDateUseCase(startDate)
             )
         }
     }
@@ -52,7 +52,7 @@ internal class TripFormViewModel @Inject constructor(
         setState { state ->
             state.copy(
                 endDate = endDate,
-                endDateError = validateDateUseCase(endDate).errorOrNull()
+                endDateError = validateDateUseCase(endDate)
             )
         }
     }

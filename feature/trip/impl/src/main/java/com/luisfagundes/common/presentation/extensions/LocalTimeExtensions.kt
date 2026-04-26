@@ -1,4 +1,4 @@
-package com.luisfagundes.common.presentation
+package com.luisfagundes.common.presentation.extensions
 
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter

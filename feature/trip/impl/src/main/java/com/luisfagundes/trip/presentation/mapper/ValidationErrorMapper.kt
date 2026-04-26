@@ -15,7 +15,7 @@ internal fun ValidationError.toErrorMessage(context: Context): String {
         EMPTY_DESTINATION -> R.string.empty_destination_error_message
         INVALID_DESTINATION_FORMAT -> R.string.invalid_destination_error_message
         MISSING_DATE -> R.string.missing_date_error_message
-        DATE_BEFORE_TODAY -> R.string.date_before_today_error_message
+        DATE_BEFORE_TODAY -> R.string.date_in_the_past_error_message
     }
     return context.getString(stringResId)
 }

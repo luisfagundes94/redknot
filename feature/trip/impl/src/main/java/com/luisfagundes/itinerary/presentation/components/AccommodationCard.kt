@@ -8,7 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import com.luisfagundes.common.presentation.toAmPm
+import com.luisfagundes.common.presentation.extensions.toAmPm
 import com.luisfagundes.designsystem.theme.spacing
 import com.luisfagundes.itinerary.domain.model.Accommodation
 import com.luisfagundes.itinerary.domain.model.CheckInType

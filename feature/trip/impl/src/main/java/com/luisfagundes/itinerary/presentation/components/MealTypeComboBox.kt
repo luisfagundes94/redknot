@@ -15,7 +15,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import com.luisfagundes.common.presentation.toTitleCase
+import com.luisfagundes.common.presentation.extensions.toTitleCase
 import com.luisfagundes.itinerary.domain.model.MealType
 import com.luisfagundes.trip.R
 
