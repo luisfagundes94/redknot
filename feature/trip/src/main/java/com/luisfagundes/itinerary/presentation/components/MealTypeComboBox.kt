@@ -16,6 +16,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import com.luisfagundes.common.presentation.toTitleCase
 import com.luisfagundes.itinerary.domain.model.MealType
 import com.luisfagundes.trip.R
 
@@ -34,8 +35,8 @@ internal fun MealTypeComboBox(
         modifier = modifier
     ) {
         OutlinedTextField(
-            value = selectedMealType?.name?.lowercase()?.replaceFirstChar { it.uppercase() } ?: "",
-            onValueChange = {},
+            value = selectedMealType?.name.toTitleCase(),
+            onValueChange = { Unit },
             readOnly = true,
             label = { Text(stringResource(R.string.meal_type)) },
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
@@ -56,7 +57,7 @@ internal fun MealTypeComboBox(
                 DropdownMenuItem(
                     text = {
                         Text(
-                            text = mealType.name.lowercase().replaceFirstChar { it.uppercase() }
+                            text = mealType.name.toTitleCase()
                         )
                     },
                     onClick = {
