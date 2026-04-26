@@ -1,6 +1,6 @@
 # Redknot
 
-A trip planning and itinerary management Android app built with Kotlin and Jetpack Compose.
+A trip planning Android app built with Kotlin and Jetpack Compose.
 
 ## Features
 
