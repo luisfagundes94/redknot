@@ -25,6 +25,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.luisfagundes.designsystem.components.RedknotDateSelectionField
 import com.luisfagundes.designsystem.components.RedknotTopBar
 import com.luisfagundes.designsystem.theme.spacing
 import com.luisfagundes.itinerary.presentation.mapper.toErrorMessage
@@ -128,8 +129,8 @@ private fun ActivityFormContent(
                     .fillMaxWidth()
                     .padding(top = MaterialTheme.spacing.default)
             )
-            DateSelectionField(
-                value = uiState.date,
+            RedknotDateSelectionField(
+                date = uiState.date,
                 label = stringResource(R.string.date_label),
                 placeholder = stringResource(R.string.date_placeholder),
                 hasError = uiState.dateError != null,
