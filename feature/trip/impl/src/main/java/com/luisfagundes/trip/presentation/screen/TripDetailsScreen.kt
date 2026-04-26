@@ -35,9 +35,9 @@ import com.luisfagundes.designsystem.theme.spacing
 import com.luisfagundes.itinerary.presentation.screen.ItineraryScreen
 import com.luisfagundes.trip.R
 import com.luisfagundes.trip.domain.model.Trip
-import com.luisfagundes.trip.presentation.components.details.DeleteTripConfirmationDialog
-import com.luisfagundes.trip.presentation.components.details.TripDetailsHeader
-import com.luisfagundes.trip.presentation.components.details.TripDetailsTabRow
+import com.luisfagundes.trip.presentation.components.DeleteTripConfirmationDialog
+import com.luisfagundes.trip.presentation.components.TripDetailsHeader
+import com.luisfagundes.trip.presentation.components.TripDetailsTabRow
 import com.luisfagundes.trip.presentation.model.TripDetailsTabs
 import com.luisfagundes.trip.presentation.provider.TripDetailsPreviewParameterProvider
 import com.luisfagundes.trip.presentation.viewmodel.state.TripDetailsUiState

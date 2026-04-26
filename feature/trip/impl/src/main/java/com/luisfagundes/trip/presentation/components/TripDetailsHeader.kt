@@ -1,4 +1,4 @@
-package com.luisfagundes.trip.presentation.components.details
+package com.luisfagundes.trip.presentation.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
