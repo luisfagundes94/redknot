@@ -10,8 +10,6 @@ internal fun ItineraryValidationError.toErrorMessage(context: Context): String {
         ItineraryValidationError.EMPTY_NAME -> R.string.empty_name_error_message
         ItineraryValidationError.EMPTY_ADDRESS -> R.string.empty_address_error_message
         ItineraryValidationError.EMPTY_FLIGHT_NUMBER -> R.string.empty_flight_number_error_message
-        ItineraryValidationError.EMPTY_AIRPORT_CODE -> R.string.empty_airport_code_error_message
-        ItineraryValidationError.INVALID_AIRPORT_CODE -> R.string.invalid_airport_code_error_message
         ItineraryValidationError.INVALID_DURATION -> R.string.invalid_duration_error_message
         ItineraryValidationError.MISSING_DATE -> R.string.missing_date_error_message
         ItineraryValidationError.MISSING_TIME -> R.string.missing_time_error_message

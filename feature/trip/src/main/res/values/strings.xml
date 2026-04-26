@@ -90,8 +90,6 @@
     <string name="empty_name_error_message">Name cannot be empty</string>
     <string name="empty_address_error_message">Address cannot be empty</string>
     <string name="empty_flight_number_error_message">Flight number cannot be empty</string>
-    <string name="empty_airport_code_error_message">Airport code cannot be empty</string>
-    <string name="invalid_airport_code_error_message">Enter a valid 3-letter IATA code</string>
     <string name="invalid_duration_error_message">Duration must be greater than 0</string>
     <string name="missing_time_error_message">Time must be selected</string>
     <string name="flight_to">Flight to %1$s</string>
