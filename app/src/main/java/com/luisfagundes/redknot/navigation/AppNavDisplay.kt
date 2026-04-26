@@ -1,6 +1,10 @@
 @file:Suppress("detekt:all")
 package com.luisfagundes.redknot.navigation
 
+import androidx.compose.animation.ContentTransform
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation3.runtime.entryProvider
@@ -26,5 +30,16 @@ fun AppNavDisplay(
         modifier = modifier,
         entries = navigationState.toEntries(entryProvider),
         onBack = navigator::goBack,
+        transitionSpec = { slideForward() },
+        popTransitionSpec = { slideBackward() },
+        predictivePopTransitionSpec = { slideBackward() }
     )
 }
+
+private fun slideForward(): ContentTransform =
+    slideInHorizontally(initialOffsetX = { it }) togetherWith
+        slideOutHorizontally(targetOffsetX = { -it })
+
+private fun slideBackward(): ContentTransform =
+    slideInHorizontally(initialOffsetX = { -it }) togetherWith
+        slideOutHorizontally(targetOffsetX = { it })
