@@ -4,7 +4,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.TravelExplore
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation3.runtime.NavKey
-import com.luisfagundes.trip.presentation.navigation.TripListRoute
+import com.luisfagundes.trip.api.presentation.navigation.TripListRoute
 
 enum class TopLevelDestinations(
     val label: String,

@@ -18,9 +18,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import com.luisfagundes.designsystem.theme.RedknotTheme
 import com.luisfagundes.redknot.navigation.AppNavDisplay
-import com.luisfagundes.redknot.navigation.Navigator
+import com.luisfagundes.core.navigation.Navigator
+import com.luisfagundes.core.navigation.rememberNavigationState
 import com.luisfagundes.redknot.navigation.TopLevelDestinations
-import com.luisfagundes.redknot.navigation.rememberNavigationState
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -66,8 +66,8 @@ fun RedknotApp(
                                 contentDescription = entry.label
                             )
                         },
-                        selected = entry.route == navigationState.topLevelRoute,
-                        onClick = { navigationState.topLevelRoute = entry.route },
+                        selected = entry.route == navigationState.currentTopLevelRoute,
+                        onClick = { navigator.navigateTo(entry.route) },
                     )
                 }
             }

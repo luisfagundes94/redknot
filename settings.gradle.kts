@@ -1,5 +1,11 @@
 @file:Suppress("UnstableApiUsage")
 
+include(":feature:trip:api")
+
+
+include(":feature:trip:impl")
+
+
 pluginManagement {
     repositories {
         google {
@@ -28,6 +34,7 @@ dependencyResolutionManagement {
 
 rootProject.name = "redknot"
 include(":app")
-include(":feature:trip")
+include(":feature:trip:api")
+include(":feature:trip:impl")
 include(":designsystem")
 include(":core")

@@ -48,13 +48,12 @@ import com.luisfagundes.trip.presentation.viewmodel.effect.TripDetailsUiEffect
 @Composable
 internal fun TripDetailsScreen(
     tripId: Int,
-    onNewItineraryItemClick: () -> Unit,
+    onAddItineraryItemClick: () -> Unit,
     onBackClick: () -> Unit,
     viewModel: TripDetailsViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
-    val currentOnBackClick by rememberUpdatedState(onBackClick)
 
     LaunchedEffect(Unit) {
         viewModel.getTripById(id = tripId)
@@ -62,7 +61,7 @@ internal fun TripDetailsScreen(
 
     CollectUiEffects(viewModel.uiEffect) { effect ->
         when (effect) {
-            is TripDetailsUiEffect.NavigateBack -> currentOnBackClick()
+            is TripDetailsUiEffect.NavigateBack -> onBackClick()
             is TripDetailsUiEffect.ShowErrorToast -> {
                 Toast.makeText(context, effect.error, Toast.LENGTH_LONG).show()
             }
@@ -71,7 +70,7 @@ internal fun TripDetailsScreen(
 
     TripDetailsContent(
         uiState = uiState,
-        onAddItineraryItemClick = onNewItineraryItemClick,
+        onAddItineraryItemClick = onAddItineraryItemClick,
         onDeleteClick = { viewModel.deleteTrip(tripId) },
         onBackClick = onBackClick
     )

@@ -51,7 +51,8 @@ android {
 dependencies {
     implementation(project(":core"))
     implementation(project(":designsystem"))
-    implementation(project(":feature:trip"))
+    implementation(project(":feature:trip:api"))
+    implementation(project(":feature:trip:impl"))
 
     // Desugaring
     coreLibraryDesugaring(libs.desugarJdkLibs)

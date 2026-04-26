@@ -44,6 +44,8 @@ import com.luisfagundes.designsystem.theme.RedknotPreview
 import com.luisfagundes.designsystem.theme.RedknotThemePreview
 import com.luisfagundes.designsystem.theme.spacing
 import com.luisfagundes.trip.R
+import com.luisfagundes.trip.api.presentation.navigation.TripCreationRoute
+import com.luisfagundes.trip.api.presentation.navigation.TripDetailsRoute
 import com.luisfagundes.trip.domain.model.Trip
 import com.luisfagundes.trip.domain.model.TripStatus
 import com.luisfagundes.trip.presentation.mapper.toStringResId
@@ -55,7 +57,8 @@ import com.luisfagundes.trip.tools.extensions.formatTripPeriod
 
 @Composable
 internal fun TripListScreen(
-    onEffect: (TripListUiEffect) -> Unit,
+    onNavigateToTripForm: () -> Unit,
+    onNavigateToTripDetails: (tripId: Int) -> Unit,
     viewModel: TripListViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -64,10 +67,12 @@ internal fun TripListScreen(
         viewModel.getTripList()
     }
 
-    CollectUiEffects(
-        flow = viewModel.uiEffect,
-        onEffect = onEffect
-    )
+    CollectUiEffects(viewModel.uiEffect) { effect ->
+        when (effect) {
+            is TripListUiEffect.NavigateToTripForm -> onNavigateToTripForm()
+            is TripListUiEffect.NavigateToTripDetails -> onNavigateToTripDetails(effect.id)
+        }
+    }
 
     TripListContent(
         uiState = uiState,

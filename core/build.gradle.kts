@@ -56,6 +56,11 @@ dependencies {
     // Compose
     implementation(libs.androidx.compose.foundation)
 
+    // Navigation
+    implementation(libs.androidx.navigation3.runtime)
+    implementation(libs.androidx.navigation3.ui)
+    implementation(libs.androidx.lifecycle.viewmodel.navigation3)
+
     // Testing
     compileOnly(libs.kotlinx.coroutines.test)
     compileOnly(libs.junit5.jupiter.api)
