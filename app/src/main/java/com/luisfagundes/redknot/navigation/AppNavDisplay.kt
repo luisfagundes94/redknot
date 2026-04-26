@@ -10,10 +10,10 @@ import com.luisfagundes.itinerary.presentation.navigation.ActivityFormRoute
 import com.luisfagundes.itinerary.presentation.navigation.FlightFormRoute
 import com.luisfagundes.itinerary.presentation.navigation.ItineraryItemTypePickerRoute
 import com.luisfagundes.itinerary.presentation.navigation.RestaurantFormRoute
-import com.luisfagundes.itinerary.presentation.navigation.itinerarySection
+import com.luisfagundes.itinerary.presentation.navigation.itineraryEntry
 import com.luisfagundes.trip.presentation.navigation.TripCreationRoute
 import com.luisfagundes.trip.presentation.navigation.TripDetailsRoute
-import com.luisfagundes.trip.presentation.navigation.tripSection
+import com.luisfagundes.trip.presentation.navigation.tripEntry
 
 @Composable
 fun AppNavDisplay(
@@ -22,7 +22,7 @@ fun AppNavDisplay(
     modifier: Modifier = Modifier
 ) {
     val entryProvider = entryProvider {
-        tripSection(
+        tripEntry(
             onCreateTripClick = {
                 navigator.navigate(TripCreationRoute)
             },
@@ -36,7 +36,7 @@ fun AppNavDisplay(
                 navigator.goBack()
             }
         )
-        itinerarySection(
+        itineraryEntry(
             onActivityFormClick = { tripId ->
                 navigator.navigate(ActivityFormRoute(tripId))
             },

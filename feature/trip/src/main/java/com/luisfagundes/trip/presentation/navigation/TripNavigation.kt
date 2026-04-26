@@ -17,7 +17,7 @@ data object TripCreationRoute : NavKey
 @Serializable
 data class TripDetailsRoute(val tripId: Int) : NavKey
 
-fun EntryProviderScope<NavKey>.tripSection(
+fun EntryProviderScope<NavKey>.tripEntry(
     onCreateTripClick: () -> Unit,
     onTripClick: (tripId: Int) -> Unit,
     onNewItineraryItemClick: (tripId: Int) -> Unit,

@@ -24,7 +24,7 @@ data class FlightFormRoute(val tripId: Int) : NavKey
 @Serializable
 data class RestaurantFormRoute(val tripId: Int) : NavKey
 
-fun EntryProviderScope<NavKey>.itinerarySection(
+fun EntryProviderScope<NavKey>.itineraryEntry(
     onActivityFormClick: (Int) -> Unit,
     onAccommodationFormClick: (Int) -> Unit,
     onFlightFormClick: (Int) -> Unit,
