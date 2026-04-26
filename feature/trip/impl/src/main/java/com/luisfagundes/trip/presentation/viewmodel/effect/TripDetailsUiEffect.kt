@@ -1,6 +1,6 @@
 package com.luisfagundes.trip.presentation.viewmodel.effect
 
-import com.luisfagundes.core.presentation.arch.effect.UiEffect
+import com.luisfagundes.core.common.presentation.arch.effect.UiEffect
 
 internal sealed class TripDetailsUiEffect : UiEffect {
     data object NavigateBack : TripDetailsUiEffect()

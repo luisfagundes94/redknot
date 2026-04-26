@@ -1,4 +1,4 @@
-package com.luisfagundes.core.di
+package com.luisfagundes.core.common.di
 
 import javax.inject.Qualifier
 

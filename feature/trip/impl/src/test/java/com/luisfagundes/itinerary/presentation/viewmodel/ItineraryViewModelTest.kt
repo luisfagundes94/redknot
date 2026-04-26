@@ -1,11 +1,11 @@
 package com.luisfagundes.itinerary.presentation.viewmodel
 
 import app.cash.turbine.test
-import com.luisfagundes.core.testing.MainDispatcherRule
 import com.luisfagundes.itinerary.domain.model.Activity
 import com.luisfagundes.itinerary.domain.usecase.GetItineraryItemsByDayUseCase
 import com.luisfagundes.itinerary.presentation.viewmodel.effect.ItineraryUiEffect
 import com.luisfagundes.itinerary.presentation.viewmodel.state.ItineraryUiState
+import com.luisfagundes.core.testing.MainDispatcherRule
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi

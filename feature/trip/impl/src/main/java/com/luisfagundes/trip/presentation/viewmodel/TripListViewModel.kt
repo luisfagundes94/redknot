@@ -1,8 +1,8 @@
 package com.luisfagundes.trip.presentation.viewmodel
 
 import androidx.lifecycle.viewModelScope
-import com.luisfagundes.core.di.IoDispatcher
-import com.luisfagundes.core.presentation.arch.viewmodel.ViewModel
+import com.luisfagundes.core.common.di.IoDispatcher
+import com.luisfagundes.core.common.presentation.arch.viewmodel.ViewModel
 import com.luisfagundes.trip.domain.usecase.GetTripListUseCase
 import com.luisfagundes.trip.presentation.viewmodel.effect.TripListUiEffect
 import com.luisfagundes.trip.presentation.viewmodel.state.TripListUiState

@@ -49,7 +49,7 @@ android {
 }
 
 dependencies {
-    implementation(project(":core"))
+    implementation(project(":core:common"))
     implementation(project(":designsystem"))
     implementation(project(":feature:trip:api"))
     implementation(project(":feature:trip:impl"))

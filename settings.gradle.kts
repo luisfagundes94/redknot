@@ -1,5 +1,11 @@
 @file:Suppress("UnstableApiUsage")
 
+include(":core:common")
+
+
+include(":core:testing")
+
+
 include(":feature:trip:api")
 
 
@@ -37,4 +43,5 @@ include(":app")
 include(":feature:trip:api")
 include(":feature:trip:impl")
 include(":designsystem")
-include(":core")
+include(":core:common")
+include(":core:testing")

@@ -1,6 +1,7 @@
-package com.luisfagundes.core.navigation
+package com.luisfagundes.core.common.presentation.navigation
 
 import androidx.navigation3.runtime.NavKey
+import kotlin.text.clear
 
 class Navigator(val state: NavigationState) {
     fun navigateTo(route: NavKey) {

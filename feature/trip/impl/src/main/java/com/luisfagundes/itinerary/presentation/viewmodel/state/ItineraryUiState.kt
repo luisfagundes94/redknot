@@ -1,6 +1,6 @@
 package com.luisfagundes.itinerary.presentation.viewmodel.state
 
-import com.luisfagundes.core.presentation.arch.state.UiState
+import com.luisfagundes.core.common.presentation.arch.state.UiState
 import com.luisfagundes.itinerary.domain.model.ItineraryItem
 import java.time.LocalDate
 

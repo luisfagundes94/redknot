@@ -1,7 +1,7 @@
-package com.luisfagundes.core.presentation.arch.viewmodel
+package com.luisfagundes.core.common.presentation.arch.viewmodel
 
 import androidx.lifecycle.ViewModel
-import com.luisfagundes.core.presentation.arch.state.UiState
+import com.luisfagundes.core.common.presentation.arch.state.UiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update

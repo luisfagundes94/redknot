@@ -1,4 +1,4 @@
-package com.luisfagundes.core.presentation.arch.compose
+package com.luisfagundes.core.common.presentation.arch.compose
 
 import android.util.Log
 import androidx.compose.runtime.Composable

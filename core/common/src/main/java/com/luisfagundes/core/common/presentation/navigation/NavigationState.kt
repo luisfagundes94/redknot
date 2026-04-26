@@ -1,4 +1,4 @@
-package com.luisfagundes.core.navigation
+package com.luisfagundes.core.common.presentation.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf

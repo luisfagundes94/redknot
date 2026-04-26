@@ -16,10 +16,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import com.luisfagundes.core.common.presentation.navigation.Navigator
+import com.luisfagundes.core.common.presentation.navigation.rememberNavigationState
 import com.luisfagundes.designsystem.theme.RedknotTheme
 import com.luisfagundes.redknot.navigation.AppNavDisplay
-import com.luisfagundes.core.navigation.Navigator
-import com.luisfagundes.core.navigation.rememberNavigationState
 import com.luisfagundes.redknot.navigation.TopLevelDestinations
 import dagger.hilt.android.AndroidEntryPoint
 

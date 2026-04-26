@@ -2,7 +2,7 @@ package com.luisfagundes.trip.presentation.navigation
 
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
-import com.luisfagundes.core.navigation.Navigator
+import com.luisfagundes.core.common.presentation.navigation.Navigator
 import com.luisfagundes.trip.api.presentation.navigation.ItineraryItemTypePickerRoute
 import com.luisfagundes.trip.api.presentation.navigation.TripCreationRoute
 import com.luisfagundes.trip.api.presentation.navigation.TripDetailsRoute

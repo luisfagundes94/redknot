@@ -2,7 +2,7 @@ package com.luisfagundes.itinerary.presentation.navigation
 
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
-import com.luisfagundes.core.navigation.Navigator
+import com.luisfagundes.core.common.presentation.navigation.Navigator
 import com.luisfagundes.itinerary.presentation.screen.AccommodationFormScreen
 import com.luisfagundes.itinerary.presentation.screen.ActivityFormScreen
 import com.luisfagundes.itinerary.presentation.screen.FlightFormScreen

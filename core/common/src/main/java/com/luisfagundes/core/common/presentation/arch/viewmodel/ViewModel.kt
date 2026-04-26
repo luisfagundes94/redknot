@@ -1,10 +1,10 @@
-package com.luisfagundes.core.presentation.arch.viewmodel
+package com.luisfagundes.core.common.presentation.arch.viewmodel
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.luisfagundes.core.presentation.arch.effect.UiEffect
-import com.luisfagundes.core.presentation.arch.state.UiState
+import com.luisfagundes.core.common.presentation.arch.effect.UiEffect
+import com.luisfagundes.core.common.presentation.arch.state.UiState
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
