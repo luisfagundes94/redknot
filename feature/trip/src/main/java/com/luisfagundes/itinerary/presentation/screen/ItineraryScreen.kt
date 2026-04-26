@@ -46,7 +46,7 @@ internal fun ItineraryScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
-        viewModel.getItineraryList(tripId)
+        viewModel.getItineraryItemsByDay(tripId)
     }
 
     CollectUiEffects(

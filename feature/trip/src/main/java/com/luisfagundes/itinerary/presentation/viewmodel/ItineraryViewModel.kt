@@ -3,7 +3,7 @@ package com.luisfagundes.itinerary.presentation.viewmodel
 import androidx.lifecycle.viewModelScope
 import com.luisfagundes.core.di.IoDispatcher
 import com.luisfagundes.core.presentation.arch.viewmodel.ViewModel
-import com.luisfagundes.itinerary.domain.usecase.GetItineraryItemListUseCase
+import com.luisfagundes.itinerary.domain.usecase.GetItineraryItemsByDayUseCase
 import com.luisfagundes.itinerary.presentation.viewmodel.effect.ItineraryUiEffect
 import com.luisfagundes.itinerary.presentation.viewmodel.state.ItineraryUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -13,19 +13,16 @@ import javax.inject.Inject
 
 @HiltViewModel
 internal class ItineraryViewModel @Inject constructor(
-    private val getItineraryItemListUseCase: GetItineraryItemListUseCase,
+    private val getItineraryItemsByDayUseCase: GetItineraryItemsByDayUseCase,
     @param:IoDispatcher private val dispatcher: CoroutineDispatcher
 ): ViewModel<ItineraryUiState, ItineraryUiEffect>(
     initialState = ItineraryUiState.Loading
 ) {
-    fun getItineraryList(tripId: Int) = viewModelScope.launch(dispatcher) {
-        getItineraryItemListUseCase(tripId).onSuccess { itineraryItemList ->
+    fun getItineraryItemsByDay(tripId: Int) = viewModelScope.launch(dispatcher) {
+        getItineraryItemsByDayUseCase(tripId).onSuccess { itemsByDay ->
             setState {
-                if (itineraryItemList.isEmpty()) {
-                    ItineraryUiState.Empty
-                } else {
-                    ItineraryUiState.Content(itineraryItemList.groupBy { it.date })
-                }
+                if (itemsByDay.isEmpty()) ItineraryUiState.Empty
+                else ItineraryUiState.Content(itemsByDay)
             }
         }
     }

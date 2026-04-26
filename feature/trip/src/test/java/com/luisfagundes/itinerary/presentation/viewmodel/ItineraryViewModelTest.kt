@@ -4,7 +4,7 @@ import app.cash.turbine.test
 import com.luisfagundes.core.testing.MainDispatcherRule
 import com.luisfagundes.itinerary.domain.model.Activity
 import com.luisfagundes.itinerary.domain.model.ItineraryItem
-import com.luisfagundes.itinerary.domain.usecase.GetItineraryItemListUseCase
+import com.luisfagundes.itinerary.domain.usecase.GetItineraryItemsByDayUseCase
 import com.luisfagundes.itinerary.presentation.viewmodel.effect.ItineraryUiEffect
 import com.luisfagundes.itinerary.presentation.viewmodel.state.ItineraryUiState
 import io.mockk.coEvery
@@ -24,10 +24,10 @@ internal class ItineraryViewModelTest {
     @RegisterExtension
     val dispatcher = MainDispatcherRule(UnconfinedTestDispatcher())
 
-    private val getItineraryItemListUseCase: GetItineraryItemListUseCase = mockk()
+    private val getItineraryItemsByDayUseCase: GetItineraryItemsByDayUseCase = mockk()
 
     private val viewModel = ItineraryViewModel(
-        getItineraryItemListUseCase = getItineraryItemListUseCase,
+        getItineraryItemsByDayUseCase = getItineraryItemsByDayUseCase,
         dispatcher = dispatcher.testDispatcher
     )
 
@@ -41,37 +41,37 @@ internal class ItineraryViewModelTest {
     }
 
     @Test
-    fun `OnGetItineraryList with non-empty list emits Content state`() = runTest {
+    fun `getItineraryItemsByDay with non-empty list emits Content state`() = runTest {
         // Given
         val tripId = 1
-        val items: List<ItineraryItem> = listOf(fakeActivity)
+        val itemsByDay = mapOf(fakeDay to listOf(fakeActivity))
 
-        coEvery { getItineraryItemListUseCase(tripId) } returns Result.success(items)
+        coEvery { getItineraryItemsByDayUseCase(tripId) } returns Result.success(itemsByDay)
 
         viewModel.uiState.test {
             awaitItem() // consume Loading
 
             // When
-            viewModel.getItineraryList(tripId)
+            viewModel.getItineraryItemsByDay(tripId)
 
             // Then
-            assertEquals(ItineraryUiState.Content(items), awaitItem())
+            assertEquals(ItineraryUiState.Content(itemsByDay), awaitItem())
             cancelAndIgnoreRemainingEvents()
         }
     }
 
     @Test
-    fun `OnGetItineraryList with empty list emits Empty state`() = runTest {
+    fun `getItineraryItemsByDay with empty list emits Empty state`() = runTest {
         // Given
         val tripId = 1
 
-        coEvery { getItineraryItemListUseCase(tripId) } returns Result.success(emptyList())
+        coEvery { getItineraryItemsByDayUseCase(tripId) } returns Result.success(emptyMap())
 
         viewModel.uiState.test {
             awaitItem() // consume Loading
 
             // When
-            viewModel.getItineraryList(tripId)
+            viewModel.getItineraryItemsByDay(tripId)
 
             // Then
             assertEquals(ItineraryUiState.Empty, awaitItem())
@@ -80,18 +80,18 @@ internal class ItineraryViewModelTest {
     }
 
     @Test
-    fun `OnGetItineraryList with failure does not update state`() = runTest {
+    fun `getItineraryItemsByDay with failure does not update state`() = runTest {
         // Given
         val tripId = 1
         val error = Exception("DB error")
 
-        coEvery { getItineraryItemListUseCase(tripId) } returns Result.failure(error)
+        coEvery { getItineraryItemsByDayUseCase(tripId) } returns Result.failure(error)
 
         viewModel.uiState.test {
             awaitItem() // consume Loading
 
             // When
-            viewModel.getItineraryList(tripId)
+            viewModel.getItineraryItemsByDay(tripId)
 
             // Then
             expectNoEvents()
@@ -99,7 +99,7 @@ internal class ItineraryViewModelTest {
     }
 
     @Test
-    fun `OnNewItineraryItemClick sends NavigateToItineraryItemForm effect`() = runTest {
+    fun `onAddItineraryItem sends NavigateToItineraryItemForm effect`() = runTest {
         viewModel.uiEffect.test {
             // When
             viewModel.onAddItineraryItem()
@@ -110,12 +110,14 @@ internal class ItineraryViewModelTest {
     }
 }
 
+private val fakeDay = LocalDate.of(2025, 6, 10)
+
 private val fakeActivity = Activity(
     id = "1",
     tripId = 1,
-    date = LocalDate.of(2025, 6, 10),
+    date = fakeDay,
     time = LocalTime.of(10, 0),
-    name = "City Tour",
+    title = "City Tour",
     description = null,
     location = null,
     imageUrl = null
