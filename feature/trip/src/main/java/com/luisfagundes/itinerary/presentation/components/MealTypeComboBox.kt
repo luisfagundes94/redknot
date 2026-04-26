@@ -35,7 +35,7 @@ internal fun MealTypeComboBox(
     ) {
         OutlinedTextField(
             value = selectedMealType?.name.toTitleCase(),
-            onValueChange = { Unit },
+            onValueChange = { },
             readOnly = true,
             label = { Text(stringResource(R.string.meal_type)) },
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
