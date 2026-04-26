@@ -28,8 +28,9 @@ A trip planning Android app built with Kotlin and Jetpack Compose.
 ```
 redknot/
 ├── :app                  # Entry point, navigation host, bottom bar
-├── :core:common          # Base ViewModels, Hilt dispatcher qualifiers
-├── :core:testing         # Shared test utilities (MainDispatcherRule)
+├── :core
+│   ├── :common           # Base ViewModels, Hilt dispatcher qualifiers
+│   └── :testing          # Shared test utilities (MainDispatcherRule)
 ├── :designsystem         # Compose components, Material 3 theme, spacing tokens
 └── :feature:trip
     ├── :api              # Public navigation routes & interfaces
