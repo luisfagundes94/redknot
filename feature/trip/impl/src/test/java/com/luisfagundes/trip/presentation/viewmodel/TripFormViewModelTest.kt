@@ -1,5 +1,6 @@
 package com.luisfagundes.trip.presentation.viewmodel
 
+import app.cash.turbine.test
 import com.luisfagundes.common.domain.model.DateValidationError
 import com.luisfagundes.core.testing.MainDispatcherRule
 import com.luisfagundes.trip.domain.model.TripStatus
@@ -18,22 +19,20 @@ import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
-import org.junit.Rule
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.RegisterExtension
 import java.time.LocalDate
 
 @OptIn(ExperimentalCoroutinesApi::class)
 internal class TripFormViewModelTest {
 
-    @get:Rule
+    @RegisterExtension
     val dispatcherRule = MainDispatcherRule(UnconfinedTestDispatcher())
 
     private val validateTitleUseCase: ValidateTitleUseCase = mockk()
@@ -42,146 +41,179 @@ internal class TripFormViewModelTest {
     private val getUnsplashImageUseCase: GetUnsplashImageUseCase = mockk()
     private val createTripUseCase: CreateTripUseCase = mockk()
 
-    private lateinit var viewModel: TripFormViewModel
+    private val viewModel = TripFormViewModel(
+        validateTitleUseCase = validateTitleUseCase,
+        validateDateUseCase = validateDateUseCase,
+        validateDestinationUseCase = validateDestinationUseCase,
+        getUnsplashImageUseCase = getUnsplashImageUseCase,
+        createTripUseCase = createTripUseCase,
+        dispatcher = dispatcherRule.testDispatcher
+    )
 
-    @BeforeEach
-    fun setup() {
-        viewModel = createViewModel()
+    @Test
+    fun `initial state has default values`() = runTest {
+        viewModel.uiState.test {
+            assertEquals(TripFormUiState(), awaitItem())
+            cancelAndIgnoreRemainingEvents()
+        }
     }
 
     @Test
-    fun `initial state has default values`() {
-        // Then
-        val currentState = viewModel.uiState.value
-        val expectedState = TripFormUiState()
-
-        assertEquals(expectedState, currentState)
-    }
-
-    @Test
-    fun `onTitleChange updates title and clears error when valid`() {
+    fun `onTitleChange updates title and clears error when valid`() = runTest {
         // Given
         every { validateTitleUseCase(any()) } returns ValidationResult.Valid
 
-        // When
-        viewModel.onTitleChange("Paris Trip")
+        viewModel.uiState.test {
+            awaitItem() // consume initial state
 
-        // Then
-        val currentState = viewModel.uiState.value
+            // When
+            viewModel.onTitleChange("Paris Trip")
 
-        assertEquals("Paris Trip", currentState.title)
-        assertNull(currentState.titleError)
+            // Then
+            val currentState = awaitItem()
+            assertEquals("Paris Trip", currentState.title)
+            assertNull(currentState.titleError)
+            cancelAndIgnoreRemainingEvents()
+        }
     }
 
     @Test
-    fun `onTitleChange updates title and sets error when invalid`() {
+    fun `onTitleChange updates title and sets error when invalid`() = runTest {
         // Given
         val error = ValidationError.EMPTY_TITLE
         every { validateTitleUseCase(any()) } returns ValidationResult.Invalid(error)
 
-        // When
-        viewModel.onTitleChange("")
+        viewModel.uiState.test {
+            awaitItem() // consume initial state
 
-        // Then
-        val currentState = viewModel.uiState.value
+            // When
+            viewModel.onTitleChange("")
 
-        assertEquals("", currentState.title)
-        assertEquals(error, currentState.titleError)
+            // Then
+            val currentState = awaitItem()
+            assertEquals("", currentState.title)
+            assertEquals(error, currentState.titleError)
+            cancelAndIgnoreRemainingEvents()
+        }
     }
 
     @Test
-    fun `onStartDateChange updates startDate and clears error when valid`() {
+    fun `onStartDateChange updates startDate and clears error when valid`() = runTest {
         // Given
         val date = LocalDate.of(2025, 6, 15)
         every { validateDateUseCase(any()) } returns null
 
-        // When
-        viewModel.onStartDateChange(date)
+        viewModel.uiState.test {
+            awaitItem() // consume initial state
 
-        // Then
-        val currentState = viewModel.uiState.value
+            // When
+            viewModel.onStartDateChange(date)
 
-        assertEquals(date, currentState.startDate)
-        assertNull(currentState.startDateError)
+            // Then
+            val currentState = awaitItem()
+            assertEquals(date, currentState.startDate)
+            assertNull(currentState.startDateError)
+            cancelAndIgnoreRemainingEvents()
+        }
     }
 
     @Test
-    fun `onStartDateChange sets error when date is null`() {
+    fun `onStartDateChange sets error when date is null`() = runTest {
         // Given
         val error = DateValidationError.MISSING_DATE
         every { validateDateUseCase(null) } returns error
 
-        // When
-        viewModel.onStartDateChange(null)
+        viewModel.uiState.test {
+            awaitItem() // consume initial state
 
-        // Then
-        val currentState = viewModel.uiState.value
+            // When
+            viewModel.onStartDateChange(null)
 
-        assertNull(currentState.startDate)
-        assertEquals(error, currentState.startDateError)
+            // Then
+            val currentState = awaitItem()
+            assertNull(currentState.startDate)
+            assertEquals(error, currentState.startDateError)
+            cancelAndIgnoreRemainingEvents()
+        }
     }
 
     @Test
-    fun `onEndDateChange updates endDate and clears error when valid`() {
+    fun `onEndDateChange updates endDate and clears error when valid`() = runTest {
         // Given
         val date = LocalDate.of(2025, 6, 20)
         every { validateDateUseCase(any()) } returns null
 
-        // When
-        viewModel.onEndDateChange(date)
+        viewModel.uiState.test {
+            awaitItem() // consume initial state
 
-        // Then
-        val currentState = viewModel.uiState.value
+            // When
+            viewModel.onEndDateChange(date)
 
-        assertEquals(date, currentState.endDate)
-        assertNull(currentState.endDateError)
+            // Then
+            val currentState = awaitItem()
+            assertEquals(date, currentState.endDate)
+            assertNull(currentState.endDateError)
+            cancelAndIgnoreRemainingEvents()
+        }
     }
 
     @Test
-    fun `onEndDateChange sets error when date is null`() {
+    fun `onEndDateChange sets error when date is null`() = runTest {
         // Given
         val error = DateValidationError.MISSING_DATE
         every { validateDateUseCase(null) } returns error
 
-        // When
-        viewModel.onEndDateChange(null)
+        viewModel.uiState.test {
+            awaitItem() // consume initial state
 
-        // Then
-        val currentState = viewModel.uiState.value
+            // When
+            viewModel.onEndDateChange(null)
 
-        assertNull(currentState.endDate)
-        assertEquals(error, currentState.endDateError)
+            // Then
+            val currentState = awaitItem()
+            assertNull(currentState.endDate)
+            assertEquals(error, currentState.endDateError)
+            cancelAndIgnoreRemainingEvents()
+        }
     }
 
     @Test
-    fun `onDestinationChange updates destination and clears error when valid`() {
+    fun `onDestinationChange updates destination and clears error when valid`() = runTest {
         // Given
         every { validateDestinationUseCase(any()) } returns ValidationResult.Valid
 
-        // When
-        viewModel.onDestinationChange("Paris, France")
+        viewModel.uiState.test {
+            awaitItem() // consume initial state
 
-        // Then
-        val currentState = viewModel.uiState.value
+            // When
+            viewModel.onDestinationChange("Paris, France")
 
-        assertEquals("Paris, France", currentState.destination)
-        assertNull(currentState.destinationError)
+            // Then
+            val currentState = awaitItem()
+            assertEquals("Paris, France", currentState.destination)
+            assertNull(currentState.destinationError)
+            cancelAndIgnoreRemainingEvents()
+        }
     }
 
     @Test
-    fun `onDestinationChange sets error when invalid`() {
+    fun `onDestinationChange sets error when invalid`() = runTest {
         // Given
         val error = ValidationError.EMPTY_DESTINATION
         every { validateDestinationUseCase(any()) } returns ValidationResult.Invalid(error)
 
-        // When
-        viewModel.onDestinationChange("")
+        viewModel.uiState.test {
+            awaitItem() // consume initial state
 
-        // Then
-        val currentState = viewModel.uiState.value
+            // When
+            viewModel.onDestinationChange("")
 
-        assertEquals("", currentState.destination)
-        assertEquals(error, currentState.destinationError)
+            // Then
+            val currentState = awaitItem()
+            assertEquals("", currentState.destination)
+            assertEquals(error, currentState.destinationError)
+            cancelAndIgnoreRemainingEvents()
+        }
     }
 
     @Test
@@ -193,28 +225,33 @@ internal class TripFormViewModelTest {
         }
         coEvery { createTripUseCase(any()) } returns Result.success(Unit)
 
-        // When
-        viewModel.onSubmit()
+        viewModel.uiState.test {
+            awaitItem() // consume initial state
 
-        // Then
-        assertTrue(viewModel.uiState.value.isLoading)
+            // When
+            viewModel.onSubmit()
+
+            // Then
+            assertTrue(awaitItem().isLoading)
+            cancelAndIgnoreRemainingEvents()
+        }
     }
 
     @Test
     fun `onSubmit with successful creation sends NavigateBack effect`() = runTest {
         // Given
         val imageUrl = "https://example.com/image.jpg"
-
         coEvery { getUnsplashImageUseCase(any()) } returns Result.success(imageUrl)
         coEvery { createTripUseCase(any()) } returns Result.success(Unit)
 
-        // When
-        viewModel.onSubmit()
+        viewModel.uiEffect.test {
+            // When
+            viewModel.onSubmit()
 
-        // Then
-        val effect = viewModel.uiEffect.first()
-
-        assertEquals(TripFormUiEffect.NavigateBack, effect)
+            // Then
+            assertEquals(TripFormUiEffect.NavigateBack, awaitItem())
+            cancelAndIgnoreRemainingEvents()
+        }
         assertFalse(viewModel.uiState.value.isLoading)
     }
 
@@ -222,17 +259,17 @@ internal class TripFormViewModelTest {
     fun `onSubmit with failed creation sends ShowErrorToast effect`() = runTest {
         // Given
         val exception = Exception("Creation failed")
-
         coEvery { getUnsplashImageUseCase(any()) } returns Result.success("")
         coEvery { createTripUseCase(any()) } returns Result.failure(exception)
 
-        // When
-        viewModel.onSubmit()
+        viewModel.uiEffect.test {
+            // When
+            viewModel.onSubmit()
 
-        // Then
-        val effect = viewModel.uiEffect.first()
-
-        assertTrue(effect is TripFormUiEffect.ShowErrorToast)
+            // Then
+            assertTrue(awaitItem() is TripFormUiEffect.ShowErrorToast)
+            cancelAndIgnoreRemainingEvents()
+        }
         assertFalse(viewModel.uiState.value.isLoading)
     }
 
@@ -242,14 +279,15 @@ internal class TripFormViewModelTest {
         coEvery { getUnsplashImageUseCase(any()) } returns Result.failure(Exception("Image fetch failed"))
         coEvery { createTripUseCase(any()) } returns Result.success(Unit)
 
-        // When
-        viewModel.onSubmit()
+        viewModel.uiEffect.test {
+            // When
+            viewModel.onSubmit()
 
-        // Then
-        coVerify { createTripUseCase(match { it.imageUrl.isEmpty() }) }
-
-        val effect = viewModel.uiEffect.first()
-        assertEquals(TripFormUiEffect.NavigateBack, effect)
+            // Then
+            coVerify { createTripUseCase(match { it.imageUrl.isEmpty() }) }
+            assertEquals(TripFormUiEffect.NavigateBack, awaitItem())
+            cancelAndIgnoreRemainingEvents()
+        }
     }
 
     @Test
@@ -270,30 +308,25 @@ internal class TripFormViewModelTest {
         viewModel.onEndDateChange(endDate)
         viewModel.onDestinationChange("Paris")
 
-        // When
-        viewModel.onSubmit()
+        viewModel.uiEffect.test {
+            // When
+            viewModel.onSubmit()
 
-        // Then
-        coVerify {
-            createTripUseCase(
-                match { trip ->
-                    trip.title == "Paris Trip" &&
+            // Then
+            coVerify {
+                createTripUseCase(
+                    match { trip ->
+                        trip.title == "Paris Trip" &&
                             trip.location == "Paris" &&
                             trip.startDate == startDate &&
                             trip.endDate == endDate &&
                             trip.imageUrl == imageUrl &&
                             trip.status == TripStatus.UNSCHEDULED
-                }
-            )
+                    }
+                )
+            }
+            awaitItem() // NavigateBack
+            cancelAndIgnoreRemainingEvents()
         }
     }
-
-    private fun createViewModel() = TripFormViewModel(
-        validateTitleUseCase = validateTitleUseCase,
-        validateDateUseCase = validateDateUseCase,
-        validateDestinationUseCase = validateDestinationUseCase,
-        getUnsplashImageUseCase = getUnsplashImageUseCase,
-        createTripUseCase = createTripUseCase,
-        dispatcher = dispatcherRule.testDispatcher
-    )
 }
