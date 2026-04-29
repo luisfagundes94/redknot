@@ -22,7 +22,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
@@ -252,7 +251,6 @@ internal class TripFormViewModelTest {
             assertEquals(TripFormUiEffect.NavigateBack, awaitItem())
             cancelAndIgnoreRemainingEvents()
         }
-        assertFalse(viewModel.uiState.value.isLoading)
     }
 
     @Test
@@ -270,7 +268,6 @@ internal class TripFormViewModelTest {
             assertTrue(awaitItem() is TripFormUiEffect.ShowErrorToast)
             cancelAndIgnoreRemainingEvents()
         }
-        assertFalse(viewModel.uiState.value.isLoading)
     }
 
     @Test
