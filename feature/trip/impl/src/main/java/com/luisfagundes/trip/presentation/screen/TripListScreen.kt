@@ -32,6 +32,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
@@ -41,7 +42,7 @@ import com.luisfagundes.core.common.presentation.arch.compose.CollectUiEffects
 import com.luisfagundes.designsystem.components.RedknotEmptyTemplate
 import com.luisfagundes.designsystem.components.RedknotLoadingTemplate
 import com.luisfagundes.designsystem.theme.RedknotPreview
-import com.luisfagundes.designsystem.theme.RedknotThemePreview
+import com.luisfagundes.designsystem.theme.RedknotThemeWrapper
 import com.luisfagundes.designsystem.theme.spacing
 import com.luisfagundes.trip.R
 import com.luisfagundes.trip.domain.model.Trip
@@ -251,18 +252,17 @@ private fun TripContent(
     }
 }
 
+@PreviewWrapper(RedknotThemeWrapper::class)
 @RedknotPreview
 @Composable
 private fun TripListSuccessContentPreview(
     @PreviewParameter(TripListPreviewParameterProvider::class)
     uiState: TripListUiState.Success
 ) {
-    RedknotThemePreview {
-        TripListSuccessContent(
-            tripsByStatus = uiState.tripsByStatus,
-            onCreateTripClick = {},
-            onTripClick = {},
-            modifier = Modifier.fillMaxWidth()
-        )
-    }
+    TripListSuccessContent(
+        tripsByStatus = uiState.tripsByStatus,
+        onCreateTripClick = {},
+        onTripClick = {},
+        modifier = Modifier.fillMaxWidth()
+    )
 }

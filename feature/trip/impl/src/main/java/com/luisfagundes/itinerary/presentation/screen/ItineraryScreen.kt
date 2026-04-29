@@ -19,13 +19,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.luisfagundes.core.common.presentation.arch.compose.CollectUiEffects
 import com.luisfagundes.designsystem.components.RedknotEmptyTemplate
 import com.luisfagundes.designsystem.components.RedknotLoadingTemplate
 import com.luisfagundes.designsystem.theme.RedknotPreview
-import com.luisfagundes.designsystem.theme.RedknotThemePreview
+import com.luisfagundes.designsystem.theme.RedknotThemeWrapper
 import com.luisfagundes.designsystem.theme.spacing
 import com.luisfagundes.itinerary.domain.model.ItineraryItem
 import com.luisfagundes.itinerary.presentation.provider.ItineraryPreviewParameterProvider
@@ -136,18 +137,17 @@ private fun ItineraryTimelineContent(
     }
 }
 
+@PreviewWrapper(RedknotThemeWrapper::class)
 @RedknotPreview
 @Composable
 private fun ItineraryContentPreview(
     @PreviewParameter(ItineraryPreviewParameterProvider::class)
     uiState: ItineraryUiState.Content
 ) {
-    RedknotThemePreview {
-        ItineraryTimelineContent(
-            itemsByDay = uiState.itemsByDay,
-            onAddItem = {},
-            modifier = Modifier.fillMaxWidth()
-        )
-    }
+    ItineraryTimelineContent(
+        itemsByDay = uiState.itemsByDay,
+        onAddItem = {},
+        modifier = Modifier.fillMaxWidth()
+    )
 }
 

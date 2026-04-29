@@ -24,13 +24,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.luisfagundes.core.common.presentation.arch.compose.CollectUiEffects
 import com.luisfagundes.designsystem.components.RedknotLoadingTemplate
 import com.luisfagundes.designsystem.components.RedknotTopBar
 import com.luisfagundes.designsystem.theme.RedknotPreview
-import com.luisfagundes.designsystem.theme.RedknotThemePreview
+import com.luisfagundes.designsystem.theme.RedknotThemeWrapper
 import com.luisfagundes.designsystem.theme.spacing
 import com.luisfagundes.itinerary.presentation.screen.ItineraryScreen
 import com.luisfagundes.trip.R
@@ -180,19 +181,18 @@ private fun TripDetailsSuccessContent(
     }
 }
 
+@PreviewWrapper(RedknotThemeWrapper::class)
 @RedknotPreview
 @Composable
 private fun TripDetailsSuccessContentPreview(
     @PreviewParameter(TripDetailsPreviewParameterProvider::class)
     uiState: TripDetailsUiState.Success
 ) {
-    RedknotThemePreview {
-        TripDetailsSuccessContent(
-            trip = uiState.trip,
-            itineraryContent = {},
-            onDeleteClick = {},
-            onBackClick = {},
-            modifier = Modifier.fillMaxSize()
-        )
-    }
+    TripDetailsSuccessContent(
+        trip = uiState.trip,
+        itineraryContent = {},
+        onDeleteClick = {},
+        onBackClick = {},
+        modifier = Modifier.fillMaxSize()
+    )
 }

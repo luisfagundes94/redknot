@@ -26,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.luisfagundes.budget.domain.model.ExpenseCategory
@@ -40,7 +41,7 @@ import com.luisfagundes.core.common.presentation.arch.compose.CollectUiEffects
 import com.luisfagundes.designsystem.components.RedknotDateSelectionField
 import com.luisfagundes.designsystem.components.RedknotTopBar
 import com.luisfagundes.designsystem.theme.RedknotPreview
-import com.luisfagundes.designsystem.theme.RedknotThemePreview
+import com.luisfagundes.designsystem.theme.RedknotThemeWrapper
 import com.luisfagundes.designsystem.theme.spacing
 import com.luisfagundes.trip.R
 import java.math.BigDecimal
@@ -193,21 +194,20 @@ private fun AddExpenseForm(
     }
 }
 
+@PreviewWrapper(RedknotThemeWrapper::class)
 @RedknotPreview
 @Composable
 private fun AddExpenseFormContentPreview(
     @PreviewParameter(AddExpenseFormPreviewParameterProvider::class)
     uiState: AddExpenseFormUiState
 ) {
-    RedknotThemePreview {
-        AddExpenseFormContent(
-            uiState = uiState,
-            onAmountChange = {},
-            onCategorySelect = {},
-            onDateSelect = {},
-            onDescriptionChange = {},
-            onSaveExpense = {},
-            onBackClick = {}
-        )
-    }
+    AddExpenseFormContent(
+        uiState = uiState,
+        onAmountChange = {},
+        onCategorySelect = {},
+        onDateSelect = {},
+        onDescriptionChange = {},
+        onSaveExpense = {},
+        onBackClick = {}
+    )
 }

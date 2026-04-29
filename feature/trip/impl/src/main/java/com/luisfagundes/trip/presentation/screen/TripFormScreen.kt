@@ -25,6 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -32,7 +33,7 @@ import com.luisfagundes.common.presentation.mapper.toErrorMessage
 import com.luisfagundes.designsystem.components.RedknotDateSelectionField
 import com.luisfagundes.designsystem.components.RedknotTopBar
 import com.luisfagundes.designsystem.theme.RedknotPreview
-import com.luisfagundes.designsystem.theme.RedknotThemePreview
+import com.luisfagundes.designsystem.theme.RedknotThemeWrapper
 import com.luisfagundes.designsystem.theme.spacing
 import com.luisfagundes.trip.R
 import com.luisfagundes.trip.presentation.mapper.toErrorMessage
@@ -200,18 +201,17 @@ private fun CreateTripButton(
     }
 }
 
+@PreviewWrapper(RedknotThemeWrapper::class)
 @RedknotPreview
 @Composable
 private fun TripFormScreenPreview() {
-    RedknotThemePreview {
-        TripFormContent(
-            uiState = TripFormUiState(),
-            onTitleChange = {},
-            onDestinationChange = {},
-            onStartDateChange = {},
-            onEndDateChange = {},
-            onSubmitForm = {},
-            onBackClick = {}
-        )
-    }
+    TripFormContent(
+        uiState = TripFormUiState(),
+        onTitleChange = {},
+        onDestinationChange = {},
+        onStartDateChange = {},
+        onEndDateChange = {},
+        onSubmitForm = {},
+        onBackClick = {}
+    )
 }

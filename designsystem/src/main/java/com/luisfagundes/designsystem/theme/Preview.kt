@@ -1,23 +1,17 @@
 package com.luisfagundes.designsystem.theme
 
 import android.content.res.Configuration
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewWrapperProvider
 
-@Composable
-fun RedknotThemePreview(
-    modifier: Modifier = Modifier,
-    content: @Composable () -> Unit
-) {
-    RedknotTheme {
-        Box(
-            modifier = modifier.background(color = MaterialTheme.colorScheme.background)
-        ) {
-            content.invoke()
+class RedknotThemeWrapper : PreviewWrapperProvider {
+    @Composable
+    override fun Wrap(
+        content: @Composable (() -> Unit)
+    ) {
+        RedknotTheme {
+            content()
         }
     }
 }
