@@ -1,8 +1,6 @@
 package com.luisfagundes.trip.domain.usecase
 
 import com.luisfagundes.common.domain.model.DateValidationError
-import com.luisfagundes.trip.domain.model.ValidationError
-import com.luisfagundes.trip.domain.model.ValidationResult
 import java.time.LocalDate
 import javax.inject.Inject
 
