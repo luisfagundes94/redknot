@@ -1,4 +1,4 @@
-package com.luisfagundes.trip.domain.model
+package com.luisfagundes.common.domain.model
 
 internal enum class ValidationError {
     EMPTY_TITLE,

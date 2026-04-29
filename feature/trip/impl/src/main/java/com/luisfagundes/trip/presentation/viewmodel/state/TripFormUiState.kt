@@ -2,7 +2,7 @@ package com.luisfagundes.trip.presentation.viewmodel.state
 
 import com.luisfagundes.common.domain.model.DateValidationError
 import com.luisfagundes.core.common.presentation.arch.state.UiState
-import com.luisfagundes.trip.domain.model.ValidationError
+import com.luisfagundes.common.domain.model.ValidationError
 import java.time.LocalDate
 
 internal data class TripFormUiState(

@@ -6,7 +6,7 @@ import com.luisfagundes.core.common.di.IoDispatcher
 import com.luisfagundes.core.common.presentation.arch.viewmodel.ViewModel
 import com.luisfagundes.trip.domain.model.Trip
 import com.luisfagundes.trip.domain.model.TripStatus
-import com.luisfagundes.trip.domain.model.errorOrNull
+import com.luisfagundes.common.domain.model.errorOrNull
 import com.luisfagundes.trip.domain.usecase.CreateTripUseCase
 import com.luisfagundes.trip.domain.usecase.ValidateDateUseCase
 import com.luisfagundes.trip.domain.usecase.ValidateDestinationUseCase

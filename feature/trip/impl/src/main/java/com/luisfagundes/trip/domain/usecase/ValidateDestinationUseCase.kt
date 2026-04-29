@@ -1,7 +1,7 @@
 package com.luisfagundes.trip.domain.usecase
 
-import com.luisfagundes.trip.domain.model.ValidationError
-import com.luisfagundes.trip.domain.model.ValidationResult
+import com.luisfagundes.common.domain.model.ValidationError
+import com.luisfagundes.common.domain.model.ValidationResult
 import javax.inject.Inject
 
 internal class ValidateDestinationUseCase @Inject constructor() {

@@ -4,8 +4,8 @@ import app.cash.turbine.test
 import com.luisfagundes.common.domain.model.DateValidationError
 import com.luisfagundes.core.testing.MainDispatcherRule
 import com.luisfagundes.trip.domain.model.TripStatus
-import com.luisfagundes.trip.domain.model.ValidationError
-import com.luisfagundes.trip.domain.model.ValidationResult
+import com.luisfagundes.common.domain.model.ValidationError
+import com.luisfagundes.common.domain.model.ValidationResult
 import com.luisfagundes.trip.domain.usecase.CreateTripUseCase
 import com.luisfagundes.common.domain.usecase.GetUnsplashImageUseCase
 import com.luisfagundes.trip.domain.usecase.ValidateDateUseCase
