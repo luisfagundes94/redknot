@@ -1,19 +1,18 @@
 package com.luisfagundes.trip.presentation.viewmodel.state
 
-import com.luisfagundes.common.domain.model.DateValidationError
+import com.luisfagundes.common.domain.model.FieldValidationError
 import com.luisfagundes.core.common.presentation.arch.state.UiState
-import com.luisfagundes.common.domain.model.ValidationError
 import java.time.LocalDate
 
 internal data class TripFormUiState(
     val title: String = "",
-    val titleError: ValidationError? = null,
+    val titleError: FieldValidationError? = null,
     val startDate: LocalDate? = null,
-    val startDateError: DateValidationError? = null,
+    val startDateError: FieldValidationError? = null,
     val endDate: LocalDate? = null,
-    val endDateError: DateValidationError? = null,
+    val endDateError: FieldValidationError? = null,
     val destination: String = "",
-    val destinationError: ValidationError? = null,
+    val destinationError: FieldValidationError? = null,
     val isLoading: Boolean = false
 ) : UiState {
     val isFormValid: Boolean

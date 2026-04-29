@@ -1,21 +1,21 @@
 package com.luisfagundes.trip.domain.usecase
 
-import com.luisfagundes.common.domain.model.ValidationError
-import com.luisfagundes.common.domain.model.ValidationResult
+import com.luisfagundes.common.domain.model.FieldValidationError
+import com.luisfagundes.common.domain.model.FieldValidationResult
 import javax.inject.Inject
 
 internal class ValidateDestinationUseCase @Inject constructor() {
-    operator fun invoke(destination: String): ValidationResult {
+    operator fun invoke(destination: String): FieldValidationResult {
         return when {
             destination.isBlank() -> {
-                ValidationResult.Invalid(ValidationError.EMPTY_DESTINATION)
+                FieldValidationResult.Invalid(FieldValidationError.EMPTY)
             }
 
             destination.any { it.isDigit() } -> {
-                ValidationResult.Invalid(ValidationError.INVALID_DESTINATION_FORMAT)
+                FieldValidationResult.Invalid(FieldValidationError.CONTAINS_NUMBER)
             }
 
-            else -> ValidationResult.Valid
+            else -> FieldValidationResult.Valid
         }
     }
 }

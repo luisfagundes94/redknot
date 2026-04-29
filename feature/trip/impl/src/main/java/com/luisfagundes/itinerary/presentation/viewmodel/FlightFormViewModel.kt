@@ -1,6 +1,7 @@
 package com.luisfagundes.itinerary.presentation.viewmodel
 
 import androidx.lifecycle.viewModelScope
+import com.luisfagundes.common.domain.model.errorOrNull
 import com.luisfagundes.core.common.di.IoDispatcher
 import com.luisfagundes.core.common.presentation.arch.viewmodel.ViewModel
 import com.luisfagundes.itinerary.domain.model.Airport
@@ -8,10 +9,10 @@ import com.luisfagundes.itinerary.domain.model.Flight
 import com.luisfagundes.itinerary.domain.usecase.CreateItineraryItemUseCase
 import com.luisfagundes.itinerary.domain.usecase.ValidateDurationErrorUseCase
 import com.luisfagundes.itinerary.domain.usecase.ValidateFlightNumberUseCase
-import com.luisfagundes.itinerary.domain.usecase.ValidateItineraryDateUseCase
-import com.luisfagundes.itinerary.domain.usecase.ValidateTimeUseCase
+import com.luisfagundes.common.domain.usecase.ValidateTimeUseCase
 import com.luisfagundes.itinerary.presentation.viewmodel.effect.FlightFormUiEffect
 import com.luisfagundes.itinerary.presentation.viewmodel.state.FlightFormUiState
+import com.luisfagundes.common.domain.usecase.ValidateDateUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
@@ -26,7 +27,7 @@ import kotlin.time.Duration.Companion.minutes
 internal class FlightFormViewModel @Inject constructor(
     private val validateFlightNumberUseCase: ValidateFlightNumberUseCase,
     private val validateDurationErrorUseCase: ValidateDurationErrorUseCase,
-    private val validateDateUseCase: ValidateItineraryDateUseCase,
+    private val validateDateUseCase: ValidateDateUseCase,
     private val validateTimeUseCase: ValidateTimeUseCase,
     private val createItineraryItemUseCase: CreateItineraryItemUseCase,
     @param:IoDispatcher private val dispatcher: CoroutineDispatcher
@@ -34,49 +35,67 @@ internal class FlightFormViewModel @Inject constructor(
     initialState = FlightFormUiState()
 ) {
     fun onFlightNumberChange(value: String) {
-        setState {
-            it.copy(
+        setState { currentState ->
+            currentState.copy(
                 flightNumber = value,
-                flightNumberError = validateFlightNumberUseCase(value)
+                flightNumberError = validateFlightNumberUseCase(value).errorOrNull()
             )
         }
     }
 
     fun onOriginChange(city: String) {
-        setState { it.copy(originAirportCity = city) }
+        setState { currentState ->
+            currentState.copy(originAirportCity = city)
+        }
     }
 
     fun onDestinationChange(city: String) {
-        setState { it.copy(destinationAirportCity = city) }
+        setState { currentState ->
+            currentState.copy(destinationAirportCity = city)
+        }
     }
 
     fun onDurationChange(hoursStr: String, minutesStr: String) {
         val hour = hoursStr.toIntOrNull() ?: 0
         val minutes = minutesStr.toIntOrNull() ?: 0
 
-        setState {
-            it.copy(
+        setState { currentState ->
+            currentState.copy(
                 durationHours = hoursStr,
                 durationMinutes = minutesStr,
-                durationError = validateDurationErrorUseCase(hour, minutes)
+                durationError = validateDurationErrorUseCase(hour, minutes).errorOrNull()
             )
         }
     }
 
     fun onSeatNumberChange(value: String) {
-        setState { it.copy(seatNumber = value) }
+        setState { currentState ->
+            currentState.copy(seatNumber = value)
+        }
     }
 
     fun onDateChange(date: LocalDate?) {
-        setState { it.copy(date = date, dateError = validateDateUseCase(date)) }
+        setState { currentState ->
+            currentState.copy(
+                date = date,
+                dateError = validateDateUseCase(date).errorOrNull()
+            )
+        }
     }
 
     fun onTimeChange(time: LocalTime) {
-        setState { it.copy(time = time, timeError = validateTimeUseCase(time)) }
+        setState { currentState ->
+            currentState.copy(
+                time = time,
+                timeError = validateTimeUseCase(time).errorOrNull()
+            )
+        }
     }
 
     fun onCompanyNameChange(name: String) {
-        setState { it.copy(companyName = name) }
+        setState { currentState ->
+            currentState.copy(companyName = name)
+        }
     }
 
     fun onSubmit(tripId: Int) = viewModelScope.launch(dispatcher) {

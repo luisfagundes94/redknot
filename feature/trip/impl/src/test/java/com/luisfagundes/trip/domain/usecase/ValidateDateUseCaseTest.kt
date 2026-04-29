@@ -1,6 +1,8 @@
 package com.luisfagundes.trip.domain.usecase
 
-import com.luisfagundes.common.domain.model.DateValidationError
+import com.luisfagundes.common.domain.model.FieldValidationError
+import com.luisfagundes.common.domain.model.FieldValidationResult
+import com.luisfagundes.common.domain.usecase.ValidateDateUseCase
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -16,80 +18,77 @@ internal class ValidateDateUseCaseTest {
     }
 
     @Test
-    fun `invoke returns Invalid with MISSING_DATE when date is null`() {
+    fun `invoke returns Invalid with EMPTY when date is null`() {
         // Given
-        val error = DateValidationError.MISSING_DATE
+        val error = FieldValidationError.EMPTY
         val date: LocalDate? = null
 
         // When
         val result = useCase(date)
 
         // Then
-        assertEquals(error, result)
+        assertEquals(FieldValidationResult.Invalid(error), result)
     }
 
     @Test
-    fun `invoke returns Invalid with DATE_BEFORE_TODAY when date is before today`() {
+    fun `invoke returns Invalid with DATE_IN_THE_PAST when date is before today`() {
         // Given
-        val error = DateValidationError.DATE_IN_THE_PAST
+        val error = FieldValidationError.DATE_IN_THE_PAST
         val date = LocalDate.now().minusDays(1)
 
         // When
         val result = useCase(date)
 
         // Then
-        assertEquals(error, result)
+        assertEquals(FieldValidationResult.Invalid(error), result)
     }
 
     @Test
-    fun `invoke returns Invalid with DATE_BEFORE_TODAY when date is one year ago`() {
+    fun `invoke returns Invalid with DATE_IN_THE_PAST when date is one year ago`() {
         // Given
-        val error = DateValidationError.DATE_IN_THE_PAST
+        val error = FieldValidationError.DATE_IN_THE_PAST
         val date = LocalDate.now().minusYears(1)
 
         // When
         val result = useCase(date)
 
         // Then
-        assertEquals(error, result)
+        assertEquals(FieldValidationResult.Invalid(error), result)
     }
 
     @Test
     fun `invoke returns Valid when date is today`() {
         // Given
-        val error = null
         val date = LocalDate.now()
 
         // When
         val result = useCase(date)
 
         // Then
-        assertEquals(error, result)
+        assertEquals(FieldValidationResult.Valid, result)
     }
 
     @Test
     fun `invoke returns Valid when date is tomorrow`() {
         // Given
-        val error = null
         val date = LocalDate.now().plusDays(1)
 
         // When
         val result = useCase(date)
 
         // Then
-        assertEquals(error, result)
+        assertEquals(FieldValidationResult.Valid, result)
     }
 
     @Test
     fun `invoke returns Valid when date is in the future`() {
         // Given
-        val error = null
         val date = LocalDate.now().plusMonths(6)
 
         // When
         val result = useCase(date)
 
         // Then
-        assertEquals(error, result)
+        assertEquals(FieldValidationResult.Valid, result)
     }
 }

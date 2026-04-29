@@ -28,11 +28,11 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.luisfagundes.common.presentation.mapper.toMessage
 import com.luisfagundes.core.common.presentation.arch.compose.CollectUiEffects
 import com.luisfagundes.designsystem.components.RedknotDateSelectionField
 import com.luisfagundes.designsystem.components.RedknotTopBar
 import com.luisfagundes.designsystem.theme.spacing
-import com.luisfagundes.itinerary.presentation.mapper.toErrorMessage
 import com.luisfagundes.itinerary.presentation.viewmodel.FlightFormViewModel
 import com.luisfagundes.itinerary.presentation.viewmodel.effect.FlightFormUiEffect
 import com.luisfagundes.itinerary.presentation.viewmodel.state.FlightFormUiState
@@ -118,7 +118,7 @@ private fun FlightFormFields(
             singleLine = true,
             isError = uiState.flightNumberError != null,
             supportingText = {
-                uiState.flightNumberError?.let { Text(it.toErrorMessage(context)) }
+                uiState.flightNumberError?.let { Text(it.toMessage(context)) }
             },
             modifier = Modifier.fillMaxWidth()
         )
@@ -168,7 +168,7 @@ private fun FlightFormFields(
                 singleLine = true,
                 isError = uiState.durationError != null,
                 supportingText = {
-                    uiState.durationError?.let { Text(it.toErrorMessage(context)) }
+                    uiState.durationError?.let { Text(it.toMessage(context)) }
                 },
                 modifier = Modifier.weight(1f)
             )
@@ -194,7 +194,7 @@ private fun FlightFormFields(
             label = stringResource(R.string.date_label),
             placeholder = stringResource(R.string.date_placeholder),
             hasError = uiState.dateError != null,
-            supportingText = { uiState.dateError?.let { Text(it.toErrorMessage(context)) } },
+            supportingText = { uiState.dateError?.let { Text(it.toMessage(context)) } },
             onDateSelect = onDateChange,
             modifier = Modifier
                 .fillMaxWidth()
@@ -205,7 +205,7 @@ private fun FlightFormFields(
             label = stringResource(R.string.time_label),
             placeholder = stringResource(R.string.time_placeholder),
             hasError = uiState.timeError != null,
-            supportingText = { uiState.timeError?.let { Text(it.toErrorMessage(context)) } },
+            supportingText = { uiState.timeError?.let { Text(it.toMessage(context)) } },
             onTimeSelect = onTimeChange,
             modifier = Modifier.fillMaxWidth()
         )

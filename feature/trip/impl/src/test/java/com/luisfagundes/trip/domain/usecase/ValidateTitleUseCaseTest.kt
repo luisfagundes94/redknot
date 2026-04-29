@@ -1,7 +1,8 @@
 package com.luisfagundes.trip.domain.usecase
 
-import com.luisfagundes.common.domain.model.ValidationError
-import com.luisfagundes.common.domain.model.ValidationResult
+import com.luisfagundes.common.domain.model.FieldValidationError
+import com.luisfagundes.common.domain.model.FieldValidationResult
+import com.luisfagundes.common.domain.usecase.ValidateTitleUseCase
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -24,43 +25,46 @@ internal class ValidateTitleUseCaseTest {
         val result = useCase(title)
 
         // Then
-        assertEquals(ValidationResult.Valid, result)
+        assertEquals(FieldValidationResult.Valid, result)
     }
 
     @Test
-    fun `invoke returns Invalid with EMPTY_TITLE when title is empty string`() {
+    fun `invoke returns Invalid with EMPTY when title is empty string`() {
         // Given
+        val error = FieldValidationResult.Invalid(FieldValidationError.EMPTY)
         val title = ""
 
         // When
         val result = useCase(title)
 
         // Then
-        assertEquals(ValidationResult.Invalid(ValidationError.EMPTY_TITLE), result)
+        assertEquals(error, result)
     }
 
     @Test
-    fun `invoke returns Invalid with EMPTY_TITLE when title is blank with spaces`() {
+    fun `invoke returns Invalid with EMPTY when title is blank with spaces`() {
         // Given
+        val error = FieldValidationResult.Invalid(FieldValidationError.EMPTY)
         val title = "   "
 
         // When
         val result = useCase(title)
 
         // Then
-        assertEquals(ValidationResult.Invalid(ValidationError.EMPTY_TITLE), result)
+        assertEquals(error, result)
     }
 
     @Test
-    fun `invoke returns Invalid with EMPTY_TITLE when title contains only tabs and newlines`() {
+    fun `invoke returns Invalid with EMPTY when title contains only tabs and newlines`() {
         // Given
+        val error = FieldValidationResult.Invalid(FieldValidationError.EMPTY)
         val title = "\t\n"
 
         // When
         val result = useCase(title)
 
         // Then
-        assertEquals(ValidationResult.Invalid(ValidationError.EMPTY_TITLE), result)
+        assertEquals(error, result)
     }
 
     @Test
@@ -72,6 +76,6 @@ internal class ValidateTitleUseCaseTest {
         val result = useCase(title)
 
         // Then
-        assertEquals(ValidationResult.Valid, result)
+        assertEquals(FieldValidationResult.Valid, result)
     }
 }

@@ -6,7 +6,7 @@ import com.luisfagundes.trip.R
 
 internal fun ItineraryValidationError.toErrorMessage(context: Context): String {
     val resId = when (this) {
-        ItineraryValidationError.EMPTY_TITLE -> R.string.empty_title_error_message
+        ItineraryValidationError.EMPTY_TITLE -> R.string.empty_field_error_message
         ItineraryValidationError.EMPTY_NAME -> R.string.empty_name_error_message
         ItineraryValidationError.EMPTY_ADDRESS -> R.string.empty_address_error_message
         ItineraryValidationError.EMPTY_FLIGHT_NUMBER -> R.string.empty_flight_number_error_message

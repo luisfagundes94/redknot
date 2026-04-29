@@ -1,14 +1,15 @@
 package com.luisfagundes.itinerary.presentation.viewmodel
 
 import androidx.lifecycle.viewModelScope
+import com.luisfagundes.common.domain.model.errorOrNull
+import com.luisfagundes.common.domain.usecase.ValidateDateUseCase
 import com.luisfagundes.core.common.di.IoDispatcher
 import com.luisfagundes.core.common.presentation.arch.viewmodel.ViewModel
 import com.luisfagundes.itinerary.domain.model.MealType
 import com.luisfagundes.itinerary.domain.model.Restaurant
 import com.luisfagundes.itinerary.domain.usecase.CreateItineraryItemUseCase
-import com.luisfagundes.itinerary.domain.usecase.ValidateItineraryDateUseCase
-import com.luisfagundes.itinerary.domain.usecase.ValidateNameUseCase
-import com.luisfagundes.itinerary.domain.usecase.ValidateTimeUseCase
+import com.luisfagundes.common.domain.usecase.ValidateNameUseCase
+import com.luisfagundes.common.domain.usecase.ValidateTimeUseCase
 import com.luisfagundes.itinerary.presentation.viewmodel.effect.RestaurantFormUiEffect
 import com.luisfagundes.itinerary.presentation.viewmodel.state.RestaurantFormUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,7 +23,7 @@ import javax.inject.Inject
 @HiltViewModel
 internal class RestaurantFormViewModel @Inject constructor(
     private val validateNameUseCase: ValidateNameUseCase,
-    private val validateDateUseCase: ValidateItineraryDateUseCase,
+    private val validateDateUseCase: ValidateDateUseCase,
     private val validateTimeUseCase: ValidateTimeUseCase,
     private val createItineraryItemUseCase: CreateItineraryItemUseCase,
     @param:IoDispatcher private val dispatcher: CoroutineDispatcher
@@ -30,7 +31,12 @@ internal class RestaurantFormViewModel @Inject constructor(
     initialState = RestaurantFormUiState()
 ) {
     fun onNameChange(name: String) {
-        setState { it.copy(name = name, nameError = validateNameUseCase(name)) }
+        setState { currentState ->
+            currentState.copy(
+                name = name,
+                nameError = validateNameUseCase(name).errorOrNull()
+            )
+        }
     }
 
     fun onAddressChange(address: String) {
@@ -42,11 +48,21 @@ internal class RestaurantFormViewModel @Inject constructor(
     }
 
     fun onDateChange(date: LocalDate?) {
-        setState { it.copy(date = date, dateError = validateDateUseCase(date)) }
+        setState { currentState ->
+            currentState.copy(
+                date = date,
+                dateError = validateDateUseCase(date).errorOrNull()
+            )
+        }
     }
 
     fun onTimeChange(time: LocalTime) {
-        setState { it.copy(time = time, timeError = validateTimeUseCase(time)) }
+        setState { currentState ->
+            currentState.copy(
+                time = time,
+                timeError = validateTimeUseCase(time).errorOrNull()
+            )
+        }
     }
 
     fun onSubmit(tripId: Int) = viewModelScope.launch(dispatcher) {

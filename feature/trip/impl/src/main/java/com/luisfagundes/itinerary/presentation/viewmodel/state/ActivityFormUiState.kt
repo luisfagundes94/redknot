@@ -1,19 +1,19 @@
 package com.luisfagundes.itinerary.presentation.viewmodel.state
 
+import com.luisfagundes.common.domain.model.FieldValidationError
 import com.luisfagundes.core.common.presentation.arch.state.UiState
-import com.luisfagundes.itinerary.domain.model.ItineraryValidationError
 import java.time.LocalDate
 import java.time.LocalTime
 
 internal data class ActivityFormUiState(
     val title: String = "",
-    val titleError: ItineraryValidationError? = null,
+    val titleError: FieldValidationError? = null,
     val description: String = "",
     val location: String = "",
     val date: LocalDate? = null,
-    val dateError: ItineraryValidationError? = null,
+    val dateError: FieldValidationError? = null,
     val time: LocalTime? = null,
-    val timeError: ItineraryValidationError? = null,
+    val timeError: FieldValidationError? = null,
     val isLoading: Boolean = false
 ) : UiState {
     val isFormValid: Boolean

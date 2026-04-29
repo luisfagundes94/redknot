@@ -6,9 +6,10 @@ import com.luisfagundes.budget.domain.model.ExpenseCategory
 import com.luisfagundes.budget.domain.usecase.AddExpenseUseCase
 import com.luisfagundes.budget.presentation.viewmodel.effect.AddExpenseFormUiEffect
 import com.luisfagundes.budget.presentation.viewmodel.state.AddExpenseFormUiState
+import com.luisfagundes.common.domain.model.errorOrNull
 import com.luisfagundes.core.common.di.IoDispatcher
 import com.luisfagundes.core.common.presentation.arch.viewmodel.ViewModel
-import com.luisfagundes.trip.domain.usecase.ValidateDateUseCase
+import com.luisfagundes.common.domain.usecase.ValidateDateUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -26,19 +27,30 @@ internal class AddExpenseFormViewModel @Inject constructor(
     initialState = AddExpenseFormUiState()
 ) {
     fun onAmountChange(amount: BigDecimal) {
-        setState { it.copy(amount = amount) }
+        setState { currentState ->
+            currentState.copy(amount = amount)
+        }
     }
 
     fun onCategorySelect(category: ExpenseCategory) {
-        setState { it.copy(selectedCategory = category) }
+        setState { currentState ->
+            currentState.copy(selectedCategory = category)
+        }
     }
 
     fun onDateSelect(date: LocalDate?) {
-        setState { it.copy(selectedDate = date, selectedDateError = validateDateUseCase(date)) }
+        setState { currentState ->
+            currentState.copy(
+                selectedDate = date,
+                selectedDateError = validateDateUseCase(date).errorOrNull()
+            )
+        }
     }
 
     fun onDescriptionChange(description: String) {
-        setState { it.copy(description = description) }
+        setState { currentState ->
+            currentState.copy(description = description)
+        }
     }
 
     fun onAddExpenseClick() = viewModelScope.launch(dispatcher) {

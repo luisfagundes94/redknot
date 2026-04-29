@@ -36,7 +36,7 @@ import com.luisfagundes.budget.presentation.provider.AddExpenseFormPreviewParame
 import com.luisfagundes.budget.presentation.viewmodel.AddExpenseFormViewModel
 import com.luisfagundes.budget.presentation.viewmodel.effect.AddExpenseFormUiEffect
 import com.luisfagundes.budget.presentation.viewmodel.state.AddExpenseFormUiState
-import com.luisfagundes.common.presentation.mapper.toErrorMessage
+import com.luisfagundes.common.presentation.mapper.toMessage
 import com.luisfagundes.core.common.presentation.arch.compose.CollectUiEffects
 import com.luisfagundes.designsystem.components.RedknotDateSelectionField
 import com.luisfagundes.designsystem.components.RedknotTopBar
@@ -175,7 +175,7 @@ private fun AddExpenseForm(
             hasError = uiState.selectedDateError != null,
             supportingText = {
                 uiState.selectedDateError?.let { error ->
-                    Text(error.toErrorMessage(context))
+                    Text(error.toMessage(context))
                 }
             },
             onDateSelect = onDateSelect,

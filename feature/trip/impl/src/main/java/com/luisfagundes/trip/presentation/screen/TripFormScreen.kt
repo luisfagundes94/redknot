@@ -29,14 +29,13 @@ import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.luisfagundes.common.presentation.mapper.toErrorMessage
+import com.luisfagundes.common.presentation.mapper.toMessage
 import com.luisfagundes.designsystem.components.RedknotDateSelectionField
 import com.luisfagundes.designsystem.components.RedknotTopBar
 import com.luisfagundes.designsystem.theme.RedknotPreview
 import com.luisfagundes.designsystem.theme.RedknotThemeWrapper
 import com.luisfagundes.designsystem.theme.spacing
 import com.luisfagundes.trip.R
-import com.luisfagundes.trip.presentation.mapper.toErrorMessage
 import com.luisfagundes.trip.presentation.viewmodel.TripFormViewModel
 import com.luisfagundes.trip.presentation.viewmodel.effect.TripFormUiEffect
 import com.luisfagundes.trip.presentation.viewmodel.state.TripFormUiState
@@ -113,7 +112,7 @@ private fun TripFormContent(
                 isError = uiState.titleError != null,
                 supportingText = {
                     uiState.titleError?.let {
-                        Text(it.toErrorMessage(context))
+                        Text(it.toMessage(context))
                     }
                 },
                 modifier = Modifier.fillMaxWidth()
@@ -127,7 +126,7 @@ private fun TripFormContent(
                 isError = uiState.destinationError != null,
                 supportingText = {
                     uiState.destinationError?.let {
-                        Text(it.toErrorMessage(context))
+                        Text(it.toMessage(context))
                     }
                 },
                 modifier = Modifier.fillMaxWidth()
@@ -139,7 +138,7 @@ private fun TripFormContent(
                 hasError = uiState.startDateError != null,
                 supportingText = {
                     uiState.startDateError?.let { error ->
-                        Text(error.toErrorMessage(context))
+                        Text(error.toMessage(context))
                     }
                 },
                 onDateSelect = onStartDateChange,
@@ -152,7 +151,7 @@ private fun TripFormContent(
                 hasError = uiState.endDateError != null,
                 supportingText = {
                     uiState.endDateError?.let { error ->
-                        Text(error.toErrorMessage(context))
+                        Text(error.toMessage(context))
                     }
                 },
                 onDateSelect = onEndDateChange,

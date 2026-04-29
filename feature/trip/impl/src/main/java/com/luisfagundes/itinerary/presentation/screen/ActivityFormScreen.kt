@@ -25,10 +25,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.luisfagundes.common.presentation.mapper.toMessage
 import com.luisfagundes.designsystem.components.RedknotDateSelectionField
 import com.luisfagundes.designsystem.components.RedknotTopBar
 import com.luisfagundes.designsystem.theme.spacing
-import com.luisfagundes.itinerary.presentation.mapper.toErrorMessage
 import com.luisfagundes.itinerary.presentation.viewmodel.ActivityFormViewModel
 import com.luisfagundes.itinerary.presentation.viewmodel.effect.ActivityFormUiEffect
 import com.luisfagundes.itinerary.presentation.viewmodel.state.ActivityFormUiState
@@ -109,7 +109,7 @@ private fun ActivityFormContent(
                 placeholder = { Text(stringResource(R.string.activity_title_placeholder)) },
                 singleLine = true,
                 isError = uiState.titleError != null,
-                supportingText = { uiState.titleError?.let { Text(it.toErrorMessage(context)) } },
+                supportingText = { uiState.titleError?.let { Text(it.toMessage(context)) } },
                 modifier = Modifier.fillMaxWidth()
             )
             OutlinedTextField(
@@ -134,7 +134,7 @@ private fun ActivityFormContent(
                 label = stringResource(R.string.date_label),
                 placeholder = stringResource(R.string.date_placeholder),
                 hasError = uiState.dateError != null,
-                supportingText = { uiState.dateError?.let { Text(it.toErrorMessage(context)) } },
+                supportingText = { uiState.dateError?.let { Text(it.toMessage(context)) } },
                 onDateSelect = onDateChange,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -145,7 +145,7 @@ private fun ActivityFormContent(
                 label = stringResource(R.string.time_label),
                 placeholder = stringResource(R.string.time_placeholder),
                 hasError = uiState.timeError != null,
-                supportingText = { uiState.timeError?.let { Text(it.toErrorMessage(context)) } },
+                supportingText = { uiState.timeError?.let { Text(it.toMessage(context)) } },
                 onTimeSelect = onTimeChange,
                 modifier = Modifier.fillMaxWidth()
             )

@@ -1,15 +1,16 @@
 package com.luisfagundes.itinerary.presentation.viewmodel
 
 import androidx.lifecycle.viewModelScope
+import com.luisfagundes.common.domain.model.errorOrNull
 import com.luisfagundes.core.common.di.IoDispatcher
 import com.luisfagundes.core.common.presentation.arch.viewmodel.ViewModel
 import com.luisfagundes.itinerary.domain.model.Activity
 import com.luisfagundes.itinerary.domain.usecase.CreateItineraryItemUseCase
-import com.luisfagundes.itinerary.domain.usecase.ValidateItineraryDateUseCase
-import com.luisfagundes.itinerary.domain.usecase.ValidateItineraryTitleUseCase
-import com.luisfagundes.itinerary.domain.usecase.ValidateTimeUseCase
+import com.luisfagundes.common.domain.usecase.ValidateTitleUseCase
+import com.luisfagundes.common.domain.usecase.ValidateTimeUseCase
 import com.luisfagundes.itinerary.presentation.viewmodel.effect.ActivityFormUiEffect
 import com.luisfagundes.itinerary.presentation.viewmodel.state.ActivityFormUiState
+import com.luisfagundes.common.domain.usecase.ValidateDateUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
@@ -20,8 +21,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 internal class ActivityFormViewModel @Inject constructor(
-    private val validateTitleUseCase: ValidateItineraryTitleUseCase,
-    private val validateDateUseCase: ValidateItineraryDateUseCase,
+    private val validateTitleUseCase: ValidateTitleUseCase,
+    private val validateDateUseCase: ValidateDateUseCase,
     private val validateTimeUseCase: ValidateTimeUseCase,
     private val createItineraryItemUseCase: CreateItineraryItemUseCase,
     @param:IoDispatcher private val dispatcher: CoroutineDispatcher
@@ -29,23 +30,42 @@ internal class ActivityFormViewModel @Inject constructor(
     initialState = ActivityFormUiState()
 ) {
     fun onTitleChange(title: String) {
-        setState { it.copy(title = title, titleError = validateTitleUseCase(title)) }
+        setState { currentState ->
+            currentState.copy(
+                title = title,
+                titleError = validateTitleUseCase(title).errorOrNull()
+            )
+        }
     }
 
     fun onDescriptionChange(description: String) {
-        setState { it.copy(description = description) }
+        setState { currentState ->
+            currentState.copy(description = description)
+        }
     }
 
     fun onLocationChange(location: String) {
-        setState { it.copy(location = location) }
+        setState { currentState ->
+            currentState.copy(location = location)
+        }
     }
 
     fun onDateChange(date: LocalDate?) {
-        setState { it.copy(date = date, dateError = validateDateUseCase(date)) }
+        setState { currentState ->
+            currentState.copy(
+                date = date,
+                dateError = validateDateUseCase(date).errorOrNull()
+            )
+        }
     }
 
     fun onTimeChange(time: LocalTime) {
-        setState { it.copy(time = time, timeError = validateTimeUseCase(time)) }
+        setState { currentState ->
+            currentState.copy(
+                time = time,
+                timeError = validateTimeUseCase(time).errorOrNull()
+            )
+        }
     }
 
     fun onSubmit(tripId: Int) = viewModelScope.launch(dispatcher) {

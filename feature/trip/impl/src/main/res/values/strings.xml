@@ -18,11 +18,11 @@
     <string name="create_trip">Create Trip</string>
     <string name="error_occurred_try_again">Something wrong happened. Would you like to try again?</string>
     <string name="try_again">Try Again</string>
-    <string name="empty_title_error_message">Title cannot be empty</string>
+    <string name="empty_field_error_message">Field cannot be empty</string>
     <string name="empty_destination_error_message">Destination cannot be empty</string>
     <string name="missing_date_error_message">Date must be selected</string>
     <string name="date_in_the_past_error_message">Date cannot be in the past"</string>
-    <string name="invalid_destination_error_message">Destination can only contain letters</string>
+    <string name="contains_number_error_message">Field can only contain letters</string>
     <string name="creating_trip">Creating trip…</string>
     <string name="dot">•</string>
     <string name="ongoing">Ongoing</string>
@@ -89,6 +89,7 @@
     <string name="empty_name_error_message">Name cannot be empty</string>
     <string name="empty_address_error_message">Address cannot be empty</string>
     <string name="empty_flight_number_error_message">Flight number cannot be empty</string>
+    <string name="invalid_flight_number_error_message">Enter a valid flight number (e.g. AZ610)</string>
     <string name="invalid_duration_error_message">Duration must be greater than 0</string>
     <string name="missing_time_error_message">Time must be selected</string>
     <string name="flight_to">Flight to %1$s</string>

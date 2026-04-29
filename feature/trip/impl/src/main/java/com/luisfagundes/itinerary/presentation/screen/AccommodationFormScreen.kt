@@ -28,12 +28,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.luisfagundes.common.presentation.mapper.toMessage
 import com.luisfagundes.core.common.presentation.arch.compose.CollectUiEffects
 import com.luisfagundes.designsystem.components.RedknotDateSelectionField
 import com.luisfagundes.designsystem.components.RedknotTopBar
 import com.luisfagundes.designsystem.theme.spacing
 import com.luisfagundes.itinerary.domain.model.CheckInType
-import com.luisfagundes.itinerary.presentation.mapper.toErrorMessage
 import com.luisfagundes.itinerary.presentation.viewmodel.AccommodationFormViewModel
 import com.luisfagundes.itinerary.presentation.viewmodel.effect.AccommodationFormUiEffect
 import com.luisfagundes.itinerary.presentation.viewmodel.state.AccommodationFormUiState
@@ -113,7 +113,7 @@ private fun AccommodationFormContent(
                 placeholder = { Text(stringResource(R.string.accommodation_name_placeholder)) },
                 singleLine = true,
                 isError = uiState.nameError != null,
-                supportingText = { uiState.nameError?.let { Text(it.toErrorMessage(context)) } },
+                supportingText = { uiState.nameError?.let { Text(it.toMessage(context)) } },
                 modifier = Modifier.fillMaxWidth()
             )
             OutlinedTextField(
@@ -123,7 +123,7 @@ private fun AccommodationFormContent(
                 placeholder = { Text(stringResource(R.string.accommodation_address_placeholder)) },
                 singleLine = true,
                 isError = uiState.addressError != null,
-                supportingText = { uiState.addressError?.let { Text(it.toErrorMessage(context)) } },
+                supportingText = { uiState.addressError?.let { Text(it.toMessage(context)) } },
                 modifier = Modifier.fillMaxWidth()
             )
             Text(
@@ -159,7 +159,7 @@ private fun AccommodationFormContent(
                 label = stringResource(R.string.date_label),
                 placeholder = stringResource(R.string.date_placeholder),
                 hasError = uiState.dateError != null,
-                supportingText = { uiState.dateError?.let { Text(it.toErrorMessage(context)) } },
+                supportingText = { uiState.dateError?.let { Text(it.toMessage(context)) } },
                 onDateSelect = onDateChange,
                 modifier = Modifier.fillMaxWidth()
             )
@@ -168,7 +168,7 @@ private fun AccommodationFormContent(
                 label = stringResource(R.string.time_label),
                 placeholder = stringResource(R.string.time_placeholder),
                 hasError = uiState.timeError != null,
-                supportingText = { uiState.timeError?.let { Text(it.toErrorMessage(context)) } },
+                supportingText = { uiState.timeError?.let { Text(it.toMessage(context)) } },
                 onTimeSelect = onTimeChange,
                 modifier = Modifier.fillMaxWidth()
             )

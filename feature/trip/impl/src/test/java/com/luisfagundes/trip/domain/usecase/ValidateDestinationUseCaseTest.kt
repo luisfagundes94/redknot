@@ -1,7 +1,7 @@
 package com.luisfagundes.trip.domain.usecase
 
-import com.luisfagundes.common.domain.model.ValidationError
-import com.luisfagundes.common.domain.model.ValidationResult
+import com.luisfagundes.common.domain.model.FieldValidationError
+import com.luisfagundes.common.domain.model.FieldValidationResult
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -24,79 +24,85 @@ internal class ValidateDestinationUseCaseTest {
         val result = useCase(destination)
 
         // Then
-        assertEquals(ValidationResult.Valid, result)
+        assertEquals(FieldValidationResult.Valid, result)
     }
 
     @Test
-    fun `invoke returns Invalid with EMPTY_DESTINATION when destination is empty string`() {
+    fun `invoke returns Invalid with EMPTY when destination is empty string`() {
         // Given
+        val error = FieldValidationResult.Invalid(FieldValidationError.EMPTY)
         val destination = ""
 
         // When
         val result = useCase(destination)
 
         // Then
-        assertEquals(ValidationResult.Invalid(ValidationError.EMPTY_DESTINATION), result)
+        assertEquals(error, result)
     }
 
     @Test
-    fun `invoke returns Invalid with EMPTY_DESTINATION when destination is blank with spaces`() {
+    fun `invoke returns Invalid with EMPTY when destination is blank with spaces`() {
         // Given
+        val error = FieldValidationResult.Invalid(FieldValidationError.EMPTY)
         val destination = "   "
 
         // When
         val result = useCase(destination)
 
         // Then
-        assertEquals(ValidationResult.Invalid(ValidationError.EMPTY_DESTINATION), result)
+        assertEquals(error, result)
     }
 
     @Test
-    fun `invoke returns Invalid with EMPTY_DESTINATION when destination contains only tabs and newlines`() {
+    fun `invoke returns Invalid with EMPTY when destination contains only tabs and newlines`() {
         // Given
+        val error = FieldValidationResult.Invalid(FieldValidationError.EMPTY)
         val destination = "\t\n"
 
         // When
         val result = useCase(destination)
 
         // Then
-        assertEquals(ValidationResult.Invalid(ValidationError.EMPTY_DESTINATION), result)
+        assertEquals(error, result)
     }
 
     @Test
     fun `invoke returns Invalid with INVALID_DESTINATION_FORMAT when destination contains digits`() {
         // Given
+        val error = FieldValidationResult.Invalid(FieldValidationError.CONTAINS_NUMBER)
         val destination = "Paris123"
 
         // When
         val result = useCase(destination)
 
         // Then
-        assertEquals(ValidationResult.Invalid(ValidationError.INVALID_DESTINATION_FORMAT), result)
+        assertEquals(error, result)
     }
 
     @Test
     fun `invoke returns Invalid with INVALID_DESTINATION_FORMAT when destination contains single digit`() {
         // Given
+        val error = FieldValidationResult.Invalid(FieldValidationError.CONTAINS_NUMBER)
         val destination = "Paris 1"
 
         // When
         val result = useCase(destination)
 
         // Then
-        assertEquals(ValidationResult.Invalid(ValidationError.INVALID_DESTINATION_FORMAT), result)
+        assertEquals(error, result)
     }
 
     @Test
     fun `invoke returns Invalid with INVALID_DESTINATION_FORMAT when destination starts with digit`() {
         // Given
+        val error = FieldValidationResult.Invalid(FieldValidationError.CONTAINS_NUMBER)
         val destination = "1 Paris Street"
 
         // When
         val result = useCase(destination)
 
         // Then
-        assertEquals(ValidationResult.Invalid(ValidationError.INVALID_DESTINATION_FORMAT), result)
+        assertEquals(error, result)
     }
 
     @Test
@@ -108,7 +114,7 @@ internal class ValidateDestinationUseCaseTest {
         val result = useCase(destination)
 
         // Then
-        assertEquals(ValidationResult.Valid, result)
+        assertEquals(FieldValidationResult.Valid, result)
     }
 
     @Test
@@ -120,7 +126,7 @@ internal class ValidateDestinationUseCaseTest {
         val result = useCase(destination)
 
         // Then
-        assertEquals(ValidationResult.Valid, result)
+        assertEquals(FieldValidationResult.Valid, result)
     }
 
     @Test
@@ -132,6 +138,6 @@ internal class ValidateDestinationUseCaseTest {
         val result = useCase(destination)
 
         // Then
-        assertEquals(ValidationResult.Valid, result)
+        assertEquals(FieldValidationResult.Valid, result)
     }
 }

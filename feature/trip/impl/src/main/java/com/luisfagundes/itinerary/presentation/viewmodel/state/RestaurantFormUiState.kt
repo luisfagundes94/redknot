@@ -1,7 +1,7 @@
 package com.luisfagundes.itinerary.presentation.viewmodel.state
 
+import com.luisfagundes.common.domain.model.FieldValidationError
 import com.luisfagundes.core.common.presentation.arch.state.UiState
-import com.luisfagundes.itinerary.domain.model.ItineraryValidationError
 import com.luisfagundes.itinerary.domain.model.MealType
 import java.time.LocalDate
 import java.time.LocalTime
@@ -10,11 +10,11 @@ internal data class RestaurantFormUiState(
     val name: String = "",
     val address: String = "",
     val mealType: MealType = MealType.BREAKFAST,
-    val nameError: ItineraryValidationError? = null,
+    val nameError: FieldValidationError? = null,
     val date: LocalDate? = null,
-    val dateError: ItineraryValidationError? = null,
+    val dateError: FieldValidationError? = null,
     val time: LocalTime? = null,
-    val timeError: ItineraryValidationError? = null,
+    val timeError: FieldValidationError? = null,
     val isLoading: Boolean = false
 ) : UiState {
     val isFormValid: Boolean

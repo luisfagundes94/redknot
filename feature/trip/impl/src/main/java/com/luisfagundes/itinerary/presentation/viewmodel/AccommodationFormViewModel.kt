@@ -1,17 +1,18 @@
 package com.luisfagundes.itinerary.presentation.viewmodel
 
 import androidx.lifecycle.viewModelScope
+import com.luisfagundes.common.domain.model.errorOrNull
 import com.luisfagundes.core.common.di.IoDispatcher
 import com.luisfagundes.core.common.presentation.arch.viewmodel.ViewModel
 import com.luisfagundes.itinerary.domain.model.Accommodation
 import com.luisfagundes.itinerary.domain.model.CheckInType
 import com.luisfagundes.itinerary.domain.usecase.CreateItineraryItemUseCase
-import com.luisfagundes.itinerary.domain.usecase.ValidateAddressUseCase
-import com.luisfagundes.itinerary.domain.usecase.ValidateItineraryDateUseCase
-import com.luisfagundes.itinerary.domain.usecase.ValidateNameUseCase
-import com.luisfagundes.itinerary.domain.usecase.ValidateTimeUseCase
+import com.luisfagundes.common.domain.usecase.ValidateAddressUseCase
+import com.luisfagundes.common.domain.usecase.ValidateNameUseCase
+import com.luisfagundes.common.domain.usecase.ValidateTimeUseCase
 import com.luisfagundes.itinerary.presentation.viewmodel.effect.AccommodationFormUiEffect
 import com.luisfagundes.itinerary.presentation.viewmodel.state.AccommodationFormUiState
+import com.luisfagundes.common.domain.usecase.ValidateDateUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
@@ -24,7 +25,7 @@ import javax.inject.Inject
 internal class AccommodationFormViewModel @Inject constructor(
     private val validateNameUseCase: ValidateNameUseCase,
     private val validateAddressUseCase: ValidateAddressUseCase,
-    private val validateDateUseCase: ValidateItineraryDateUseCase,
+    private val validateDateUseCase: ValidateDateUseCase,
     private val validateTimeUseCase: ValidateTimeUseCase,
     private val createItineraryItemUseCase: CreateItineraryItemUseCase,
     @param:IoDispatcher private val dispatcher: CoroutineDispatcher
@@ -32,23 +33,45 @@ internal class AccommodationFormViewModel @Inject constructor(
     initialState = AccommodationFormUiState()
 ) {
     fun onNameChange(name: String) {
-        setState { it.copy(name = name, nameError = validateNameUseCase(name)) }
+        setState { currentState ->
+            currentState.copy(
+                name = name,
+                nameError = validateNameUseCase(name).errorOrNull()
+            )
+        }
     }
 
     fun onAddressChange(address: String) {
-        setState { it.copy(address = address, addressError = validateAddressUseCase(address)) }
+        setState { currentState ->
+            currentState.copy(
+                address = address,
+                addressError = validateAddressUseCase(address).errorOrNull()
+            )
+        }
     }
 
     fun onCheckInTypeChange(checkInType: CheckInType) {
-        setState { it.copy(checkInType = checkInType) }
+        setState { currentState ->
+            currentState.copy(checkInType = checkInType)
+        }
     }
 
     fun onDateChange(date: LocalDate?) {
-        setState { it.copy(date = date, dateError = validateDateUseCase(date)) }
+        setState { currentState ->
+            currentState.copy(
+                date = date,
+                dateError = validateDateUseCase(date).errorOrNull()
+            )
+        }
     }
 
     fun onTimeChange(time: LocalTime) {
-        setState { it.copy(time = time, timeError = validateTimeUseCase(time)) }
+        setState { currentState ->
+            currentState.copy(
+                time = time,
+                timeError = validateTimeUseCase(time).errorOrNull()
+            )
+        }
     }
 
     fun onSubmit(tripId: Int) = viewModelScope.launch(dispatcher) {

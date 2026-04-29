@@ -8,9 +8,9 @@ import com.luisfagundes.trip.domain.model.Trip
 import com.luisfagundes.trip.domain.model.TripStatus
 import com.luisfagundes.common.domain.model.errorOrNull
 import com.luisfagundes.trip.domain.usecase.CreateTripUseCase
-import com.luisfagundes.trip.domain.usecase.ValidateDateUseCase
+import com.luisfagundes.common.domain.usecase.ValidateDateUseCase
+import com.luisfagundes.common.domain.usecase.ValidateTitleUseCase
 import com.luisfagundes.trip.domain.usecase.ValidateDestinationUseCase
-import com.luisfagundes.trip.domain.usecase.ValidateTitleUseCase
 import com.luisfagundes.trip.presentation.viewmodel.effect.TripFormUiEffect
 import com.luisfagundes.trip.presentation.viewmodel.state.TripFormUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -43,7 +43,7 @@ internal class TripFormViewModel @Inject constructor(
         setState { state ->
             state.copy(
                 startDate = startDate,
-                startDateError = validateDateUseCase(startDate)
+                startDateError = validateDateUseCase(startDate).errorOrNull()
             )
         }
     }
@@ -52,7 +52,7 @@ internal class TripFormViewModel @Inject constructor(
         setState { state ->
             state.copy(
                 endDate = endDate,
-                endDateError = validateDateUseCase(endDate)
+                endDateError = validateDateUseCase(endDate).errorOrNull()
             )
         }
     }
