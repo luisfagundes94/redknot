@@ -1,5 +1,6 @@
 package com.luisfagundes.trip.presentation.viewmodel
 
+import com.luisfagundes.common.domain.model.DateValidationError
 import com.luisfagundes.core.testing.MainDispatcherRule
 import com.luisfagundes.trip.domain.model.TripStatus
 import com.luisfagundes.trip.domain.model.ValidationError
@@ -92,7 +93,7 @@ internal class TripFormViewModelTest {
     fun `onStartDateChange updates startDate and clears error when valid`() {
         // Given
         val date = LocalDate.of(2025, 6, 15)
-        every { validateDateUseCase(any()) } returns ValidationResult.Valid
+        every { validateDateUseCase(any()) } returns null
 
         // When
         viewModel.onStartDateChange(date)
@@ -107,8 +108,8 @@ internal class TripFormViewModelTest {
     @Test
     fun `onStartDateChange sets error when date is null`() {
         // Given
-        val error = ValidationError.MISSING_DATE
-        every { validateDateUseCase(null) } returns ValidationResult.Invalid(error)
+        val error = DateValidationError.MISSING_DATE
+        every { validateDateUseCase(null) } returns error
 
         // When
         viewModel.onStartDateChange(null)
@@ -124,7 +125,7 @@ internal class TripFormViewModelTest {
     fun `onEndDateChange updates endDate and clears error when valid`() {
         // Given
         val date = LocalDate.of(2025, 6, 20)
-        every { validateDateUseCase(any()) } returns ValidationResult.Valid
+        every { validateDateUseCase(any()) } returns null
 
         // When
         viewModel.onEndDateChange(date)
@@ -139,8 +140,8 @@ internal class TripFormViewModelTest {
     @Test
     fun `onEndDateChange sets error when date is null`() {
         // Given
-        val error = ValidationError.MISSING_DATE
-        every { validateDateUseCase(null) } returns ValidationResult.Invalid(error)
+        val error = DateValidationError.MISSING_DATE
+        every { validateDateUseCase(null) } returns error
 
         // When
         viewModel.onEndDateChange(null)
@@ -259,7 +260,7 @@ internal class TripFormViewModelTest {
         val endDate = LocalDate.of(2025, 6, 20)
 
         every { validateTitleUseCase(any()) } returns ValidationResult.Valid
-        every { validateDateUseCase(any()) } returns ValidationResult.Valid
+        every { validateDateUseCase(any()) } returns null
         every { validateDestinationUseCase(any()) } returns ValidationResult.Valid
         coEvery { getUnsplashImageUseCase("Paris") } returns Result.success(imageUrl)
         coEvery { createTripUseCase(any()) } returns Result.success(Unit)
