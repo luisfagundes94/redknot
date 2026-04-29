@@ -18,6 +18,8 @@ import androidx.compose.ui.text.style.TextAlign
 import com.luisfagundes.designsystem.theme.spacing
 import com.luisfagundes.trip.R
 
+private const val AMOUNT_FIELD_WIDTH_FRACTION = 0.65f
+
 @Composable
 internal fun AmountSection(
     amount: String,
@@ -63,7 +65,7 @@ internal fun AmountSection(
             ),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
             singleLine = true,
-            modifier = Modifier.fillMaxWidth(0.65f)
+            modifier = Modifier.fillMaxWidth(AMOUNT_FIELD_WIDTH_FRACTION)
         )
     }
 }
