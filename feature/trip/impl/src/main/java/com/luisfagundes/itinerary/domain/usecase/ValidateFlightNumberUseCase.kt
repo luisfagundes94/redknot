@@ -1,7 +1,8 @@
 package com.luisfagundes.itinerary.domain.usecase
 
-import com.luisfagundes.common.domain.model.FieldValidationError
+import com.luisfagundes.common.domain.model.CommonFieldError
 import com.luisfagundes.common.domain.model.FieldValidationResult
+import com.luisfagundes.common.domain.model.FlightFieldError
 import com.luisfagundes.common.domain.model.FieldValidationResult.Invalid
 import com.luisfagundes.common.domain.model.FieldValidationResult.Valid
 import javax.inject.Inject
@@ -17,8 +18,8 @@ internal class ValidateFlightNumberUseCase @Inject constructor() {
         val trimmed = flightNumber.trim()
 
         return when {
-            trimmed.isBlank() -> Invalid(FieldValidationError.EMPTY)
-            !REGEX.matches(trimmed) -> Invalid(FieldValidationError.INVALID_FLIGHT_NUMBER)
+            trimmed.isBlank() -> Invalid(CommonFieldError.EMPTY)
+            !REGEX.matches(trimmed) -> Invalid(FlightFieldError.INVALID_NUMBER)
             else -> Valid
         }
     }

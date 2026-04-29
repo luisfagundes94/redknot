@@ -1,6 +1,6 @@
 package com.luisfagundes.trip.domain.usecase
 
-import com.luisfagundes.common.domain.model.FieldValidationError
+import com.luisfagundes.common.domain.model.CommonFieldError
 import com.luisfagundes.common.domain.model.FieldValidationResult
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
@@ -30,7 +30,7 @@ internal class ValidateDestinationUseCaseTest {
     @Test
     fun `invoke returns Invalid with EMPTY when destination is empty string`() {
         // Given
-        val error = FieldValidationResult.Invalid(FieldValidationError.EMPTY)
+        val error = FieldValidationResult.Invalid(CommonFieldError.EMPTY)
         val destination = ""
 
         // When
@@ -43,7 +43,7 @@ internal class ValidateDestinationUseCaseTest {
     @Test
     fun `invoke returns Invalid with EMPTY when destination is blank with spaces`() {
         // Given
-        val error = FieldValidationResult.Invalid(FieldValidationError.EMPTY)
+        val error = FieldValidationResult.Invalid(CommonFieldError.EMPTY)
         val destination = "   "
 
         // When
@@ -56,7 +56,7 @@ internal class ValidateDestinationUseCaseTest {
     @Test
     fun `invoke returns Invalid with EMPTY when destination contains only tabs and newlines`() {
         // Given
-        val error = FieldValidationResult.Invalid(FieldValidationError.EMPTY)
+        val error = FieldValidationResult.Invalid(CommonFieldError.EMPTY)
         val destination = "\t\n"
 
         // When
@@ -69,7 +69,7 @@ internal class ValidateDestinationUseCaseTest {
     @Test
     fun `invoke returns Invalid with INVALID_DESTINATION_FORMAT when destination contains digits`() {
         // Given
-        val error = FieldValidationResult.Invalid(FieldValidationError.CONTAINS_NUMBER)
+        val error = FieldValidationResult.Invalid(CommonFieldError.CONTAINS_NUMBER)
         val destination = "Paris123"
 
         // When
@@ -82,7 +82,7 @@ internal class ValidateDestinationUseCaseTest {
     @Test
     fun `invoke returns Invalid with INVALID_DESTINATION_FORMAT when destination contains single digit`() {
         // Given
-        val error = FieldValidationResult.Invalid(FieldValidationError.CONTAINS_NUMBER)
+        val error = FieldValidationResult.Invalid(CommonFieldError.CONTAINS_NUMBER)
         val destination = "Paris 1"
 
         // When
@@ -95,7 +95,7 @@ internal class ValidateDestinationUseCaseTest {
     @Test
     fun `invoke returns Invalid with INVALID_DESTINATION_FORMAT when destination starts with digit`() {
         // Given
-        val error = FieldValidationResult.Invalid(FieldValidationError.CONTAINS_NUMBER)
+        val error = FieldValidationResult.Invalid(CommonFieldError.CONTAINS_NUMBER)
         val destination = "1 Paris Street"
 
         // When

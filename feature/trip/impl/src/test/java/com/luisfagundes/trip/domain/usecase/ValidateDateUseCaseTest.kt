@@ -1,6 +1,6 @@
 package com.luisfagundes.trip.domain.usecase
 
-import com.luisfagundes.common.domain.model.FieldValidationError
+import com.luisfagundes.common.domain.model.DateFieldError
 import com.luisfagundes.common.domain.model.FieldValidationResult
 import com.luisfagundes.common.domain.usecase.ValidateDateUseCase
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -20,7 +20,7 @@ internal class ValidateDateUseCaseTest {
     @Test
     fun `invoke returns Invalid with EMPTY when date is null`() {
         // Given
-        val error = FieldValidationError.EMPTY
+        val error = DateFieldError.MISSING
         val date: LocalDate? = null
 
         // When
@@ -33,7 +33,7 @@ internal class ValidateDateUseCaseTest {
     @Test
     fun `invoke returns Invalid with DATE_IN_THE_PAST when date is before today`() {
         // Given
-        val error = FieldValidationError.DATE_IN_THE_PAST
+        val error = DateFieldError.IN_THE_PAST
         val date = LocalDate.now().minusDays(1)
 
         // When
@@ -46,7 +46,7 @@ internal class ValidateDateUseCaseTest {
     @Test
     fun `invoke returns Invalid with DATE_IN_THE_PAST when date is one year ago`() {
         // Given
-        val error = FieldValidationError.DATE_IN_THE_PAST
+        val error = DateFieldError.IN_THE_PAST
         val date = LocalDate.now().minusYears(1)
 
         // When

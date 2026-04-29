@@ -1,6 +1,6 @@
 package com.luisfagundes.trip.domain.usecase
 
-import com.luisfagundes.common.domain.model.FieldValidationError
+import com.luisfagundes.common.domain.model.CommonFieldError
 import com.luisfagundes.common.domain.model.FieldValidationResult
 import com.luisfagundes.common.domain.usecase.ValidateTitleUseCase
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -31,7 +31,7 @@ internal class ValidateTitleUseCaseTest {
     @Test
     fun `invoke returns Invalid with EMPTY when title is empty string`() {
         // Given
-        val error = FieldValidationResult.Invalid(FieldValidationError.EMPTY)
+        val error = FieldValidationResult.Invalid(CommonFieldError.EMPTY)
         val title = ""
 
         // When
@@ -44,7 +44,7 @@ internal class ValidateTitleUseCaseTest {
     @Test
     fun `invoke returns Invalid with EMPTY when title is blank with spaces`() {
         // Given
-        val error = FieldValidationResult.Invalid(FieldValidationError.EMPTY)
+        val error = FieldValidationResult.Invalid(CommonFieldError.EMPTY)
         val title = "   "
 
         // When
@@ -57,7 +57,7 @@ internal class ValidateTitleUseCaseTest {
     @Test
     fun `invoke returns Invalid with EMPTY when title contains only tabs and newlines`() {
         // Given
-        val error = FieldValidationResult.Invalid(FieldValidationError.EMPTY)
+        val error = FieldValidationResult.Invalid(CommonFieldError.EMPTY)
         val title = "\t\n"
 
         // When

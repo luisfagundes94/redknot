@@ -1,21 +1,21 @@
 package com.luisfagundes.common.presentation.mapper
 
 import android.content.Context
-import com.luisfagundes.trip.R
+import com.luisfagundes.common.domain.model.CommonFieldError
+import com.luisfagundes.common.domain.model.DateFieldError
 import com.luisfagundes.common.domain.model.FieldValidationError
-import com.luisfagundes.common.domain.model.FieldValidationError.EMPTY
-import com.luisfagundes.common.domain.model.FieldValidationError.DATE_IN_THE_PAST
-import com.luisfagundes.common.domain.model.FieldValidationError.CONTAINS_NUMBER
-import com.luisfagundes.common.domain.model.FieldValidationError.INVALID_FLIGHT_NUMBER
-import com.luisfagundes.common.domain.model.FieldValidationError.INVALID_DURATION
+import com.luisfagundes.common.domain.model.DurationFieldError
+import com.luisfagundes.common.domain.model.FlightFieldError
+import com.luisfagundes.trip.R
 
 internal fun FieldValidationError.toMessage(context: Context): String {
     val stringResId = when (this) {
-        EMPTY -> R.string.empty_field_error_message
-        CONTAINS_NUMBER -> R.string.contains_number_error_message
-        DATE_IN_THE_PAST -> R.string.date_in_the_past_error_message
-        INVALID_FLIGHT_NUMBER -> R.string.invalid_flight_number_error_message
-        INVALID_DURATION -> R.string.invalid_duration_error_message
+        CommonFieldError.EMPTY -> R.string.empty_field_error_message
+        CommonFieldError.CONTAINS_NUMBER -> R.string.contains_number_error_message
+        DateFieldError.IN_THE_PAST -> R.string.date_in_the_past_error_message
+        DateFieldError.MISSING -> R.string.missing_date_error_message
+        FlightFieldError.INVALID_NUMBER -> R.string.invalid_flight_number_error_message
+        DurationFieldError.INVALID_DURATION -> R.string.invalid_duration_error_message
     }
     return context.getString(stringResId)
 }

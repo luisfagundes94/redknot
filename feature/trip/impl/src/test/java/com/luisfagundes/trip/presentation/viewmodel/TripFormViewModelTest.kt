@@ -1,7 +1,8 @@
 package com.luisfagundes.trip.presentation.viewmodel
 
 import app.cash.turbine.test
-import com.luisfagundes.common.domain.model.FieldValidationError
+import com.luisfagundes.common.domain.model.CommonFieldError
+import com.luisfagundes.common.domain.model.DateFieldError
 import com.luisfagundes.common.domain.model.FieldValidationResult
 import com.luisfagundes.common.domain.usecase.GetUnsplashImageUseCase
 import com.luisfagundes.common.domain.usecase.ValidateDateUseCase
@@ -78,7 +79,7 @@ internal class TripFormViewModelTest {
     @Test
     fun `onTitleChange updates title and sets error when invalid`() = runTest {
         // Given
-        val error = FieldValidationError.EMPTY
+        val error = CommonFieldError.EMPTY
         every { validateTitleUseCase(any()) } returns FieldValidationResult.Invalid(error)
 
         viewModel.uiState.test {
@@ -118,7 +119,7 @@ internal class TripFormViewModelTest {
     @Test
     fun `onStartDateChange sets error when date is null`() = runTest {
         // Given
-        val error = FieldValidationError.EMPTY
+        val error = DateFieldError.MISSING
         every { validateDateUseCase(null) } returns FieldValidationResult.Invalid(error)
 
         viewModel.uiState.test {
@@ -158,7 +159,7 @@ internal class TripFormViewModelTest {
     @Test
     fun `onEndDateChange sets error when date is null`() = runTest {
         // Given
-        val error = FieldValidationError.EMPTY
+        val error = DateFieldError.MISSING
         every { validateDateUseCase(null) } returns FieldValidationResult.Invalid(error)
 
         viewModel.uiState.test {
@@ -197,7 +198,7 @@ internal class TripFormViewModelTest {
     @Test
     fun `onDestinationChange sets error when invalid`() = runTest {
         // Given
-        val error = FieldValidationError.EMPTY
+        val error = CommonFieldError.EMPTY
         every { validateDestinationUseCase(any()) } returns FieldValidationResult.Invalid(error)
 
         viewModel.uiState.test {
