@@ -17,10 +17,12 @@ internal data class RestaurantFormUiState(
     val timeError: FieldValidationError? = null,
     val isLoading: Boolean = false
 ) : UiState {
+    private val hasAllRequiredFields: Boolean
+        get() = name.isNotBlank() && date != null && time != null
+
+    private val hasNoErrors: Boolean
+        get() = nameError == null && dateError == null && timeError == null
+
     val isFormValid: Boolean
-        get() {
-            val hasNoErrors = listOf(nameError, dateError, timeError).all { it == null }
-            val hasAllRequiredFields = name.isNotBlank() && date != null && time != null
-            return hasNoErrors && hasAllRequiredFields
-        }
+        get() = hasAllRequiredFields && hasNoErrors
 }

@@ -21,19 +21,19 @@ internal data class FlightFormUiState(
     val timeError: FieldValidationError? = null,
     val isLoading: Boolean = false
 ) : UiState {
+    private val hasAllRequiredFields: Boolean
+        get() = flightNumber.isNotBlank() &&
+                originAirportCity.isNotBlank() &&
+                destinationAirportCity.isNotBlank() &&
+                date != null &&
+                time != null
+
+    private val hasNoErrors: Boolean
+        get() = flightNumberError == null &&
+                durationError == null &&
+                dateError == null &&
+                timeError == null
+
     val isFormValid: Boolean
-        get() {
-            val hasNoErrors = listOf(
-                flightNumberError,
-                durationError,
-                dateError,
-                timeError
-            ).all { it == null }
-            val hasAllRequiredFields = flightNumber.isNotBlank() &&
-                    originAirportCity.isNotBlank() &&
-                    destinationAirportCity.isNotBlank() &&
-                    date != null &&
-                    time != null
-            return hasNoErrors && hasAllRequiredFields
-        }
+        get() = hasAllRequiredFields && hasNoErrors
 }

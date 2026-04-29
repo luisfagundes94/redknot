@@ -16,10 +16,12 @@ internal data class ActivityFormUiState(
     val timeError: FieldValidationError? = null,
     val isLoading: Boolean = false
 ) : UiState {
+    private val hasAllRequiredFields: Boolean
+        get() = title.isNotBlank() && date != null && time != null
+
+    private val hasNoErrors: Boolean
+        get() = titleError == null && dateError == null && timeError == null
+
     val isFormValid: Boolean
-        get() {
-            val hasNoErrors = listOf(titleError, dateError, timeError).all { it == null }
-            val hasAllRequiredFields = title.isNotBlank() && date != null && time != null
-            return hasNoErrors && hasAllRequiredFields
-        }
+        get() = hasAllRequiredFields && hasNoErrors
 }

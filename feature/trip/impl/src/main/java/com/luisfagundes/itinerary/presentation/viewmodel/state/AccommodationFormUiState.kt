@@ -18,11 +18,12 @@ internal data class AccommodationFormUiState(
     val timeError: FieldValidationError? = null,
     val isLoading: Boolean = false
 ) : UiState {
+    private val hasAllRequiredFields: Boolean
+        get() = name.isNotBlank() && address.isNotBlank() && date != null && time != null
+
+    private val hasNoErrors: Boolean
+        get() = nameError == null && addressError == null && dateError == null && timeError == null
+
     val isFormValid: Boolean
-        get() {
-            val hasNoErrors = listOf(nameError, addressError, dateError, timeError).all { it == null }
-            val hasAllRequiredFields = name.isNotBlank() && address.isNotBlank() &&
-                    date != null && time != null
-            return hasNoErrors && hasAllRequiredFields
-        }
+        get() = hasAllRequiredFields && hasNoErrors
 }
