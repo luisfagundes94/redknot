@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Icon
@@ -17,8 +19,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import kotlinx.coroutines.launch
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -135,7 +139,10 @@ private fun TripDetailsSuccessContent(
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var currentSelectedTab by rememberSaveable { mutableStateOf(TripDetailsTabs.ITINERARY) }
+    val tabs = TripDetailsTabs.entries
+    val pagerState = rememberPagerState { tabs.size }
+    val coroutineScope = rememberCoroutineScope()
+    
     var showDeleteDialog by rememberSaveable { mutableStateOf(false) }
 
     if (showDeleteDialog) {
@@ -165,7 +172,7 @@ private fun TripDetailsSuccessContent(
         Column(
             modifier = Modifier
                 .padding(padding)
-                .fillMaxWidth()
+                .fillMaxSize()
         ) {
             TripDetailsHeader(
                 status = trip.status,
@@ -174,13 +181,23 @@ private fun TripDetailsSuccessContent(
                 modifier = Modifier.padding(MaterialTheme.spacing.default)
             )
             TripDetailsTabRow(
-                onTabSelect = { currentSelectedTab = it },
+                selectedTabIndex = pagerState.currentPage,
+                onTabSelect = { tab ->
+                    coroutineScope.launch {
+                        pagerState.animateScrollToPage(tabs.indexOf(tab))
+                    }
+                },
                 modifier = Modifier.fillMaxWidth()
             )
-            when (currentSelectedTab) {
-                TripDetailsTabs.ITINERARY -> itineraryContent()
-                TripDetailsTabs.BUDGET -> Unit
-                TripDetailsTabs.DOCUMENTS -> Unit
+            HorizontalPager(
+                state = pagerState,
+                modifier = Modifier.weight(1f)
+            ) { page ->
+                when (tabs[page]) {
+                    TripDetailsTabs.ITINERARY -> itineraryContent()
+                    TripDetailsTabs.BUDGET -> Unit
+                    TripDetailsTabs.DOCUMENTS -> Unit
+                }
             }
         }
     }
