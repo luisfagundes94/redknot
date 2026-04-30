@@ -83,7 +83,7 @@
     <string name="seat_number_placeholder">e.g. 24A</string>
     <!-- Restaurant form -->
     <string name="create_restaurant">Add Restaurant</string>
-    <string name="restaurant_name_label">Name</string>
+    <string name="restaurant_name_label">Restaurant Name</string>
     <string name="restaurant_name_placeholder">e.g. Trattoria da Mario</string>
     <!-- Itinerary validation errors -->
     <string name="empty_name_error_message">Name cannot be empty</string>
