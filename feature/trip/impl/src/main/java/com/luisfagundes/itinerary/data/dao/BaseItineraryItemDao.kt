@@ -6,6 +6,7 @@ import androidx.room.Update
 
 internal interface BaseItineraryItemDao<T> {
     suspend fun getByTripId(tripId: Int): List<T>
+    suspend fun getById(id: String): T?
 
     @Insert
     suspend fun insert(item: T)

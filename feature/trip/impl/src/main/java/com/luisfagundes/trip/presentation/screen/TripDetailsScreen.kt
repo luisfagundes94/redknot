@@ -33,6 +33,7 @@ import com.luisfagundes.designsystem.components.RedknotTopBar
 import com.luisfagundes.designsystem.theme.RedknotPreview
 import com.luisfagundes.designsystem.theme.RedknotThemeWrapper
 import com.luisfagundes.designsystem.theme.spacing
+import com.luisfagundes.itinerary.domain.model.ItineraryItem
 import com.luisfagundes.itinerary.presentation.screen.ItineraryScreen
 import com.luisfagundes.trip.R
 import com.luisfagundes.trip.domain.model.Trip
@@ -49,6 +50,7 @@ import com.luisfagundes.trip.presentation.viewmodel.effect.TripDetailsUiEffect
 internal fun TripDetailsScreen(
     tripId: Int,
     onAddItineraryItemClick: () -> Unit,
+    onEditItineraryItemClick: (ItineraryItem) -> Unit,
     onBackClick: () -> Unit,
     viewModel: TripDetailsViewModel = hiltViewModel()
 ) {
@@ -71,6 +73,7 @@ internal fun TripDetailsScreen(
     TripDetailsContent(
         uiState = uiState,
         onAddItineraryItemClick = onAddItineraryItemClick,
+        onEditItineraryItemClick = onEditItineraryItemClick,
         onDeleteClick = { viewModel.deleteTrip(tripId) },
         onBackClick = onBackClick
     )
@@ -80,6 +83,7 @@ internal fun TripDetailsScreen(
 private fun TripDetailsContent(
     uiState: TripDetailsUiState,
     onAddItineraryItemClick: () -> Unit,
+    onEditItineraryItemClick: (ItineraryItem) -> Unit,
     onDeleteClick: () -> Unit,
     onBackClick: () -> Unit,
 ) {
@@ -97,7 +101,8 @@ private fun TripDetailsContent(
             itineraryContent = {
                 ItineraryScreen(
                     tripId = uiState.trip.id,
-                    onAddItineraryItemClick = onAddItineraryItemClick
+                    onAddItineraryItemClick = onAddItineraryItemClick,
+                    onEditItineraryItemClick = onEditItineraryItemClick
                 )
             },
             onDeleteClick = onDeleteClick,

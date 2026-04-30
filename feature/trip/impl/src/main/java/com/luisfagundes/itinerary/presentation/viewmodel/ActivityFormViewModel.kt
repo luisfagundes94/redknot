@@ -5,11 +5,16 @@ import com.luisfagundes.common.domain.model.errorOrNull
 import com.luisfagundes.core.common.di.IoDispatcher
 import com.luisfagundes.core.common.presentation.arch.viewmodel.ViewModel
 import com.luisfagundes.itinerary.domain.model.Activity
+import com.luisfagundes.itinerary.domain.model.ItineraryItemType
 import com.luisfagundes.itinerary.domain.usecase.CreateItineraryItemUseCase
+import com.luisfagundes.itinerary.domain.usecase.DeleteItineraryItemUseCase
+import com.luisfagundes.itinerary.domain.usecase.GetItineraryItemByIdUseCase
+import com.luisfagundes.itinerary.domain.usecase.UpdateItineraryItemUseCase
 import com.luisfagundes.common.domain.usecase.ValidateTitleUseCase
 import com.luisfagundes.common.domain.usecase.ValidateTimeUseCase
 import com.luisfagundes.itinerary.presentation.viewmodel.effect.ActivityFormUiEffect
 import com.luisfagundes.itinerary.presentation.viewmodel.state.ActivityFormUiState
+import com.luisfagundes.itinerary.presentation.viewmodel.state.ActivityFormUiState.Content
 import com.luisfagundes.common.domain.usecase.ValidateDateUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -25,74 +30,106 @@ internal class ActivityFormViewModel @Inject constructor(
     private val validateDateUseCase: ValidateDateUseCase,
     private val validateTimeUseCase: ValidateTimeUseCase,
     private val createItineraryItemUseCase: CreateItineraryItemUseCase,
+    private val getItineraryItemByIdUseCase: GetItineraryItemByIdUseCase,
+    private val updateItineraryItemUseCase: UpdateItineraryItemUseCase,
+    private val deleteItineraryItemUseCase: DeleteItineraryItemUseCase,
     @param:IoDispatcher private val dispatcher: CoroutineDispatcher
 ) : ViewModel<ActivityFormUiState, ActivityFormUiEffect>(
-    initialState = ActivityFormUiState()
+    initialState = ActivityFormUiState.Loading
 ) {
-    fun onTitleChange(title: String) {
-        setState { currentState ->
-            currentState.copy(
-                title = title,
-                titleError = validateTitleUseCase(title).errorOrNull()
+    fun initForm(itemId: String?) {
+        if (itemId == null) {
+            setState { Content() }
+            return
+        }
+        viewModelScope.launch(dispatcher) {
+            getItineraryItemByIdUseCase(itemId, ItineraryItemType.ACTIVITY).fold(
+                onSuccess = { item ->
+                    val activity = item as? Activity ?: return@fold
+                    setState {
+                        Content(
+                            editingItemId = activity.id,
+                            title = activity.title,
+                            description = activity.description.orEmpty(),
+                            location = activity.location.orEmpty(),
+                            date = activity.date,
+                            time = activity.time
+                        )
+                    }
+                },
+                onFailure = {
+                    sendEffect { ActivityFormUiEffect.ShowErrorToast(it.toString()) }
+                }
             )
+        }
+    }
+
+    fun onTitleChange(title: String) {
+        setStateOf<Content> {
+            it.copy(title = title, titleError = validateTitleUseCase(title).errorOrNull())
         }
     }
 
     fun onDescriptionChange(description: String) {
-        setState { currentState ->
-            currentState.copy(description = description)
-        }
+        setStateOf<Content> { it.copy(description = description) }
     }
 
     fun onLocationChange(location: String) {
-        setState { currentState ->
-            currentState.copy(location = location)
-        }
+        setStateOf<Content> { it.copy(location = location) }
     }
 
     fun onDateChange(date: LocalDate?) {
-        setState { currentState ->
-            currentState.copy(
-                date = date,
-                dateError = validateDateUseCase(date).errorOrNull()
-            )
+        setStateOf<Content> {
+            it.copy(date = date, dateError = validateDateUseCase(date).errorOrNull())
         }
     }
 
     fun onTimeChange(time: LocalTime) {
-        setState { currentState ->
-            currentState.copy(
-                time = time,
-                timeError = validateTimeUseCase(time).errorOrNull()
-            )
+        setStateOf<Content> {
+            it.copy(time = time, timeError = validateTimeUseCase(time).errorOrNull())
         }
     }
 
     fun onSubmit(tripId: Int) = viewModelScope.launch(dispatcher) {
-        setState { it.copy(isLoading = true) }
+        val content = getCurrentState() as? Content ?: return@launch
+        setStateOf<Content> { it.copy(isLoading = true) }
 
-        val activity = createActivity(tripId)
+        val activity = buildActivity(tripId, content)
+        val result = if (content.editingItemId == null) {
+            createItineraryItemUseCase(activity)
+        } else {
+            updateItineraryItemUseCase(activity)
+        }
 
-        createItineraryItemUseCase(activity).fold(
+        result.fold(
             onSuccess = { sendEffect { ActivityFormUiEffect.NavigateBackToTripDetails } },
             onFailure = { sendEffect { ActivityFormUiEffect.ShowErrorToast(it.toString()) } }
         )
 
-        setState { it.copy(isLoading = false) }
+        setStateOf<Content> { it.copy(isLoading = false) }
     }
 
-    private fun createActivity(tripId: Int): Activity {
-        val state = getCurrentState()
+    fun onDelete() = viewModelScope.launch(dispatcher) {
+        val content = getCurrentState() as? Content ?: return@launch
+        val itemId = content.editingItemId ?: return@launch
+        setStateOf<Content> { it.copy(isLoading = true) }
 
-        return Activity(
-            id = UUID.randomUUID().toString(),
-            tripId = tripId,
-            date = state.date ?: LocalDate.now(),
-            time = state.time ?: LocalTime.now(),
-            title = state.title,
-            description = state.description.ifBlank { null },
-            location = state.location.ifBlank { null },
-            imageUrl = null
+        deleteItineraryItemUseCase(itemId, ItineraryItemType.ACTIVITY).fold(
+            onSuccess = { sendEffect { ActivityFormUiEffect.NavigateBackToTripDetails } },
+            onFailure = { sendEffect { ActivityFormUiEffect.ShowErrorToast(it.toString()) } }
         )
+
+        setStateOf<Content> { it.copy(isLoading = false) }
     }
+
+    private fun buildActivity(tripId: Int, content: Content) = Activity(
+        id = content.editingItemId ?: UUID.randomUUID().toString(),
+        tripId = tripId,
+        date = content.date ?: LocalDate.now(),
+        time = content.time ?: LocalTime.now(),
+        title = content.title,
+        description = content.description.ifBlank { null },
+        location = content.location.ifBlank { null },
+        imageUrl = null
+    )
 }

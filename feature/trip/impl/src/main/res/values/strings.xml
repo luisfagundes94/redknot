@@ -111,6 +111,10 @@
     <string name="delete_trip_dialog_message">This will permanently remove the trip and all its itinerary items.</string>
     <string name="delete_trip_dialog_confirm">Delete</string>
     <string name="delete_trip_dialog_cancel">Cancel</string>
+    <string name="delete_itinerary_item">Delete item</string>
+    <string name="delete_itinerary_item_dialog_title">Delete item?</string>
+    <string name="delete_itinerary_item_dialog_message">This will permanently remove this itinerary item.</string>
+    <string name="update_item">Update</string>
     <string name="add_expense">Add Expense</string>
     <string name="amount">AMOUNT</string>
     <string name="date">DATE</string>

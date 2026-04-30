@@ -14,7 +14,11 @@ import com.luisfagundes.trip.api.presentation.navigation.FlightFormRoute
 import com.luisfagundes.trip.api.presentation.navigation.ItineraryItemTypePickerRoute
 import com.luisfagundes.trip.api.presentation.navigation.RestaurantFormRoute
 
-private const val STEPS_TO_TRIP_DETAILS = 2
+private const val STEPS_TO_TRIP_DETAILS_FROM_PICKER = 2
+private const val STEPS_TO_TRIP_DETAILS_FROM_EDIT = 1
+
+private fun backStepsToTripDetails(itineraryItemId: String?) =
+    if (itineraryItemId == null) STEPS_TO_TRIP_DETAILS_FROM_PICKER else STEPS_TO_TRIP_DETAILS_FROM_EDIT
 
 fun EntryProviderScope<NavKey>.itineraryEntry(
     navigator: Navigator
@@ -31,29 +35,33 @@ fun EntryProviderScope<NavKey>.itineraryEntry(
     entry<ActivityFormRoute> { key ->
         ActivityFormScreen(
             tripId = key.tripId,
+            itineraryItemId = key.itineraryItemId,
             onBackClick = navigator::goBack,
-            onNavigateBackToTripDetails = { navigator.goBack(STEPS_TO_TRIP_DETAILS) }
+            onNavigateBackToTripDetails = { navigator.goBack(backStepsToTripDetails(key.itineraryItemId)) }
         )
     }
     entry<AccommodationFormRoute> { key ->
         AccommodationFormScreen(
             tripId = key.tripId,
+            itineraryItemId = key.itineraryItemId,
             onBackClick = navigator::goBack,
-            onNavigateBackToTripDetails = { navigator.goBack(STEPS_TO_TRIP_DETAILS) }
+            onNavigateBackToTripDetails = { navigator.goBack(backStepsToTripDetails(key.itineraryItemId)) }
         )
     }
     entry<FlightFormRoute> { key ->
         FlightFormScreen(
             tripId = key.tripId,
+            itineraryItemId = key.itineraryItemId,
             onBackClick = navigator::goBack,
-            onNavigateBackToTripDetails = { navigator.goBack(STEPS_TO_TRIP_DETAILS) }
+            onNavigateBackToTripDetails = { navigator.goBack(backStepsToTripDetails(key.itineraryItemId)) }
         )
     }
     entry<RestaurantFormRoute> { key ->
         RestaurantFormScreen(
             tripId = key.tripId,
+            itineraryItemId = key.itineraryItemId,
             onBackClick = navigator::goBack,
-            onNavigateBackToTripDetails = { navigator.goBack(STEPS_TO_TRIP_DETAILS) }
+            onNavigateBackToTripDetails = { navigator.goBack(backStepsToTripDetails(key.itineraryItemId)) }
         )
     }
 }

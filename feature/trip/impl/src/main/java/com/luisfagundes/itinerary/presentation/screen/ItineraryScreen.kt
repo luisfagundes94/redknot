@@ -42,6 +42,7 @@ import com.luisfagundes.trip.R
 internal fun ItineraryScreen(
     tripId: Int,
     onAddItineraryItemClick: () -> Unit,
+    onEditItineraryItemClick: (ItineraryItem) -> Unit,
     viewModel: ItineraryViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -55,6 +56,7 @@ internal fun ItineraryScreen(
         onEffect = { effect ->
             when (effect) {
                 is ItineraryUiEffect.NavigateToItineraryItemForm -> onAddItineraryItemClick()
+                is ItineraryUiEffect.NavigateToEditItineraryItem -> onEditItineraryItemClick(effect.item)
             }
         }
     )
@@ -62,6 +64,7 @@ internal fun ItineraryScreen(
     ItineraryContent(
         uiState = uiState,
         onAddItem = viewModel::onAddItineraryItem,
+        onItemClick = viewModel::onItineraryItemClick,
     )
 }
 
@@ -69,6 +72,7 @@ internal fun ItineraryScreen(
 private fun ItineraryContent(
     uiState: ItineraryUiState,
     onAddItem: () -> Unit,
+    onItemClick: (ItineraryItem) -> Unit,
 ) {
     when (uiState) {
         ItineraryUiState.Loading -> RedknotLoadingTemplate(
@@ -87,6 +91,7 @@ private fun ItineraryContent(
         is ItineraryUiState.Content -> ItineraryTimelineContent(
             itemsByDay = uiState.itemsByDay,
             onAddItem = onAddItem,
+            onItemClick = onItemClick,
             modifier = Modifier.fillMaxWidth()
         )
     }
@@ -97,6 +102,7 @@ private fun ItineraryContent(
 private fun ItineraryTimelineContent(
     itemsByDay: Map<LocalDate, List<ItineraryItem>>,
     onAddItem: () -> Unit,
+    onItemClick: (ItineraryItem) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Scaffold(
@@ -129,7 +135,8 @@ private fun ItineraryTimelineContent(
                     ItineraryTimeline(
                         item = item,
                         isFirst = index == 0,
-                        isLast = index == dayItems.lastIndex
+                        isLast = index == dayItems.lastIndex,
+                        onClick = { onItemClick(item) }
                     )
                 }
             }
@@ -147,7 +154,7 @@ private fun ItineraryContentPreview(
     ItineraryTimelineContent(
         itemsByDay = uiState.itemsByDay,
         onAddItem = {},
+        onItemClick = {},
         modifier = Modifier.fillMaxWidth()
     )
 }
-

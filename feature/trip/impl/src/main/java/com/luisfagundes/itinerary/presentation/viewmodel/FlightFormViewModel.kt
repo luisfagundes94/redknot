@@ -6,12 +6,17 @@ import com.luisfagundes.core.common.di.IoDispatcher
 import com.luisfagundes.core.common.presentation.arch.viewmodel.ViewModel
 import com.luisfagundes.itinerary.domain.model.Airport
 import com.luisfagundes.itinerary.domain.model.Flight
+import com.luisfagundes.itinerary.domain.model.ItineraryItemType
 import com.luisfagundes.itinerary.domain.usecase.CreateItineraryItemUseCase
+import com.luisfagundes.itinerary.domain.usecase.DeleteItineraryItemUseCase
+import com.luisfagundes.itinerary.domain.usecase.GetItineraryItemByIdUseCase
+import com.luisfagundes.itinerary.domain.usecase.UpdateItineraryItemUseCase
 import com.luisfagundes.itinerary.domain.usecase.ValidateDurationErrorUseCase
 import com.luisfagundes.itinerary.domain.usecase.ValidateFlightNumberUseCase
 import com.luisfagundes.common.domain.usecase.ValidateTimeUseCase
 import com.luisfagundes.itinerary.presentation.viewmodel.effect.FlightFormUiEffect
 import com.luisfagundes.itinerary.presentation.viewmodel.state.FlightFormUiState
+import com.luisfagundes.itinerary.presentation.viewmodel.state.FlightFormUiState.Content
 import com.luisfagundes.common.domain.usecase.ValidateDateUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -30,13 +35,48 @@ internal class FlightFormViewModel @Inject constructor(
     private val validateDateUseCase: ValidateDateUseCase,
     private val validateTimeUseCase: ValidateTimeUseCase,
     private val createItineraryItemUseCase: CreateItineraryItemUseCase,
+    private val getItineraryItemByIdUseCase: GetItineraryItemByIdUseCase,
+    private val updateItineraryItemUseCase: UpdateItineraryItemUseCase,
+    private val deleteItineraryItemUseCase: DeleteItineraryItemUseCase,
     @param:IoDispatcher private val dispatcher: CoroutineDispatcher
 ) : ViewModel<FlightFormUiState, FlightFormUiEffect>(
-    initialState = FlightFormUiState()
+    initialState = FlightFormUiState.Loading
 ) {
+    fun initForm(itemId: String?) {
+        if (itemId == null) {
+            setState { Content() }
+            return
+        }
+        viewModelScope.launch(dispatcher) {
+            getItineraryItemByIdUseCase(itemId, ItineraryItemType.FLIGHT).fold(
+                onSuccess = { item ->
+                    val flight = item as? Flight ?: return@fold
+                    val totalMinutes = flight.duration.inWholeMinutes
+                    setState {
+                        Content(
+                            editingItemId = flight.id,
+                            flightNumber = flight.flightNumber,
+                            companyName = flight.companyName,
+                            originAirportCity = flight.origin.city,
+                            destinationAirportCity = flight.destination.city,
+                            durationHours = (totalMinutes / 60).toString(),
+                            durationMinutes = (totalMinutes % 60).toString(),
+                            seatNumber = flight.seatNumber,
+                            date = flight.date,
+                            time = flight.time
+                        )
+                    }
+                },
+                onFailure = {
+                    sendEffect { FlightFormUiEffect.ShowErrorToast(it.toString()) }
+                }
+            )
+        }
+    }
+
     fun onFlightNumberChange(value: String) {
-        setState { currentState ->
-            currentState.copy(
+        setStateOf<Content> {
+            it.copy(
                 flightNumber = value,
                 flightNumberError = validateFlightNumberUseCase(value).errorOrNull()
             )
@@ -44,39 +84,33 @@ internal class FlightFormViewModel @Inject constructor(
     }
 
     fun onOriginChange(city: String) {
-        setState { currentState ->
-            currentState.copy(originAirportCity = city)
-        }
+        setStateOf<Content> { it.copy(originAirportCity = city) }
     }
 
     fun onDestinationChange(city: String) {
-        setState { currentState ->
-            currentState.copy(destinationAirportCity = city)
-        }
+        setStateOf<Content> { it.copy(destinationAirportCity = city) }
     }
 
     fun onDurationChange(hoursStr: String, minutesStr: String) {
         val hour = hoursStr.toIntOrNull() ?: 0
-        val minutes = minutesStr.toIntOrNull() ?: 0
+        val mins = minutesStr.toIntOrNull() ?: 0
 
-        setState { currentState ->
-            currentState.copy(
+        setStateOf<Content> {
+            it.copy(
                 durationHours = hoursStr,
                 durationMinutes = minutesStr,
-                durationError = validateDurationErrorUseCase(hour, minutes).errorOrNull()
+                durationError = validateDurationErrorUseCase(hour, mins).errorOrNull()
             )
         }
     }
 
     fun onSeatNumberChange(value: String) {
-        setState { currentState ->
-            currentState.copy(seatNumber = value)
-        }
+        setStateOf<Content> { it.copy(seatNumber = value) }
     }
 
     fun onDateChange(date: LocalDate?) {
-        setState { currentState ->
-            currentState.copy(
+        setStateOf<Content> {
+            it.copy(
                 date = date,
                 dateError = validateDateUseCase(date).errorOrNull()
             )
@@ -84,8 +118,8 @@ internal class FlightFormViewModel @Inject constructor(
     }
 
     fun onTimeChange(time: LocalTime) {
-        setState { currentState ->
-            currentState.copy(
+        setStateOf<Content> {
+            it.copy(
                 time = time,
                 timeError = validateTimeUseCase(time).errorOrNull()
             )
@@ -93,41 +127,55 @@ internal class FlightFormViewModel @Inject constructor(
     }
 
     fun onCompanyNameChange(name: String) {
-        setState { currentState ->
-            currentState.copy(companyName = name)
-        }
+        setStateOf<Content> { it.copy(companyName = name) }
     }
 
     fun onSubmit(tripId: Int) = viewModelScope.launch(dispatcher) {
-        setState { it.copy(isLoading = true) }
+        val content = getCurrentState() as? Content ?: return@launch
+        setStateOf<Content> { it.copy(isLoading = true) }
 
-        val flight = createFlight(tripId)
+        val flight = buildFlight(tripId, content)
+        val result = if (content.editingItemId == null) {
+            createItineraryItemUseCase(flight)
+        } else {
+            updateItineraryItemUseCase(flight)
+        }
 
-        createItineraryItemUseCase(flight).fold(
-            onSuccess = { sendEffect { FlightFormUiEffect.NavigateToTripDetails } },
+        result.fold(
+            onSuccess = { sendEffect { FlightFormUiEffect.NavigateBackToTripDetails } },
             onFailure = { sendEffect { FlightFormUiEffect.ShowErrorToast(it.toString()) } }
         )
 
-        setState { it.copy(isLoading = false) }
+        setStateOf<Content> { it.copy(isLoading = false) }
     }
 
-    private fun createFlight(tripId: Int): Flight {
-        val state = getCurrentState()
+    fun onDelete() = viewModelScope.launch(dispatcher) {
+        val content = getCurrentState() as? Content ?: return@launch
+        val itemId = content.editingItemId ?: return@launch
+        setStateOf<Content> { it.copy(isLoading = true) }
 
-        val hours = (state.durationHours.toIntOrNull() ?: 0).hours
-        val minutes = (state.durationMinutes.toIntOrNull() ?: 0).minutes
+        deleteItineraryItemUseCase(itemId, ItineraryItemType.FLIGHT).fold(
+            onSuccess = { sendEffect { FlightFormUiEffect.NavigateBackToTripDetails } },
+            onFailure = { sendEffect { FlightFormUiEffect.ShowErrorToast(it.toString()) } }
+        )
 
+        setStateOf<Content> { it.copy(isLoading = false) }
+    }
+
+    private fun buildFlight(tripId: Int, content: Content): Flight {
+        val h = (content.durationHours.toIntOrNull() ?: 0).hours
+        val m = (content.durationMinutes.toIntOrNull() ?: 0).minutes
         return Flight(
-            id = UUID.randomUUID().toString(),
+            id = content.editingItemId ?: UUID.randomUUID().toString(),
             tripId = tripId,
-            date = state.date ?: LocalDate.now(),
-            time = state.time ?: LocalTime.now(),
-            flightNumber = state.flightNumber,
-            companyName = state.companyName,
-            origin = Airport(name = null, city = state.originAirportCity),
-            destination = Airport(name = null, city = state.destinationAirportCity),
-            duration = hours + minutes,
-            seatNumber = state.seatNumber
+            date = content.date ?: LocalDate.now(),
+            time = content.time ?: LocalTime.now(),
+            flightNumber = content.flightNumber,
+            companyName = content.companyName,
+            origin = Airport(name = null, city = content.originAirportCity),
+            destination = Airport(name = null, city = content.destinationAirportCity),
+            duration = h + m,
+            seatNumber = content.seatNumber
         )
     }
 }

@@ -3,6 +3,7 @@ package com.luisfagundes.itinerary.presentation.viewmodel
 import androidx.lifecycle.viewModelScope
 import com.luisfagundes.core.common.di.IoDispatcher
 import com.luisfagundes.core.common.presentation.arch.viewmodel.ViewModel
+import com.luisfagundes.itinerary.domain.model.ItineraryItem
 import com.luisfagundes.itinerary.domain.usecase.GetItineraryItemsByDayUseCase
 import com.luisfagundes.itinerary.presentation.viewmodel.effect.ItineraryUiEffect
 import com.luisfagundes.itinerary.presentation.viewmodel.state.ItineraryUiState
@@ -29,5 +30,9 @@ internal class ItineraryViewModel @Inject constructor(
 
     fun onAddItineraryItem() {
         sendEffect { ItineraryUiEffect.NavigateToItineraryItemForm }
+    }
+
+    fun onItineraryItemClick(item: ItineraryItem) {
+        sendEffect { ItineraryUiEffect.NavigateToEditItineraryItem(item) }
     }
 }

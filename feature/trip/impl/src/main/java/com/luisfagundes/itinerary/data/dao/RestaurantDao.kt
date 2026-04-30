@@ -8,4 +8,7 @@ import com.luisfagundes.itinerary.data.model.RestaurantEntity
 internal interface RestaurantDao : BaseItineraryItemDao<RestaurantEntity> {
     @Query("SELECT * FROM restaurants WHERE trip_id = :tripId ORDER BY date, time")
     override suspend fun getByTripId(tripId: Int): List<RestaurantEntity>
+
+    @Query("SELECT * FROM restaurants WHERE id = :id")
+    override suspend fun getById(id: String): RestaurantEntity?
 }

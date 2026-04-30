@@ -2,16 +2,18 @@ package com.luisfagundes.itinerary.presentation.screen
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -19,6 +21,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -26,19 +31,23 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.luisfagundes.common.presentation.mapper.toMessage
+import com.luisfagundes.core.common.presentation.arch.compose.CollectUiEffects
 import com.luisfagundes.designsystem.components.RedknotDateSelectionField
+import com.luisfagundes.designsystem.components.RedknotLoadingTemplate
 import com.luisfagundes.designsystem.components.RedknotTopBar
 import com.luisfagundes.designsystem.theme.spacing
 import com.luisfagundes.itinerary.presentation.viewmodel.ActivityFormViewModel
 import com.luisfagundes.itinerary.presentation.viewmodel.effect.ActivityFormUiEffect
 import com.luisfagundes.itinerary.presentation.viewmodel.state.ActivityFormUiState
 import com.luisfagundes.trip.R
+import com.luisfagundes.trip.presentation.components.DeleteConfirmationDialog
 import java.time.LocalDate
 import java.time.LocalTime
 
 @Composable
 internal fun ActivityFormScreen(
     tripId: Int,
+    itineraryItemId: String? = null,
     onBackClick: () -> Unit,
     onNavigateBackToTripDetails: () -> Unit,
     viewModel: ActivityFormViewModel = hiltViewModel()
@@ -47,60 +56,85 @@ internal fun ActivityFormScreen(
     val context = LocalContext.current
 
     LaunchedEffect(Unit) {
-        viewModel.uiEffect.collect { effect ->
-            when (effect) {
-                is ActivityFormUiEffect.NavigateBack -> {
-                    onBackClick()
-                }
-                is ActivityFormUiEffect.NavigateBackToTripDetails -> {
-                    onNavigateBackToTripDetails()
-                }
-                is ActivityFormUiEffect.ShowErrorToast -> {
-                    Toast.makeText(context, effect.error, Toast.LENGTH_LONG).show()
-                }
+        viewModel.initForm(itineraryItemId)
+    }
+
+    CollectUiEffects(viewModel.uiEffect) { effect ->
+        when (effect) {
+            is ActivityFormUiEffect.NavigateBack -> onBackClick()
+            is ActivityFormUiEffect.NavigateBackToTripDetails -> onNavigateBackToTripDetails()
+            is ActivityFormUiEffect.ShowErrorToast -> {
+                Toast.makeText(context, effect.error, Toast.LENGTH_LONG).show()
             }
         }
     }
 
-    ActivityFormContent(
-        uiState = uiState,
-        onTitleChange = viewModel::onTitleChange,
-        onDescriptionChange = viewModel::onDescriptionChange,
-        onLocationChange = viewModel::onLocationChange,
-        onDateChange = viewModel::onDateChange,
-        onTimeChange = viewModel::onTimeChange,
-        onSubmit = { viewModel.onSubmit(tripId) },
-        onBackClick = onBackClick
-    )
+    when (uiState) {
+        is ActivityFormUiState.Loading -> RedknotLoadingTemplate(
+            modifier = Modifier.fillMaxSize()
+        )
+        is ActivityFormUiState -> ActivityFormContent(
+            uiState = uiState as ActivityFormUiState.Content,
+            onTitleChange = viewModel::onTitleChange,
+            onDescriptionChange = viewModel::onDescriptionChange,
+            onLocationChange = viewModel::onLocationChange,
+            onDateChange = viewModel::onDateChange,
+            onTimeChange = viewModel::onTimeChange,
+            onSubmit = { viewModel.onSubmit(tripId) },
+            onDelete = viewModel::onDelete,
+            onBackClick = onBackClick
+        )
+    }
 }
 
 @Composable
 private fun ActivityFormContent(
-    uiState: ActivityFormUiState,
+    uiState: ActivityFormUiState.Content,
     onTitleChange: (String) -> Unit,
     onDescriptionChange: (String) -> Unit,
     onLocationChange: (String) -> Unit,
     onDateChange: (LocalDate?) -> Unit,
     onTimeChange: (LocalTime) -> Unit,
     onSubmit: () -> Unit,
+    onDelete: () -> Unit,
     onBackClick: () -> Unit
 ) {
     val context = LocalContext.current
+    var showDeleteDialog by rememberSaveable { mutableStateOf(false) }
+
+    if (showDeleteDialog) {
+        DeleteConfirmationDialog(
+            title = stringResource(R.string.delete_itinerary_item_dialog_title),
+            message = stringResource(R.string.delete_itinerary_item_dialog_message),
+            onDismissRequest = { showDeleteDialog = false },
+            onDeleteClick = { showDeleteDialog = false; onDelete() }
+        )
+    }
 
     Scaffold(
         topBar = {
             RedknotTopBar(
                 title = stringResource(R.string.create_activity),
-                onBackClick = onBackClick
+                onBackClick = onBackClick,
+                actions = {
+                    if (uiState.isEditMode) {
+                        IconButton(onClick = { showDeleteDialog = true }) {
+                            Icon(
+                                imageVector = Icons.Default.Delete,
+                                contentDescription = stringResource(R.string.delete_itinerary_item)
+                            )
+                        }
+                    }
+                }
             )
         }
     ) { innerPadding ->
         Column(
             modifier = Modifier
                 .padding(innerPadding)
-                .padding(horizontal = MaterialTheme.spacing.default)
                 .fillMaxWidth()
                 .verticalScroll(rememberScrollState())
+                .padding(horizontal = MaterialTheme.spacing.default)
         ) {
             OutlinedTextField(
                 value = uiState.title,
@@ -159,9 +193,10 @@ private fun ActivityFormContent(
                 if (uiState.isLoading) {
                     CircularProgressIndicator(modifier = Modifier.size(24.dp))
                 } else {
-                    Icon(imageVector = Icons.Default.Add, contentDescription = null)
                     Text(
-                        text = stringResource(R.string.add_item),
+                        text = stringResource(
+                            if (uiState.isEditMode) R.string.update_item else R.string.add_item
+                        ),
                         modifier = Modifier.padding(start = MaterialTheme.spacing.small)
                     )
                 }

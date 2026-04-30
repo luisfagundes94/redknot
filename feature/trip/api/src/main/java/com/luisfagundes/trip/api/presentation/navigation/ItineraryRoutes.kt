@@ -7,13 +7,25 @@ import kotlinx.serialization.Serializable
 data class ItineraryItemTypePickerRoute(val tripId: Int) : NavKey
 
 @Serializable
-data class ActivityFormRoute(val tripId: Int) : NavKey
+data class ActivityFormRoute(
+    val tripId: Int,
+    val itineraryItemId: String? = null,
+) : NavKey
 
 @Serializable
-data class AccommodationFormRoute(val tripId: Int) : NavKey
+data class AccommodationFormRoute(
+    val tripId: Int,
+    val itineraryItemId: String? = null,
+) : NavKey
 
 @Serializable
-data class FlightFormRoute(val tripId: Int) : NavKey
+data class FlightFormRoute(
+    val tripId: Int,
+    val itineraryItemId: String? = null,
+) : NavKey
 
 @Serializable
-data class RestaurantFormRoute(val tripId: Int) : NavKey
+data class RestaurantFormRoute(
+    val tripId: Int,
+    val itineraryItemId: String? = null,
+) : NavKey

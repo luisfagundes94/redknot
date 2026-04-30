@@ -2,6 +2,7 @@ package com.luisfagundes.itinerary.presentation.components
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
@@ -33,6 +34,7 @@ internal fun ItineraryTimeline(
     item: ItineraryItem,
     isFirst: Boolean,
     isLast: Boolean,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val lineColor = MaterialTheme.colorScheme.outlineVariant
@@ -42,6 +44,7 @@ internal fun ItineraryTimeline(
         modifier = modifier
             .fillMaxWidth()
             .height(IntrinsicSize.Min)
+            .clickable(onClick = onClick)
     ) {
         Box(
             modifier = Modifier

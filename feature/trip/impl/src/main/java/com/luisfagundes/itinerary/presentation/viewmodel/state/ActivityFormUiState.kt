@@ -5,23 +5,29 @@ import com.luisfagundes.core.common.presentation.arch.state.UiState
 import java.time.LocalDate
 import java.time.LocalTime
 
-internal data class ActivityFormUiState(
-    val title: String = "",
-    val titleError: FieldValidationError? = null,
-    val description: String = "",
-    val location: String = "",
-    val date: LocalDate? = null,
-    val dateError: FieldValidationError? = null,
-    val time: LocalTime? = null,
-    val timeError: FieldValidationError? = null,
-    val isLoading: Boolean = false
-) : UiState {
-    private val hasAllRequiredFields: Boolean
-        get() = title.isNotBlank() && date != null && time != null
+internal sealed interface ActivityFormUiState : UiState {
+    data object Loading : ActivityFormUiState
 
-    private val hasNoErrors: Boolean
-        get() = titleError == null && dateError == null && timeError == null
+    data class Content(
+        val editingItemId: String? = null,
+        val title: String = "",
+        val titleError: FieldValidationError? = null,
+        val description: String = "",
+        val location: String = "",
+        val date: LocalDate? = null,
+        val dateError: FieldValidationError? = null,
+        val time: LocalTime? = null,
+        val timeError: FieldValidationError? = null,
+        val isLoading: Boolean = false,
+    ) : ActivityFormUiState {
+        val isEditMode: Boolean get() = editingItemId != null
 
-    val isFormValid: Boolean
-        get() = hasAllRequiredFields && hasNoErrors
+        private val hasAllRequiredFields: Boolean
+            get() = title.isNotBlank() && date != null && time != null
+
+        private val hasNoErrors: Boolean
+            get() = titleError == null && dateError == null && timeError == null
+
+        val isFormValid: Boolean get() = hasAllRequiredFields && hasNoErrors
+    }
 }

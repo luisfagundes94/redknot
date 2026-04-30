@@ -6,23 +6,30 @@ import com.luisfagundes.itinerary.domain.model.MealType
 import java.time.LocalDate
 import java.time.LocalTime
 
-internal data class RestaurantFormUiState(
-    val name: String = "",
-    val address: String = "",
-    val mealType: MealType = MealType.BREAKFAST,
-    val nameError: FieldValidationError? = null,
-    val date: LocalDate? = null,
-    val dateError: FieldValidationError? = null,
-    val time: LocalTime? = null,
-    val timeError: FieldValidationError? = null,
-    val isLoading: Boolean = false
-) : UiState {
-    private val hasAllRequiredFields: Boolean
-        get() = name.isNotBlank() && date != null && time != null
+internal sealed interface RestaurantFormUiState : UiState {
+    data object Loading : RestaurantFormUiState
 
-    private val hasNoErrors: Boolean
-        get() = nameError == null && dateError == null && timeError == null
+    data class Content(
+        val editingItemId: String? = null,
+        val name: String = "",
+        val address: String = "",
+        val addressError: FieldValidationError? = null,
+        val mealType: MealType = MealType.BREAKFAST,
+        val nameError: FieldValidationError? = null,
+        val date: LocalDate? = null,
+        val dateError: FieldValidationError? = null,
+        val time: LocalTime? = null,
+        val timeError: FieldValidationError? = null,
+        val isLoading: Boolean = false,
+    ) : RestaurantFormUiState {
+        val isEditMode: Boolean get() = editingItemId != null
 
-    val isFormValid: Boolean
-        get() = hasAllRequiredFields && hasNoErrors
+        private val hasAllRequiredFields: Boolean
+            get() = name.isNotBlank() && address.isNotBlank() && date != null && time != null
+
+        private val hasNoErrors: Boolean
+            get() = nameError == null && addressError == null && dateError == null && timeError == null
+
+        val isFormValid: Boolean get() = hasAllRequiredFields && hasNoErrors
+    }
 }

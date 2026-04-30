@@ -6,24 +6,30 @@ import com.luisfagundes.itinerary.domain.model.CheckInType
 import java.time.LocalDate
 import java.time.LocalTime
 
-internal data class AccommodationFormUiState(
-    val name: String = "",
-    val nameError: FieldValidationError? = null,
-    val address: String = "",
-    val addressError: FieldValidationError? = null,
-    val checkInType: CheckInType = CheckInType.CHECK_IN,
-    val date: LocalDate? = null,
-    val dateError: FieldValidationError? = null,
-    val time: LocalTime? = null,
-    val timeError: FieldValidationError? = null,
-    val isLoading: Boolean = false
-) : UiState {
-    private val hasAllRequiredFields: Boolean
-        get() = name.isNotBlank() && address.isNotBlank() && date != null && time != null
+internal sealed interface AccommodationFormUiState : UiState {
+    data object Loading : AccommodationFormUiState
 
-    private val hasNoErrors: Boolean
-        get() = nameError == null && addressError == null && dateError == null && timeError == null
+    data class Content(
+        val editingItemId: String? = null,
+        val name: String = "",
+        val nameError: FieldValidationError? = null,
+        val address: String = "",
+        val addressError: FieldValidationError? = null,
+        val checkInType: CheckInType = CheckInType.CHECK_IN,
+        val date: LocalDate? = null,
+        val dateError: FieldValidationError? = null,
+        val time: LocalTime? = null,
+        val timeError: FieldValidationError? = null,
+        val isLoading: Boolean = false,
+    ) : AccommodationFormUiState {
+        val isEditMode: Boolean get() = editingItemId != null
 
-    val isFormValid: Boolean
-        get() = hasAllRequiredFields && hasNoErrors
+        private val hasAllRequiredFields: Boolean
+            get() = name.isNotBlank() && address.isNotBlank() && date != null && time != null
+
+        private val hasNoErrors: Boolean
+            get() = nameError == null && addressError == null && dateError == null && timeError == null
+
+        val isFormValid: Boolean get() = hasAllRequiredFields && hasNoErrors
+    }
 }

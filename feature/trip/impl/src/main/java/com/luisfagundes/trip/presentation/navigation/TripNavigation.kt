@@ -3,7 +3,15 @@ package com.luisfagundes.trip.presentation.navigation
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import com.luisfagundes.core.common.presentation.navigation.Navigator
+import com.luisfagundes.itinerary.domain.model.Accommodation
+import com.luisfagundes.itinerary.domain.model.Activity
+import com.luisfagundes.itinerary.domain.model.Flight
+import com.luisfagundes.itinerary.domain.model.Restaurant
+import com.luisfagundes.trip.api.presentation.navigation.AccommodationFormRoute
+import com.luisfagundes.trip.api.presentation.navigation.ActivityFormRoute
+import com.luisfagundes.trip.api.presentation.navigation.FlightFormRoute
 import com.luisfagundes.trip.api.presentation.navigation.ItineraryItemTypePickerRoute
+import com.luisfagundes.trip.api.presentation.navigation.RestaurantFormRoute
 import com.luisfagundes.trip.api.presentation.navigation.TripCreationRoute
 import com.luisfagundes.trip.api.presentation.navigation.TripDetailsRoute
 import com.luisfagundes.trip.api.presentation.navigation.TripListRoute
@@ -26,11 +34,19 @@ fun EntryProviderScope<NavKey>.tripEntry(
         )
     }
     entry<TripDetailsRoute> { key ->
-        val id = key.tripId
-
+        val tripId = key.tripId
         TripDetailsScreen(
-            tripId = id,
-            onAddItineraryItemClick = { navigator.navigateTo(ItineraryItemTypePickerRoute(id)) },
+            tripId = tripId,
+            onAddItineraryItemClick = { navigator.navigateTo(ItineraryItemTypePickerRoute(tripId)) },
+            onEditItineraryItemClick = { item ->
+                val route = when (item) {
+                    is Flight -> FlightFormRoute(tripId, item.id)
+                    is Accommodation -> AccommodationFormRoute(tripId, item.id)
+                    is Restaurant -> RestaurantFormRoute(tripId, item.id)
+                    is Activity -> ActivityFormRoute(tripId, item.id)
+                }
+                navigator.navigateTo(route)
+            },
             onBackClick = navigator::goBack
         )
     }
