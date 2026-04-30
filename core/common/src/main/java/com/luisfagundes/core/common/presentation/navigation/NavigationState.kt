@@ -47,7 +47,7 @@ class NavigationState(
 
     val currentRoute: NavKey by derivedStateOf { currentSubStack.last() }
 
-    val isCurrentRouteTopLevel = currentRoute == currentTopLevelRoute
+    val isCurrentRouteTopLevel by derivedStateOf { currentRoute == currentTopLevelRoute }
 }
 
 @Composable
