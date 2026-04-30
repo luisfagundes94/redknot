@@ -14,7 +14,6 @@ import com.luisfagundes.common.domain.usecase.ValidateTitleUseCase
 import com.luisfagundes.common.domain.usecase.ValidateTimeUseCase
 import com.luisfagundes.itinerary.presentation.viewmodel.effect.ActivityFormUiEffect
 import com.luisfagundes.itinerary.presentation.viewmodel.state.ActivityFormUiState
-import com.luisfagundes.itinerary.presentation.viewmodel.state.ActivityFormUiState.Content
 import com.luisfagundes.common.domain.usecase.ValidateDateUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -39,7 +38,7 @@ internal class ActivityFormViewModel @Inject constructor(
 ) {
     fun initForm(itemId: String?) {
         if (itemId == null) {
-            setState { Content() }
+            setState { ActivityFormUiState.Content() }
             return
         }
         viewModelScope.launch(dispatcher) {
@@ -47,7 +46,7 @@ internal class ActivityFormViewModel @Inject constructor(
                 onSuccess = { item ->
                     val activity = item as? Activity ?: return@fold
                     setState {
-                        Content(
+                        ActivityFormUiState.Content(
                             editingItemId = activity.id,
                             title = activity.title,
                             description = activity.description.orEmpty(),
@@ -65,36 +64,46 @@ internal class ActivityFormViewModel @Inject constructor(
     }
 
     fun onTitleChange(title: String) {
-        setStateOf<Content> {
-            it.copy(title = title, titleError = validateTitleUseCase(title).errorOrNull())
+        setStateOf<ActivityFormUiState.Content> {
+            it.copy(
+                title = title,
+                titleError = validateTitleUseCase(title).errorOrNull()
+            )
         }
     }
 
     fun onDescriptionChange(description: String) {
-        setStateOf<Content> { it.copy(description = description) }
+        setStateOf<ActivityFormUiState.Content> { it.copy(description = description) }
     }
 
     fun onLocationChange(location: String) {
-        setStateOf<Content> { it.copy(location = location) }
+        setStateOf<ActivityFormUiState.Content> { it.copy(location = location) }
     }
 
     fun onDateChange(date: LocalDate?) {
-        setStateOf<Content> {
-            it.copy(date = date, dateError = validateDateUseCase(date).errorOrNull())
+        setStateOf<ActivityFormUiState.Content> {
+            it.copy(
+                date = date,
+                dateError = validateDateUseCase(date).errorOrNull()
+            )
         }
     }
 
     fun onTimeChange(time: LocalTime) {
-        setStateOf<Content> {
-            it.copy(time = time, timeError = validateTimeUseCase(time).errorOrNull())
+        setStateOf<ActivityFormUiState.Content> {
+            it.copy(
+                time = time,
+                timeError = validateTimeUseCase(time).errorOrNull()
+            )
         }
     }
 
     fun onSubmit(tripId: Int) = viewModelScope.launch(dispatcher) {
-        val content = getCurrentState() as? Content ?: return@launch
-        setStateOf<Content> { it.copy(isLoading = true) }
+        val content = getCurrentState() as? ActivityFormUiState.Content ?: return@launch
+        setStateOf<ActivityFormUiState.Content> { it.copy(isLoading = true) }
 
         val activity = buildActivity(tripId, content)
+
         val result = if (content.editingItemId == null) {
             createItineraryItemUseCase(activity)
         } else {
@@ -106,23 +115,24 @@ internal class ActivityFormViewModel @Inject constructor(
             onFailure = { sendEffect { ActivityFormUiEffect.ShowErrorToast(it.toString()) } }
         )
 
-        setStateOf<Content> { it.copy(isLoading = false) }
+        setStateOf<ActivityFormUiState.Content> { it.copy(isLoading = false) }
     }
 
     fun onDelete() = viewModelScope.launch(dispatcher) {
-        val content = getCurrentState() as? Content ?: return@launch
+        val content = getCurrentState() as? ActivityFormUiState.Content ?: return@launch
         val itemId = content.editingItemId ?: return@launch
-        setStateOf<Content> { it.copy(isLoading = true) }
+
+        setStateOf<ActivityFormUiState.Content> { it.copy(isLoading = true) }
 
         deleteItineraryItemUseCase(itemId, ItineraryItemType.ACTIVITY).fold(
             onSuccess = { sendEffect { ActivityFormUiEffect.NavigateBackToTripDetails } },
             onFailure = { sendEffect { ActivityFormUiEffect.ShowErrorToast(it.toString()) } }
         )
 
-        setStateOf<Content> { it.copy(isLoading = false) }
+        setStateOf<ActivityFormUiState.Content> { it.copy(isLoading = false) }
     }
 
-    private fun buildActivity(tripId: Int, content: Content) = Activity(
+    private fun buildActivity(tripId: Int, content: ActivityFormUiState.Content) = Activity(
         id = content.editingItemId ?: UUID.randomUUID().toString(),
         tripId = tripId,
         date = content.date ?: LocalDate.now(),

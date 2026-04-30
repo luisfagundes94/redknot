@@ -16,7 +16,6 @@ import com.luisfagundes.common.domain.usecase.ValidateNameUseCase
 import com.luisfagundes.common.domain.usecase.ValidateTimeUseCase
 import com.luisfagundes.itinerary.presentation.viewmodel.effect.AccommodationFormUiEffect
 import com.luisfagundes.itinerary.presentation.viewmodel.state.AccommodationFormUiState
-import com.luisfagundes.itinerary.presentation.viewmodel.state.AccommodationFormUiState.Content
 import com.luisfagundes.common.domain.usecase.ValidateDateUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -42,7 +41,7 @@ internal class AccommodationFormViewModel @Inject constructor(
 ) {
     fun initForm(itemId: String?) {
         if (itemId == null) {
-            setState { Content() }
+            setState { AccommodationFormUiState.Content() }
             return
         }
         viewModelScope.launch(dispatcher) {
@@ -50,7 +49,7 @@ internal class AccommodationFormViewModel @Inject constructor(
                 onSuccess = { item ->
                     val accommodation = item as? Accommodation ?: return@fold
                     setState {
-                        Content(
+                        AccommodationFormUiState.Content(
                             editingItemId = accommodation.id,
                             name = accommodation.name,
                             address = accommodation.address,
@@ -68,7 +67,7 @@ internal class AccommodationFormViewModel @Inject constructor(
     }
 
     fun onNameChange(name: String) {
-        setStateOf<Content> {
+        setStateOf<AccommodationFormUiState.Content> {
             it.copy(
                 name = name,
                 nameError = validateNameUseCase(name).errorOrNull()
@@ -77,7 +76,7 @@ internal class AccommodationFormViewModel @Inject constructor(
     }
 
     fun onAddressChange(address: String) {
-        setStateOf<Content> {
+        setStateOf<AccommodationFormUiState.Content> {
             it.copy(
                 address = address,
                 addressError = validateAddressUseCase(address).errorOrNull()
@@ -86,11 +85,11 @@ internal class AccommodationFormViewModel @Inject constructor(
     }
 
     fun onCheckInTypeChange(checkInType: CheckInType) {
-        setStateOf<Content> { it.copy(checkInType = checkInType) }
+        setStateOf<AccommodationFormUiState.Content> { it.copy(checkInType = checkInType) }
     }
 
     fun onDateChange(date: LocalDate?) {
-        setStateOf<Content> {
+        setStateOf<AccommodationFormUiState.Content> {
             it.copy(
                 date = date,
                 dateError = validateDateUseCase(date).errorOrNull()
@@ -99,7 +98,7 @@ internal class AccommodationFormViewModel @Inject constructor(
     }
 
     fun onTimeChange(time: LocalTime) {
-        setStateOf<Content> {
+        setStateOf<AccommodationFormUiState.Content> {
             it.copy(
                 time = time,
                 timeError = validateTimeUseCase(time).errorOrNull()
@@ -108,10 +107,11 @@ internal class AccommodationFormViewModel @Inject constructor(
     }
 
     fun onSubmit(tripId: Int) = viewModelScope.launch(dispatcher) {
-        val content = getCurrentState() as? Content ?: return@launch
-        setStateOf<Content> { it.copy(isLoading = true) }
+        val content = getCurrentState() as? AccommodationFormUiState.Content ?: return@launch
+        setStateOf<AccommodationFormUiState.Content> { it.copy(isLoading = true) }
 
         val accommodation = buildAccommodation(tripId, content)
+
         val result = if (content.editingItemId == null) {
             createItineraryItemUseCase(accommodation)
         } else {
@@ -123,23 +123,27 @@ internal class AccommodationFormViewModel @Inject constructor(
             onFailure = { sendEffect { AccommodationFormUiEffect.ShowErrorToast(it.toString()) } }
         )
 
-        setStateOf<Content> { it.copy(isLoading = false) }
+        setStateOf<AccommodationFormUiState.Content> { it.copy(isLoading = false) }
     }
 
     fun onDelete() = viewModelScope.launch(dispatcher) {
-        val content = getCurrentState() as? Content ?: return@launch
+        val content = getCurrentState() as? AccommodationFormUiState.Content ?: return@launch
         val itemId = content.editingItemId ?: return@launch
-        setStateOf<Content> { it.copy(isLoading = true) }
+
+        setStateOf<AccommodationFormUiState.Content> { it.copy(isLoading = true) }
 
         deleteItineraryItemUseCase(itemId, ItineraryItemType.ACCOMMODATION).fold(
             onSuccess = { sendEffect { AccommodationFormUiEffect.NavigateBackToTripDetails } },
             onFailure = { sendEffect { AccommodationFormUiEffect.ShowErrorToast(it.toString()) } }
         )
 
-        setStateOf<Content> { it.copy(isLoading = false) }
+        setStateOf<AccommodationFormUiState.Content> { it.copy(isLoading = false) }
     }
 
-    private fun buildAccommodation(tripId: Int, content: Content) = Accommodation(
+    private fun buildAccommodation(
+        tripId: Int,
+        content: AccommodationFormUiState.Content
+    ) = Accommodation(
         id = content.editingItemId ?: UUID.randomUUID().toString(),
         tripId = tripId,
         date = content.date ?: LocalDate.now(),
