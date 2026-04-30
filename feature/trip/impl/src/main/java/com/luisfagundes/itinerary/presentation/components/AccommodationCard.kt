@@ -25,9 +25,9 @@ internal fun AccommodationCard(
         verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.verySmall)
     ) {
         val checkInTitle = if (accommodation.checkInType == CheckInType.CHECK_IN) {
-            stringResource(R.string.hotel_check_in)
+            stringResource(R.string.accommodation_check_in)
         } else {
-            stringResource(R.string.hotel_check_out)
+            stringResource(R.string.accommodation_check_out)
         }
 
         Text(
