@@ -7,6 +7,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import com.luisfagundes.common.presentation.extensions.toAmPm
 import com.luisfagundes.designsystem.theme.spacing
@@ -33,6 +34,10 @@ internal fun AccommodationCard(
             text = checkInTitle,
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.Bold
+        )
+        Text(
+            text = accommodation.name,
+            fontStyle = FontStyle.Italic
         )
         Text(
             text = accommodation.time.toAmPm()
