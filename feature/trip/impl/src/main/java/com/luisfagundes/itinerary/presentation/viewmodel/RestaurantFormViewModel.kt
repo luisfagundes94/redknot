@@ -17,7 +17,6 @@ import com.luisfagundes.common.domain.usecase.ValidateNameUseCase
 import com.luisfagundes.common.domain.usecase.ValidateTimeUseCase
 import com.luisfagundes.itinerary.presentation.viewmodel.effect.RestaurantFormUiEffect
 import com.luisfagundes.itinerary.presentation.viewmodel.state.RestaurantFormUiState
-import com.luisfagundes.itinerary.presentation.viewmodel.state.RestaurantFormUiState.Content
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
@@ -42,7 +41,7 @@ internal class RestaurantFormViewModel @Inject constructor(
 ) {
     fun initForm(itemId: String?) {
         if (itemId == null) {
-            setState { Content() }
+            setState { RestaurantFormUiState.Content() }
             return
         }
         viewModelScope.launch(dispatcher) {
@@ -50,7 +49,7 @@ internal class RestaurantFormViewModel @Inject constructor(
                 onSuccess = { item ->
                     val restaurant = item as? Restaurant ?: return@fold
                     setState {
-                        Content(
+                        RestaurantFormUiState.Content(
                             editingItemId = restaurant.id,
                             name = restaurant.name,
                             address = restaurant.address,
@@ -68,7 +67,7 @@ internal class RestaurantFormViewModel @Inject constructor(
     }
 
     fun onNameChange(name: String) {
-        setStateOf<Content> {
+        setStateOf<RestaurantFormUiState.Content> {
             it.copy(
                 name = name,
                 nameError = validateNameUseCase(name).errorOrNull()
@@ -77,7 +76,7 @@ internal class RestaurantFormViewModel @Inject constructor(
     }
 
     fun onAddressChange(address: String) {
-        setStateOf<Content> {
+        setStateOf<RestaurantFormUiState.Content> {
             it.copy(
                 address = address,
                 addressError = validateAddressUseCase(address).errorOrNull()
@@ -86,11 +85,11 @@ internal class RestaurantFormViewModel @Inject constructor(
     }
 
     fun onMealTypeChange(mealType: MealType) {
-        setStateOf<Content> { it.copy(mealType = mealType) }
+        setStateOf<RestaurantFormUiState.Content> { it.copy(mealType = mealType) }
     }
 
     fun onDateChange(date: LocalDate?) {
-        setStateOf<Content> {
+        setStateOf<RestaurantFormUiState.Content> {
             it.copy(
                 date = date,
                 dateError = validateDateUseCase(date).errorOrNull()
@@ -99,7 +98,7 @@ internal class RestaurantFormViewModel @Inject constructor(
     }
 
     fun onTimeChange(time: LocalTime) {
-        setStateOf<Content> {
+        setStateOf<RestaurantFormUiState.Content> {
             it.copy(
                 time = time,
                 timeError = validateTimeUseCase(time).errorOrNull()
@@ -108,10 +107,11 @@ internal class RestaurantFormViewModel @Inject constructor(
     }
 
     fun onSubmit(tripId: Int) = viewModelScope.launch(dispatcher) {
-        val content = getCurrentState() as? Content ?: return@launch
-        setStateOf<Content> { it.copy(isLoading = true) }
+        val content = getCurrentState() as? RestaurantFormUiState.Content ?: return@launch
+        setStateOf<RestaurantFormUiState.Content> { it.copy(isLoading = true) }
 
         val restaurant = buildRestaurant(tripId, content)
+
         val result = if (content.editingItemId == null) {
             createItineraryItemUseCase(restaurant)
         } else {
@@ -123,23 +123,24 @@ internal class RestaurantFormViewModel @Inject constructor(
             onFailure = { sendEffect { RestaurantFormUiEffect.ShowErrorToast(it.toString()) } }
         )
 
-        setStateOf<Content> { it.copy(isLoading = false) }
+        setStateOf<RestaurantFormUiState.Content> { it.copy(isLoading = false) }
     }
 
     fun onDelete() = viewModelScope.launch(dispatcher) {
-        val content = getCurrentState() as? Content ?: return@launch
+        val content = getCurrentState() as? RestaurantFormUiState.Content ?: return@launch
         val itemId = content.editingItemId ?: return@launch
-        setStateOf<Content> { it.copy(isLoading = true) }
+
+        setStateOf<RestaurantFormUiState.Content> { it.copy(isLoading = true) }
 
         deleteItineraryItemUseCase(itemId, ItineraryItemType.RESTAURANT).fold(
             onSuccess = { sendEffect { RestaurantFormUiEffect.NavigateBackToTripDetails } },
             onFailure = { sendEffect { RestaurantFormUiEffect.ShowErrorToast(it.toString()) } }
         )
 
-        setStateOf<Content> { it.copy(isLoading = false) }
+        setStateOf<RestaurantFormUiState.Content> { it.copy(isLoading = false) }
     }
 
-    private fun buildRestaurant(tripId: Int, content: Content) = Restaurant(
+    private fun buildRestaurant(tripId: Int, content: RestaurantFormUiState.Content) = Restaurant(
         id = content.editingItemId ?: UUID.randomUUID().toString(),
         tripId = tripId,
         date = content.date ?: LocalDate.now(),
