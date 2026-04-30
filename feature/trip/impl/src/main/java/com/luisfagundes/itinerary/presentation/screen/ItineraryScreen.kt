@@ -1,6 +1,7 @@
 package com.luisfagundes.itinerary.presentation.screen
 
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -107,6 +108,7 @@ private fun ItineraryTimelineContent(
 ) {
     Scaffold(
         modifier = modifier,
+        contentWindowInsets = WindowInsets(0),
         floatingActionButton = {
             FloatingActionButton(
                 onClick = onAddItem
