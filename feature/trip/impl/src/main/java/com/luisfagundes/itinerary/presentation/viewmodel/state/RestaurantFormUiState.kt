@@ -21,6 +21,7 @@ internal sealed interface RestaurantFormUiState : UiState {
         val time: LocalTime? = null,
         val timeError: FieldValidationError? = null,
         val isLoading: Boolean = false,
+        val tripStartDate: LocalDate? = null,
     ) : RestaurantFormUiState {
         val isEditMode: Boolean get() = editingItemId != null
 

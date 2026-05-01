@@ -60,7 +60,7 @@ internal fun FlightFormScreen(
     val context = LocalContext.current
 
     LaunchedEffect(Unit) {
-        viewModel.initForm(itineraryItemId)
+        viewModel.initForm(tripId, itineraryItemId)
     }
 
     CollectUiEffects(
@@ -237,6 +237,7 @@ private fun FlightFormContent(
                 hasError = uiState.dateError != null,
                 supportingText = { uiState.dateError?.let { Text(it.toMessage(context)) } },
                 onDateSelect = onDateChange,
+                initialDisplayedMonth = uiState.tripStartDate,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = MaterialTheme.spacing.default)

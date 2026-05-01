@@ -58,7 +58,7 @@ internal fun RestaurantFormScreen(
     val context = LocalContext.current
 
     LaunchedEffect(Unit) {
-        viewModel.initForm(itineraryItemId)
+        viewModel.initForm(tripId, itineraryItemId)
     }
 
     CollectUiEffects(viewModel.uiEffect) { effect ->
@@ -172,6 +172,7 @@ private fun RestaurantFormContent(
                 hasError = uiState.dateError != null,
                 supportingText = { uiState.dateError?.let { Text(it.toMessage(context)) } },
                 onDateSelect = onDateChange,
+                initialDisplayedMonth = uiState.tripStartDate,
                 modifier = Modifier.fillMaxWidth()
             )
             TimeSelectionField(

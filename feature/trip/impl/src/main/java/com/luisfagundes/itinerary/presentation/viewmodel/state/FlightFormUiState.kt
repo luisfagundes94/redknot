@@ -24,6 +24,7 @@ internal sealed interface FlightFormUiState : UiState {
         val time: LocalTime? = null,
         val timeError: FieldValidationError? = null,
         val isLoading: Boolean = false,
+        val tripStartDate: LocalDate? = null,
     ) : FlightFormUiState {
         val isEditMode: Boolean get() = editingItemId != null
 

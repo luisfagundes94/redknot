@@ -13,10 +13,12 @@ import com.luisfagundes.itinerary.domain.usecase.CreateItineraryItemUseCase
 import com.luisfagundes.itinerary.domain.usecase.DeleteItineraryItemUseCase
 import com.luisfagundes.itinerary.domain.usecase.GetItineraryItemByIdUseCase
 import com.luisfagundes.itinerary.domain.usecase.UpdateItineraryItemUseCase
+import com.luisfagundes.trip.domain.usecase.GetTripByIdUseCase
 import com.luisfagundes.common.domain.usecase.ValidateNameUseCase
 import com.luisfagundes.common.domain.usecase.ValidateTimeUseCase
 import com.luisfagundes.itinerary.presentation.viewmodel.effect.RestaurantFormUiEffect
 import com.luisfagundes.itinerary.presentation.viewmodel.state.RestaurantFormUiState
+import com.luisfagundes.trip.domain.usecase.GetTripStartDateUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
@@ -35,16 +37,20 @@ internal class RestaurantFormViewModel @Inject constructor(
     private val getItineraryItemByIdUseCase: GetItineraryItemByIdUseCase,
     private val updateItineraryItemUseCase: UpdateItineraryItemUseCase,
     private val deleteItineraryItemUseCase: DeleteItineraryItemUseCase,
+    private val getTripStartDateUseCase: GetTripStartDateUseCase,
     @param:IoDispatcher private val dispatcher: CoroutineDispatcher
 ) : ViewModel<RestaurantFormUiState, RestaurantFormUiEffect>(
     initialState = RestaurantFormUiState.Loading
 ) {
-    fun initForm(itemId: String?) {
-        if (itemId == null) {
-            setState { RestaurantFormUiState.Content() }
-            return
-        }
+    fun initForm(tripId: Int, itemId: String?) {
         viewModelScope.launch(dispatcher) {
+            val tripStartDate = getTripStartDateUseCase(tripId)
+
+            if (itemId == null) {
+                setState { RestaurantFormUiState.Content(tripStartDate = tripStartDate) }
+                return@launch
+            }
+
             getItineraryItemByIdUseCase(itemId, ItineraryItemType.RESTAURANT).fold(
                 onSuccess = { item ->
                     val restaurant = item as? Restaurant ?: return@fold
@@ -55,7 +61,8 @@ internal class RestaurantFormViewModel @Inject constructor(
                             address = restaurant.address,
                             mealType = restaurant.mealType,
                             date = restaurant.date,
-                            time = restaurant.time
+                            time = restaurant.time,
+                            tripStartDate = tripStartDate,
                         )
                     }
                 },

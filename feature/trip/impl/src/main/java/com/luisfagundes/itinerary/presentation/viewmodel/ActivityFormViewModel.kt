@@ -10,11 +10,13 @@ import com.luisfagundes.itinerary.domain.usecase.CreateItineraryItemUseCase
 import com.luisfagundes.itinerary.domain.usecase.DeleteItineraryItemUseCase
 import com.luisfagundes.itinerary.domain.usecase.GetItineraryItemByIdUseCase
 import com.luisfagundes.itinerary.domain.usecase.UpdateItineraryItemUseCase
+import com.luisfagundes.trip.domain.usecase.GetTripByIdUseCase
 import com.luisfagundes.common.domain.usecase.ValidateTitleUseCase
 import com.luisfagundes.common.domain.usecase.ValidateTimeUseCase
 import com.luisfagundes.itinerary.presentation.viewmodel.effect.ActivityFormUiEffect
 import com.luisfagundes.itinerary.presentation.viewmodel.state.ActivityFormUiState
 import com.luisfagundes.common.domain.usecase.ValidateDateUseCase
+import com.luisfagundes.trip.domain.usecase.GetTripStartDateUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
@@ -32,16 +34,20 @@ internal class ActivityFormViewModel @Inject constructor(
     private val getItineraryItemByIdUseCase: GetItineraryItemByIdUseCase,
     private val updateItineraryItemUseCase: UpdateItineraryItemUseCase,
     private val deleteItineraryItemUseCase: DeleteItineraryItemUseCase,
+    private val getTripStartDateUseCase: GetTripStartDateUseCase,
     @param:IoDispatcher private val dispatcher: CoroutineDispatcher
 ) : ViewModel<ActivityFormUiState, ActivityFormUiEffect>(
     initialState = ActivityFormUiState.Loading
 ) {
-    fun initForm(itemId: String?) {
-        if (itemId == null) {
-            setState { ActivityFormUiState.Content() }
-            return
-        }
+    fun initForm(tripId: Int, itemId: String?) {
         viewModelScope.launch(dispatcher) {
+            val tripStartDate = getTripStartDateUseCase(tripId)
+
+            if (itemId == null) {
+                setState { ActivityFormUiState.Content(tripStartDate = tripStartDate) }
+                return@launch
+            }
+
             getItineraryItemByIdUseCase(itemId, ItineraryItemType.ACTIVITY).fold(
                 onSuccess = { item ->
                     val activity = item as? Activity ?: return@fold
@@ -52,7 +58,8 @@ internal class ActivityFormViewModel @Inject constructor(
                             description = activity.description.orEmpty(),
                             location = activity.location.orEmpty(),
                             date = activity.date,
-                            time = activity.time
+                            time = activity.time,
+                            tripStartDate = tripStartDate,
                         )
                     }
                 },

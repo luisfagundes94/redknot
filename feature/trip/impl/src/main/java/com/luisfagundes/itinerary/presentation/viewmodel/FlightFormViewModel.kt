@@ -11,12 +11,14 @@ import com.luisfagundes.itinerary.domain.usecase.CreateItineraryItemUseCase
 import com.luisfagundes.itinerary.domain.usecase.DeleteItineraryItemUseCase
 import com.luisfagundes.itinerary.domain.usecase.GetItineraryItemByIdUseCase
 import com.luisfagundes.itinerary.domain.usecase.UpdateItineraryItemUseCase
+import com.luisfagundes.trip.domain.usecase.GetTripByIdUseCase
 import com.luisfagundes.itinerary.domain.usecase.ValidateDurationErrorUseCase
 import com.luisfagundes.itinerary.domain.usecase.ValidateFlightNumberUseCase
 import com.luisfagundes.common.domain.usecase.ValidateTimeUseCase
 import com.luisfagundes.itinerary.presentation.viewmodel.effect.FlightFormUiEffect
 import com.luisfagundes.itinerary.presentation.viewmodel.state.FlightFormUiState
 import com.luisfagundes.common.domain.usecase.ValidateDateUseCase
+import com.luisfagundes.trip.domain.usecase.GetTripStartDateUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
@@ -37,16 +39,20 @@ internal class FlightFormViewModel @Inject constructor(
     private val getItineraryItemByIdUseCase: GetItineraryItemByIdUseCase,
     private val updateItineraryItemUseCase: UpdateItineraryItemUseCase,
     private val deleteItineraryItemUseCase: DeleteItineraryItemUseCase,
+    private val getTripStartDateUseCase: GetTripStartDateUseCase,
     @param:IoDispatcher private val dispatcher: CoroutineDispatcher
 ) : ViewModel<FlightFormUiState, FlightFormUiEffect>(
     initialState = FlightFormUiState.Loading
 ) {
-    fun initForm(itemId: String?) {
-        if (itemId == null) {
-            setState { FlightFormUiState.Content() }
-            return
-        }
+    fun initForm(tripId: Int, itemId: String?) {
         viewModelScope.launch(dispatcher) {
+            val tripStartDate = getTripStartDateUseCase(tripId)
+
+            if (itemId == null) {
+                setState { FlightFormUiState.Content(tripStartDate = tripStartDate) }
+                return@launch
+            }
+
             getItineraryItemByIdUseCase(itemId, ItineraryItemType.FLIGHT).fold(
                 onSuccess = { item ->
                     val flight = item as? Flight ?: return@fold
@@ -62,7 +68,8 @@ internal class FlightFormViewModel @Inject constructor(
                             durationMinutes = (totalMinutes % 60).toString(),
                             seatNumber = flight.seatNumber,
                             date = flight.date,
-                            time = flight.time
+                            time = flight.time,
+                            tripStartDate = tripStartDate,
                         )
                     }
                 },

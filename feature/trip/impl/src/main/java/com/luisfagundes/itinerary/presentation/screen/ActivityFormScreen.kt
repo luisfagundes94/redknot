@@ -56,7 +56,7 @@ internal fun ActivityFormScreen(
     val context = LocalContext.current
 
     LaunchedEffect(Unit) {
-        viewModel.initForm(itineraryItemId)
+        viewModel.initForm(tripId, itineraryItemId)
     }
 
     CollectUiEffects(viewModel.uiEffect) { effect ->
@@ -170,6 +170,7 @@ private fun ActivityFormContent(
                 hasError = uiState.dateError != null,
                 supportingText = { uiState.dateError?.let { Text(it.toMessage(context)) } },
                 onDateSelect = onDateChange,
+                initialDisplayedMonth = uiState.tripStartDate,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = MaterialTheme.spacing.default)

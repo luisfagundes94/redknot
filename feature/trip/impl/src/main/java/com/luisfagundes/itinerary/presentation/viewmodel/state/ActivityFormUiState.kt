@@ -19,6 +19,7 @@ internal sealed interface ActivityFormUiState : UiState {
         val time: LocalTime? = null,
         val timeError: FieldValidationError? = null,
         val isLoading: Boolean = false,
+        val tripStartDate: LocalDate? = null,
     ) : ActivityFormUiState {
         val isEditMode: Boolean get() = editingItemId != null
 

@@ -21,6 +21,7 @@ internal sealed interface AccommodationFormUiState : UiState {
         val time: LocalTime? = null,
         val timeError: FieldValidationError? = null,
         val isLoading: Boolean = false,
+        val tripStartDate: LocalDate? = null,
     ) : AccommodationFormUiState {
         val isEditMode: Boolean get() = editingItemId != null
 

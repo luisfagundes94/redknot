@@ -11,12 +11,14 @@ import com.luisfagundes.itinerary.domain.usecase.CreateItineraryItemUseCase
 import com.luisfagundes.itinerary.domain.usecase.DeleteItineraryItemUseCase
 import com.luisfagundes.itinerary.domain.usecase.GetItineraryItemByIdUseCase
 import com.luisfagundes.itinerary.domain.usecase.UpdateItineraryItemUseCase
+import com.luisfagundes.trip.domain.usecase.GetTripByIdUseCase
 import com.luisfagundes.common.domain.usecase.ValidateAddressUseCase
 import com.luisfagundes.common.domain.usecase.ValidateNameUseCase
 import com.luisfagundes.common.domain.usecase.ValidateTimeUseCase
 import com.luisfagundes.itinerary.presentation.viewmodel.effect.AccommodationFormUiEffect
 import com.luisfagundes.itinerary.presentation.viewmodel.state.AccommodationFormUiState
 import com.luisfagundes.common.domain.usecase.ValidateDateUseCase
+import com.luisfagundes.trip.domain.usecase.GetTripStartDateUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
@@ -35,16 +37,20 @@ internal class AccommodationFormViewModel @Inject constructor(
     private val getItineraryItemByIdUseCase: GetItineraryItemByIdUseCase,
     private val updateItineraryItemUseCase: UpdateItineraryItemUseCase,
     private val deleteItineraryItemUseCase: DeleteItineraryItemUseCase,
+    private val getTripStartDateUseCase: GetTripStartDateUseCase,
     @param:IoDispatcher private val dispatcher: CoroutineDispatcher
 ) : ViewModel<AccommodationFormUiState, AccommodationFormUiEffect>(
     initialState = AccommodationFormUiState.Loading
 ) {
-    fun initForm(itemId: String?) {
-        if (itemId == null) {
-            setState { AccommodationFormUiState.Content() }
-            return
-        }
+    fun initForm(tripId: Int, itemId: String?) {
         viewModelScope.launch(dispatcher) {
+            val tripStartDate = getTripStartDateUseCase(tripId)
+
+            if (itemId == null) {
+                setState { AccommodationFormUiState.Content(tripStartDate = tripStartDate) }
+                return@launch
+            }
+
             getItineraryItemByIdUseCase(itemId, ItineraryItemType.ACCOMMODATION).fold(
                 onSuccess = { item ->
                     val accommodation = item as? Accommodation ?: return@fold
@@ -55,7 +61,8 @@ internal class AccommodationFormViewModel @Inject constructor(
                             address = accommodation.address,
                             checkInType = accommodation.checkInType,
                             date = accommodation.date,
-                            time = accommodation.time
+                            time = accommodation.time,
+                            tripStartDate = tripStartDate,
                         )
                     }
                 },

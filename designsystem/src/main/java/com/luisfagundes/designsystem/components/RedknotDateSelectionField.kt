@@ -24,6 +24,7 @@ import androidx.compose.ui.res.stringResource
 import com.luisfagundes.designsystem.R
 import com.luisfagundes.designsystem.extensions.convertMillisToLocalDate
 import com.luisfagundes.designsystem.extensions.toFormattedString
+import com.luisfagundes.designsystem.extensions.toTimestampMillis
 import java.time.LocalDate
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -35,7 +36,8 @@ fun RedknotDateSelectionField(
     hasError: Boolean,
     onDateSelect: (LocalDate?) -> Unit,
     supportingText: @Composable (() -> Unit)?,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    initialDisplayedMonth: LocalDate? = null,
 ) {
     var showDatePicker by remember { mutableStateOf(false) }
 
@@ -62,7 +64,10 @@ fun RedknotDateSelectionField(
     )
 
     if (showDatePicker) {
-        val datePickerState = rememberDatePickerState()
+        val datePickerState = rememberDatePickerState(
+            initialSelectedDateMillis = date?.toTimestampMillis(),
+            initialDisplayedMonthMillis = (date ?: initialDisplayedMonth)?.toTimestampMillis(),
+        )
         DatePickerDialog(
             confirmButton = {
                 TextButton(onClick = {
