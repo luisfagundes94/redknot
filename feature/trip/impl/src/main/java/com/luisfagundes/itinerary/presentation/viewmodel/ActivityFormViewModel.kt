@@ -6,17 +6,12 @@ import com.luisfagundes.core.common.di.IoDispatcher
 import com.luisfagundes.core.common.presentation.arch.viewmodel.ViewModel
 import com.luisfagundes.itinerary.domain.model.Activity
 import com.luisfagundes.itinerary.domain.model.ItineraryItemType
-import com.luisfagundes.itinerary.domain.usecase.CreateItineraryItemUseCase
-import com.luisfagundes.itinerary.domain.usecase.DeleteItineraryItemUseCase
-import com.luisfagundes.itinerary.domain.usecase.GetItineraryItemByIdUseCase
-import com.luisfagundes.itinerary.domain.usecase.UpdateItineraryItemUseCase
-import com.luisfagundes.trip.domain.usecase.GetTripByIdUseCase
+import com.luisfagundes.itinerary.domain.usecase.ItineraryItemFormUseCase
 import com.luisfagundes.common.domain.usecase.ValidateTitleUseCase
 import com.luisfagundes.common.domain.usecase.ValidateTimeUseCase
 import com.luisfagundes.itinerary.presentation.viewmodel.effect.ActivityFormUiEffect
 import com.luisfagundes.itinerary.presentation.viewmodel.state.ActivityFormUiState
 import com.luisfagundes.common.domain.usecase.ValidateDateUseCase
-import com.luisfagundes.trip.domain.usecase.GetTripStartDateUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
@@ -30,25 +25,21 @@ internal class ActivityFormViewModel @Inject constructor(
     private val validateTitleUseCase: ValidateTitleUseCase,
     private val validateDateUseCase: ValidateDateUseCase,
     private val validateTimeUseCase: ValidateTimeUseCase,
-    private val createItineraryItemUseCase: CreateItineraryItemUseCase,
-    private val getItineraryItemByIdUseCase: GetItineraryItemByIdUseCase,
-    private val updateItineraryItemUseCase: UpdateItineraryItemUseCase,
-    private val deleteItineraryItemUseCase: DeleteItineraryItemUseCase,
-    private val getTripStartDateUseCase: GetTripStartDateUseCase,
+    private val formUseCase: ItineraryItemFormUseCase,
     @param:IoDispatcher private val dispatcher: CoroutineDispatcher
 ) : ViewModel<ActivityFormUiState, ActivityFormUiEffect>(
     initialState = ActivityFormUiState.Loading
 ) {
     fun initForm(tripId: Int, itemId: String?) {
         viewModelScope.launch(dispatcher) {
-            val tripStartDate = getTripStartDateUseCase(tripId)
+            val tripStartDate = formUseCase.getTripStartDate(tripId)
 
             if (itemId == null) {
                 setState { ActivityFormUiState.Content(tripStartDate = tripStartDate) }
                 return@launch
             }
 
-            getItineraryItemByIdUseCase(itemId, ItineraryItemType.ACTIVITY).fold(
+            formUseCase.getItemById(itemId, ItineraryItemType.ACTIVITY).fold(
                 onSuccess = { item ->
                     val activity = item as? Activity ?: return@fold
                     setState {
@@ -111,13 +102,7 @@ internal class ActivityFormViewModel @Inject constructor(
 
         val activity = buildActivity(tripId, content)
 
-        val result = if (content.editingItemId == null) {
-            createItineraryItemUseCase(activity)
-        } else {
-            updateItineraryItemUseCase(activity)
-        }
-
-        result.fold(
+        formUseCase.submitItem(activity, content.isEditMode).fold(
             onSuccess = { sendEffect { ActivityFormUiEffect.NavigateBackToTripDetails } },
             onFailure = { sendEffect { ActivityFormUiEffect.ShowErrorToast(it.toString()) } }
         )
@@ -131,7 +116,7 @@ internal class ActivityFormViewModel @Inject constructor(
 
         setStateOf<ActivityFormUiState.Content> { it.copy(isLoading = true) }
 
-        deleteItineraryItemUseCase(itemId, ItineraryItemType.ACTIVITY).fold(
+        formUseCase.deleteItem(itemId, ItineraryItemType.ACTIVITY).fold(
             onSuccess = { sendEffect { ActivityFormUiEffect.NavigateBackToTripDetails } },
             onFailure = { sendEffect { ActivityFormUiEffect.ShowErrorToast(it.toString()) } }
         )

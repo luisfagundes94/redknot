@@ -7,18 +7,13 @@ import com.luisfagundes.core.common.presentation.arch.viewmodel.ViewModel
 import com.luisfagundes.itinerary.domain.model.Accommodation
 import com.luisfagundes.itinerary.domain.model.CheckInType
 import com.luisfagundes.itinerary.domain.model.ItineraryItemType
-import com.luisfagundes.itinerary.domain.usecase.CreateItineraryItemUseCase
-import com.luisfagundes.itinerary.domain.usecase.DeleteItineraryItemUseCase
-import com.luisfagundes.itinerary.domain.usecase.GetItineraryItemByIdUseCase
-import com.luisfagundes.itinerary.domain.usecase.UpdateItineraryItemUseCase
-import com.luisfagundes.trip.domain.usecase.GetTripByIdUseCase
+import com.luisfagundes.itinerary.domain.usecase.ItineraryItemFormUseCase
 import com.luisfagundes.common.domain.usecase.ValidateAddressUseCase
 import com.luisfagundes.common.domain.usecase.ValidateNameUseCase
 import com.luisfagundes.common.domain.usecase.ValidateTimeUseCase
 import com.luisfagundes.itinerary.presentation.viewmodel.effect.AccommodationFormUiEffect
 import com.luisfagundes.itinerary.presentation.viewmodel.state.AccommodationFormUiState
 import com.luisfagundes.common.domain.usecase.ValidateDateUseCase
-import com.luisfagundes.trip.domain.usecase.GetTripStartDateUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
@@ -33,25 +28,21 @@ internal class AccommodationFormViewModel @Inject constructor(
     private val validateAddressUseCase: ValidateAddressUseCase,
     private val validateDateUseCase: ValidateDateUseCase,
     private val validateTimeUseCase: ValidateTimeUseCase,
-    private val createItineraryItemUseCase: CreateItineraryItemUseCase,
-    private val getItineraryItemByIdUseCase: GetItineraryItemByIdUseCase,
-    private val updateItineraryItemUseCase: UpdateItineraryItemUseCase,
-    private val deleteItineraryItemUseCase: DeleteItineraryItemUseCase,
-    private val getTripStartDateUseCase: GetTripStartDateUseCase,
+    private val formUseCase: ItineraryItemFormUseCase,
     @param:IoDispatcher private val dispatcher: CoroutineDispatcher
 ) : ViewModel<AccommodationFormUiState, AccommodationFormUiEffect>(
     initialState = AccommodationFormUiState.Loading
 ) {
     fun initForm(tripId: Int, itemId: String?) {
         viewModelScope.launch(dispatcher) {
-            val tripStartDate = getTripStartDateUseCase(tripId)
+            val tripStartDate = formUseCase.getTripStartDate(tripId)
 
             if (itemId == null) {
                 setState { AccommodationFormUiState.Content(tripStartDate = tripStartDate) }
                 return@launch
             }
 
-            getItineraryItemByIdUseCase(itemId, ItineraryItemType.ACCOMMODATION).fold(
+            formUseCase.getItemById(itemId, ItineraryItemType.ACCOMMODATION).fold(
                 onSuccess = { item ->
                     val accommodation = item as? Accommodation ?: return@fold
                     setState {
@@ -119,13 +110,7 @@ internal class AccommodationFormViewModel @Inject constructor(
 
         val accommodation = buildAccommodation(tripId, content)
 
-        val result = if (content.editingItemId == null) {
-            createItineraryItemUseCase(accommodation)
-        } else {
-            updateItineraryItemUseCase(accommodation)
-        }
-
-        result.fold(
+        formUseCase.submitItem(accommodation, content.isEditMode).fold(
             onSuccess = { sendEffect { AccommodationFormUiEffect.NavigateBackToTripDetails } },
             onFailure = { sendEffect { AccommodationFormUiEffect.ShowErrorToast(it.toString()) } }
         )
@@ -139,7 +124,7 @@ internal class AccommodationFormViewModel @Inject constructor(
 
         setStateOf<AccommodationFormUiState.Content> { it.copy(isLoading = true) }
 
-        deleteItineraryItemUseCase(itemId, ItineraryItemType.ACCOMMODATION).fold(
+        formUseCase.deleteItem(itemId, ItineraryItemType.ACCOMMODATION).fold(
             onSuccess = { sendEffect { AccommodationFormUiEffect.NavigateBackToTripDetails } },
             onFailure = { sendEffect { AccommodationFormUiEffect.ShowErrorToast(it.toString()) } }
         )

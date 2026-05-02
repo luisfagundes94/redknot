@@ -9,16 +9,11 @@ import com.luisfagundes.core.common.presentation.arch.viewmodel.ViewModel
 import com.luisfagundes.itinerary.domain.model.ItineraryItemType
 import com.luisfagundes.itinerary.domain.model.MealType
 import com.luisfagundes.itinerary.domain.model.Restaurant
-import com.luisfagundes.itinerary.domain.usecase.CreateItineraryItemUseCase
-import com.luisfagundes.itinerary.domain.usecase.DeleteItineraryItemUseCase
-import com.luisfagundes.itinerary.domain.usecase.GetItineraryItemByIdUseCase
-import com.luisfagundes.itinerary.domain.usecase.UpdateItineraryItemUseCase
-import com.luisfagundes.trip.domain.usecase.GetTripByIdUseCase
+import com.luisfagundes.itinerary.domain.usecase.ItineraryItemFormUseCase
 import com.luisfagundes.common.domain.usecase.ValidateNameUseCase
 import com.luisfagundes.common.domain.usecase.ValidateTimeUseCase
 import com.luisfagundes.itinerary.presentation.viewmodel.effect.RestaurantFormUiEffect
 import com.luisfagundes.itinerary.presentation.viewmodel.state.RestaurantFormUiState
-import com.luisfagundes.trip.domain.usecase.GetTripStartDateUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
@@ -33,25 +28,21 @@ internal class RestaurantFormViewModel @Inject constructor(
     private val validateDateUseCase: ValidateDateUseCase,
     private val validateTimeUseCase: ValidateTimeUseCase,
     private val validateAddressUseCase: ValidateAddressUseCase,
-    private val createItineraryItemUseCase: CreateItineraryItemUseCase,
-    private val getItineraryItemByIdUseCase: GetItineraryItemByIdUseCase,
-    private val updateItineraryItemUseCase: UpdateItineraryItemUseCase,
-    private val deleteItineraryItemUseCase: DeleteItineraryItemUseCase,
-    private val getTripStartDateUseCase: GetTripStartDateUseCase,
+    private val formUseCase: ItineraryItemFormUseCase,
     @param:IoDispatcher private val dispatcher: CoroutineDispatcher
 ) : ViewModel<RestaurantFormUiState, RestaurantFormUiEffect>(
     initialState = RestaurantFormUiState.Loading
 ) {
     fun initForm(tripId: Int, itemId: String?) {
         viewModelScope.launch(dispatcher) {
-            val tripStartDate = getTripStartDateUseCase(tripId)
+            val tripStartDate = formUseCase.getTripStartDate(tripId)
 
             if (itemId == null) {
                 setState { RestaurantFormUiState.Content(tripStartDate = tripStartDate) }
                 return@launch
             }
 
-            getItineraryItemByIdUseCase(itemId, ItineraryItemType.RESTAURANT).fold(
+            formUseCase.getItemById(itemId, ItineraryItemType.RESTAURANT).fold(
                 onSuccess = { item ->
                     val restaurant = item as? Restaurant ?: return@fold
                     setState {
@@ -119,13 +110,7 @@ internal class RestaurantFormViewModel @Inject constructor(
 
         val restaurant = buildRestaurant(tripId, content)
 
-        val result = if (content.editingItemId == null) {
-            createItineraryItemUseCase(restaurant)
-        } else {
-            updateItineraryItemUseCase(restaurant)
-        }
-
-        result.fold(
+        formUseCase.submitItem(restaurant, content.isEditMode).fold(
             onSuccess = { sendEffect { RestaurantFormUiEffect.NavigateBackToTripDetails } },
             onFailure = { sendEffect { RestaurantFormUiEffect.ShowErrorToast(it.toString()) } }
         )
@@ -139,7 +124,7 @@ internal class RestaurantFormViewModel @Inject constructor(
 
         setStateOf<RestaurantFormUiState.Content> { it.copy(isLoading = true) }
 
-        deleteItineraryItemUseCase(itemId, ItineraryItemType.RESTAURANT).fold(
+        formUseCase.deleteItem(itemId, ItineraryItemType.RESTAURANT).fold(
             onSuccess = { sendEffect { RestaurantFormUiEffect.NavigateBackToTripDetails } },
             onFailure = { sendEffect { RestaurantFormUiEffect.ShowErrorToast(it.toString()) } }
         )
