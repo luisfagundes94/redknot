@@ -89,14 +89,14 @@ internal class FlightFormViewModel @Inject constructor(
     }
 
     fun onDurationChange(hoursStr: String, minutesStr: String) {
-        val hour = hoursStr.toIntOrNull() ?: 0
+        val hours = hoursStr.toIntOrNull() ?: 0
         val mins = minutesStr.toIntOrNull() ?: 0
 
         setStateOf<FlightFormUiState.Content> {
             it.copy(
                 durationHours = hoursStr,
                 durationMinutes = minutesStr,
-                durationError = validateDurationErrorUseCase(hour, mins).errorOrNull()
+                durationError = validateDurationErrorUseCase(hours, mins).errorOrNull()
             )
         }
     }
@@ -156,8 +156,8 @@ internal class FlightFormViewModel @Inject constructor(
     }
 
     private fun buildFlight(tripId: Int, content: FlightFormUiState.Content): Flight {
-        val h = (content.durationHours.toIntOrNull() ?: 0).hours
-        val m = (content.durationMinutes.toIntOrNull() ?: 0).minutes
+        val hours = (content.durationHours.toIntOrNull() ?: 0).hours
+        val minutes = (content.durationMinutes.toIntOrNull() ?: 0).minutes
 
         return Flight(
             id = content.editingItemId ?: UUID.randomUUID().toString(),
@@ -168,7 +168,7 @@ internal class FlightFormViewModel @Inject constructor(
             companyName = content.companyName,
             origin = Airport(name = null, city = content.originAirportCity),
             destination = Airport(name = null, city = content.destinationAirportCity),
-            duration = h + m,
+            duration = hours + minutes,
             seatNumber = content.seatNumber
         )
     }
