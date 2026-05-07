@@ -123,4 +123,7 @@
     <string name="expense_description_placeholder">What was this for?</string>
     <string name="add_expense_error_message">Error Adding Expense</string>
     <string name="category">CATEGORY</string>
+    <string name="no_documents_yet_title">No documents yet</string>
+    <string name="no_documents_yet_description">Keep your passport, tickets and booking in one place - even when you are offline.</string>
+    <string name="add_first_document_btn_label">Add first document</string>
 </resources>

@@ -9,6 +9,7 @@ import com.luisfagundes.itinerary.domain.model.Flight
 import com.luisfagundes.itinerary.domain.model.Restaurant
 import com.luisfagundes.trip.api.presentation.navigation.AccommodationFormRoute
 import com.luisfagundes.trip.api.presentation.navigation.ActivityFormRoute
+import com.luisfagundes.trip.api.presentation.navigation.DocumentsRoute
 import com.luisfagundes.trip.api.presentation.navigation.FlightFormRoute
 import com.luisfagundes.trip.api.presentation.navigation.ItineraryItemTypePickerRoute
 import com.luisfagundes.trip.api.presentation.navigation.RestaurantFormRoute
@@ -37,8 +38,8 @@ fun EntryProviderScope<NavKey>.tripEntry(
         val tripId = key.tripId
         TripDetailsScreen(
             tripId = tripId,
-            onAddItineraryItemClick = { navigator.navigateTo(ItineraryItemTypePickerRoute(tripId)) },
-            onEditItineraryItemClick = { item ->
+            onNavigateToAddItineraryItem = { navigator.navigateTo(ItineraryItemTypePickerRoute(tripId)) },
+            onNavigateToEditItineraryItem = { item ->
                 val route = when (item) {
                     is Flight -> FlightFormRoute(tripId, item.id)
                     is Accommodation -> AccommodationFormRoute(tripId, item.id)
@@ -47,7 +48,8 @@ fun EntryProviderScope<NavKey>.tripEntry(
                 }
                 navigator.navigateTo(route)
             },
-            onBackClick = navigator::goBack
+            onNavigateToDocumentForm = { navigator.navigateTo(DocumentsRoute) },
+            onNavigateBack = navigator::goBack
         )
     }
 }

@@ -37,6 +37,7 @@ import com.luisfagundes.designsystem.components.RedknotTopBar
 import com.luisfagundes.designsystem.theme.RedknotPreview
 import com.luisfagundes.designsystem.theme.RedknotThemeWrapper
 import com.luisfagundes.designsystem.theme.spacing
+import com.luisfagundes.documents.presentation.screen.DocumentsScreen
 import com.luisfagundes.itinerary.domain.model.ItineraryItem
 import com.luisfagundes.itinerary.presentation.screen.ItineraryScreen
 import com.luisfagundes.trip.R
@@ -53,9 +54,10 @@ import com.luisfagundes.trip.presentation.viewmodel.effect.TripDetailsUiEffect
 @Composable
 internal fun TripDetailsScreen(
     tripId: Int,
-    onAddItineraryItemClick: () -> Unit,
-    onEditItineraryItemClick: (ItineraryItem) -> Unit,
-    onBackClick: () -> Unit,
+    onNavigateToAddItineraryItem: () -> Unit,
+    onNavigateToEditItineraryItem: (ItineraryItem) -> Unit,
+    onNavigateToDocumentForm: () -> Unit,
+    onNavigateBack: () -> Unit,
     viewModel: TripDetailsViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -67,7 +69,7 @@ internal fun TripDetailsScreen(
 
     CollectUiEffects(viewModel.uiEffect) { effect ->
         when (effect) {
-            is TripDetailsUiEffect.NavigateBack -> onBackClick()
+            is TripDetailsUiEffect.NavigateBack -> onNavigateBack()
             is TripDetailsUiEffect.ShowErrorToast -> {
                 Toast.makeText(context, effect.error, Toast.LENGTH_LONG).show()
             }
@@ -76,10 +78,11 @@ internal fun TripDetailsScreen(
 
     TripDetailsContent(
         uiState = uiState,
-        onAddItineraryItemClick = onAddItineraryItemClick,
-        onEditItineraryItemClick = onEditItineraryItemClick,
+        onAddItineraryItemClick = onNavigateToAddItineraryItem,
+        onEditItineraryItemClick = onNavigateToEditItineraryItem,
+        onNavigateToDocumentForm = onNavigateToDocumentForm,
         onDeleteClick = { viewModel.deleteTrip(tripId) },
-        onBackClick = onBackClick
+        onBackClick = onNavigateBack
     )
 }
 
@@ -88,6 +91,7 @@ private fun TripDetailsContent(
     uiState: TripDetailsUiState,
     onAddItineraryItemClick: () -> Unit,
     onEditItineraryItemClick: (ItineraryItem) -> Unit,
+    onNavigateToDocumentForm: () -> Unit,
     onDeleteClick: () -> Unit,
     onBackClick: () -> Unit,
 ) {
@@ -107,6 +111,11 @@ private fun TripDetailsContent(
                     tripId = uiState.trip.id,
                     onAddItineraryItemClick = onAddItineraryItemClick,
                     onEditItineraryItemClick = onEditItineraryItemClick
+                )
+            },
+            documentsContent = {
+                DocumentsScreen(
+                    onNavigateToDocumentForm = onNavigateToDocumentForm
                 )
             },
             onDeleteClick = onDeleteClick,
@@ -135,6 +144,7 @@ private fun TripDetailsErrorContent(
 private fun TripDetailsSuccessContent(
     trip: Trip,
     itineraryContent: @Composable () -> Unit,
+    documentsContent: @Composable () -> Unit,
     onDeleteClick: () -> Unit,
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier
@@ -196,7 +206,7 @@ private fun TripDetailsSuccessContent(
                 when (tabs[page]) {
                     TripDetailsTabs.ITINERARY -> itineraryContent()
                     TripDetailsTabs.BUDGET -> Unit
-                    TripDetailsTabs.DOCUMENTS -> Unit
+                    TripDetailsTabs.DOCUMENTS -> documentsContent()
                 }
             }
         }
@@ -213,6 +223,7 @@ private fun TripDetailsSuccessContentPreview(
     TripDetailsSuccessContent(
         trip = uiState.trip,
         itineraryContent = {},
+        documentsContent = {},
         onDeleteClick = {},
         onBackClick = {},
         modifier = Modifier.fillMaxSize()
