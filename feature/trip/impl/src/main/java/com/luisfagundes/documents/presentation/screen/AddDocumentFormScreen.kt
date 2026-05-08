@@ -167,11 +167,10 @@ private fun AddDocumentFormContent(
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth()
             )
-            val attachment = uiState.attachment
-            if (attachment != null) {
+            if (uiState.attachment != null) {
                 AttachmentChip(
-                    fileName = attachment.displayName(),
-                    fileSize = attachment.displaySize(),
+                    fileName = uiState.attachment.displayName(),
+                    fileSize = uiState.attachment.displaySize(),
                     onRemoveClick = onAttachmentRemove,
                     modifier = Modifier.fillMaxWidth()
                 )
