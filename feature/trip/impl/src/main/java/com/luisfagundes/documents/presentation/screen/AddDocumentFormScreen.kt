@@ -1,10 +1,5 @@
 package com.luisfagundes.documents.presentation.screen
 
-import android.Manifest
-import android.content.pm.PackageManager
-import android.net.Uri
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalGridApi
@@ -18,13 +13,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.core.content.ContextCompat
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.luisfagundes.core.common.presentation.arch.compose.CollectUiEffects
@@ -36,7 +26,7 @@ import com.luisfagundes.documents.presentation.components.AttachmentSection
 import com.luisfagundes.documents.presentation.components.DocumentCategorySection
 import com.luisfagundes.documents.presentation.extensions.displayName
 import com.luisfagundes.documents.presentation.extensions.displaySize
-import com.luisfagundes.documents.presentation.extensions.createImageUri
+import com.luisfagundes.documents.presentation.tools.rememberDocumentAttachmentLaunchers
 import com.luisfagundes.documents.presentation.viewmodel.AddDocumentFormViewModel
 import com.luisfagundes.documents.presentation.viewmodel.effect.AddDocumentFormUiEffect
 import com.luisfagundes.documents.presentation.viewmodel.state.AddDocumentFormUiState
@@ -49,48 +39,21 @@ internal fun AddDocumentFormScreen(
     viewModel: AddDocumentFormViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val context = LocalContext.current
-    var pendingPhotoUri by remember { mutableStateOf<Uri?>(null) }
 
     LaunchedEffect(Unit) {
         viewModel.initForm(tripId)
     }
 
-    val cameraLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.TakePicture()
-    ) { success ->
-        if (success) {
-            pendingPhotoUri?.let { viewModel.onPhotoTaken(it) }
-        }
-    }
-
-    val cameraPermissionLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestPermission()
-    ) { granted ->
-        if (granted) {
-            val uri = createImageUri(context)
-            pendingPhotoUri = uri
-            cameraLauncher.launch(uri)
-        }
-    }
+    val attachmentLaunchers = rememberDocumentAttachmentLaunchers(
+        onPhotoTaken = viewModel::onPhotoTaken,
+        onFilePicked = viewModel::onFilePicked,
+    )
 
     CollectUiEffects(viewModel.uiEffect) { effect ->
         when (effect) {
             is AddDocumentFormUiEffect.NavigateBack -> onNavigateBack()
-            is AddDocumentFormUiEffect.LaunchCamera -> {
-                val hasCameraPermission = ContextCompat.checkSelfPermission(
-                    context,
-                    Manifest.permission.CAMERA
-                ) == PackageManager.PERMISSION_GRANTED
-                if (hasCameraPermission) {
-                    val uri = createImageUri(context)
-                    pendingPhotoUri = uri
-                    cameraLauncher.launch(uri)
-                } else {
-                    cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
-                }
-            }
-            is AddDocumentFormUiEffect.LaunchFilePicker -> Unit
+            is AddDocumentFormUiEffect.LaunchCamera -> attachmentLaunchers.launchCamera()
+            is AddDocumentFormUiEffect.LaunchFilePicker -> attachmentLaunchers.launchFilePicker()
         }
     }
 

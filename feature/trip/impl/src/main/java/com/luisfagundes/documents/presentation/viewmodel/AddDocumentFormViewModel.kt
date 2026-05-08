@@ -51,6 +51,10 @@ internal class AddDocumentFormViewModel @Inject constructor(
         setState { it.copy(attachment = Attachment.Pending(uri, AttachmentSource.Camera)) }
     }
 
+    fun onFilePicked(uri: Uri) {
+        setState { it.copy(attachment = Attachment.Pending(uri, AttachmentSource.FilePicker)) }
+    }
+
     fun onAttachmentRemove() {
         setState { it.copy(attachment = null) }
     }
