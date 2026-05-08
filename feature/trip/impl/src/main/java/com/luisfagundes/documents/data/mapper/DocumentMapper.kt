@@ -9,6 +9,9 @@ import com.luisfagundes.documents.domain.model.DocumentCategory
 import javax.inject.Inject
 import androidx.core.net.toUri
 
+private const val CAMERA_ATTACHMENT_SOURCE = "CAMERA"
+private const val FILE_PICKER_ATTACHMENT_SOURCE = "FILE_PICKER"
+
 internal class DocumentMapper @Inject constructor() {
 
     fun mapToEntity(document: Document): DocumentEntity {
@@ -51,12 +54,12 @@ internal class DocumentMapper @Inject constructor() {
     }
 
     private fun AttachmentSource.toStorageKey() = when (this) {
-        is AttachmentSource.Camera -> "CAMERA"
-        is AttachmentSource.FilePicker -> "FILE_PICKER"
+        is AttachmentSource.Camera -> CAMERA_ATTACHMENT_SOURCE
+        is AttachmentSource.FilePicker -> FILE_PICKER_ATTACHMENT_SOURCE
     }
 
     private fun String.toAttachmentSource() = when (this) {
-        "CAMERA" -> AttachmentSource.Camera
+        CAMERA_ATTACHMENT_SOURCE -> AttachmentSource.Camera
         else -> AttachmentSource.FilePicker
     }
 }
