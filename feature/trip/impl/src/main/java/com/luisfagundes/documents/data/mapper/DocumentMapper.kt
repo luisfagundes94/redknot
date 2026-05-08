@@ -7,6 +7,7 @@ import com.luisfagundes.documents.domain.model.AttachmentSource
 import com.luisfagundes.documents.domain.model.Document
 import com.luisfagundes.documents.domain.model.DocumentCategory
 import javax.inject.Inject
+import androidx.core.net.toUri
 
 internal class DocumentMapper @Inject constructor() {
 
@@ -26,7 +27,7 @@ internal class DocumentMapper @Inject constructor() {
     }
 
     fun mapToDomain(entity: DocumentEntity): Document {
-        val uri = Uri.parse(entity.attachmentUri)
+        val uri = entity.attachmentUri.toUri()
         val source = entity.attachmentSource.toAttachmentSource()
         val attachment = if (entity.attachmentFileName != null) {
             Attachment.Loaded(
