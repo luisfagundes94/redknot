@@ -49,7 +49,7 @@ android {
 
 dependencies {
     implementation(project(":core:common"))
-    implementation(project(":designsystem"))
+    implementation(project(":core:designsystem"))
     implementation(project(":feature:trip:api"))
 
     // Desugaring

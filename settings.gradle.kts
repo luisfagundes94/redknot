@@ -42,6 +42,6 @@ rootProject.name = "redknot"
 include(":app")
 include(":feature:trip:api")
 include(":feature:trip:impl")
-include(":designsystem")
 include(":core:common")
+include(":core:designsystem")
 include(":core:testing")
