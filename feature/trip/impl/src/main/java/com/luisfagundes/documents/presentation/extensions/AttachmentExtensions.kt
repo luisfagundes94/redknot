@@ -29,10 +29,13 @@ internal fun createImageUri(context: Context): Uri {
     )
 }
 
+private const val BYTES_PER_MEGABYTE = 1_048_576L
+private const val BYTES_PER_KILOBYTE = 1_024L
+
 private fun formatBytes(bytes: Long): String {
     return when {
-        bytes >= 1_048_576 -> "${bytes / 1_048_576} MB"
-        bytes >= 1_024 -> "${bytes / 1_024} KB"
+        bytes >= BYTES_PER_MEGABYTE -> "${bytes / BYTES_PER_MEGABYTE} MB"
+        bytes >= BYTES_PER_KILOBYTE -> "${bytes / BYTES_PER_KILOBYTE} KB"
         else -> "$bytes B"
     }
 }
