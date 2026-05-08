@@ -9,7 +9,7 @@ import com.luisfagundes.itinerary.domain.model.Flight
 import com.luisfagundes.itinerary.domain.model.Restaurant
 import com.luisfagundes.trip.api.presentation.navigation.AccommodationFormRoute
 import com.luisfagundes.trip.api.presentation.navigation.ActivityFormRoute
-import com.luisfagundes.trip.api.presentation.navigation.DocumentsRoute
+import com.luisfagundes.trip.api.presentation.navigation.AddDocumentFormRoute
 import com.luisfagundes.trip.api.presentation.navigation.FlightFormRoute
 import com.luisfagundes.trip.api.presentation.navigation.ItineraryItemTypePickerRoute
 import com.luisfagundes.trip.api.presentation.navigation.RestaurantFormRoute
@@ -48,7 +48,7 @@ fun EntryProviderScope<NavKey>.tripEntry(
                 }
                 navigator.navigateTo(route)
             },
-            onNavigateToDocumentForm = { navigator.navigateTo(DocumentsRoute) },
+            onNavigateToDocumentForm = { navigator.navigateTo(AddDocumentFormRoute(tripId)) },
             onNavigateBack = navigator::goBack
         )
     }

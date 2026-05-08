@@ -4,7 +4,7 @@ import androidx.navigation3.runtime.NavKey
 import kotlinx.serialization.Serializable
 
 @Serializable
-data object DocumentsRoute : NavKey
+data class DocumentsRoute(val tripId: Int) : NavKey
 
 @Serializable
-data object AddDocumentForm : NavKey
+data class AddDocumentFormRoute(val tripId: Int) : NavKey
