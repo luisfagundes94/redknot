@@ -6,6 +6,9 @@ import androidx.core.content.FileProvider
 import com.luisfagundes.documents.domain.model.Attachment
 import java.io.File
 
+private const val BYTES_PER_MEGABYTE = 1_048_576L
+private const val BYTES_PER_KILOBYTE = 1_024L
+
 internal fun Attachment.displayName(): String = when (this) {
     is Attachment.Loaded -> fileName
     is Attachment.Pending -> uri.lastPathSegment ?: "photo.jpg"
@@ -28,9 +31,6 @@ internal fun createImageUri(context: Context): Uri {
         imageFile
     )
 }
-
-private const val BYTES_PER_MEGABYTE = 1_048_576L
-private const val BYTES_PER_KILOBYTE = 1_024L
 
 private fun formatBytes(bytes: Long): String {
     return when {
