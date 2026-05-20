@@ -50,30 +50,7 @@ fun RedknotApp(
     )
     val navigator = remember { Navigator(navigationState) }
 
-    Scaffold(
-        modifier = modifier,
-        bottomBar = {
-            if (navigationState.isCurrentRouteTopLevel.not()) return@Scaffold
-
-            NavigationBar(
-                windowInsets = NavigationBarDefaults.windowInsets
-            ) {
-                TopLevelDestinations.entries.forEach { entry ->
-                    NavigationBarItem(
-                        label = { Text(entry.label) },
-                        icon = {
-                            Icon(
-                                imageVector = entry.icon,
-                                contentDescription = entry.label
-                            )
-                        },
-                        selected = entry.route == navigationState.currentTopLevelRoute,
-                        onClick = { navigator.navigateTo(entry.route) },
-                    )
-                }
-            }
-        }
-    ) { innerPadding ->
+    Scaffold(modifier) { innerPadding ->
         AppNavDisplay(
             navigationState = navigationState,
             navigator = navigator,
