@@ -81,7 +81,7 @@ private fun AttachmentCard(
     Column(
         modifier = modifier
             .clip(shape)
-            .background(MaterialTheme.colorScheme.surfaceVariant)
+            .background(MaterialTheme.colorScheme.surfaceContainer)
             .dashedBorder(color = borderColor, cornerRadius = 12.dp)
             .clickable(onClick = onClick)
             .padding(MaterialTheme.spacing.default),
