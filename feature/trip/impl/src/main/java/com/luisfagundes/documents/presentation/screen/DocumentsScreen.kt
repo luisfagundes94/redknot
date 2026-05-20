@@ -11,8 +11,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Description
 import androidx.compose.material3.Button
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -68,7 +70,8 @@ internal fun DocumentsScreen(
 
         is DocumentsUiState.Content -> DocumentsContent(
             modifier = Modifier.fillMaxSize(),
-            documentsByCategory = (uiState as DocumentsUiState.Content).documentsByCategory
+            documentsByCategory = (uiState as DocumentsUiState.Content).documentsByCategory,
+            onAddDocumentClick = viewModel::navigateToDocumentForm
         )
     }
 }
@@ -117,31 +120,46 @@ private fun DocumentEmptyContent(
 @Composable
 private fun DocumentsContent(
     documentsByCategory: Map<DocumentCategory, List<Document>>,
+    onAddDocumentClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val totalFilesSize = documentsByCategory.values.flatten().map { document ->
         document.attachment
     }.displayTotalSize()
 
-    LazyColumn(
+    Scaffold(
         modifier = modifier,
-        contentPadding = PaddingValues(MaterialTheme.spacing.default),
-        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.default)
-    ) {
-        item {
-            Text(
-                text = stringResource(R.string.documents_size, totalFilesSize),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-        }
-        documentsByCategory.forEach { (category, documents) ->
-            item(key = category.name) {
-                DocumentListSection(
-                    category = category,
-                    documents = documents,
-                    modifier = Modifier.fillParentMaxWidth()
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = onAddDocumentClick
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = stringResource(R.string.add_document_description)
                 )
+            }
+        }
+    ) { scaffoldPadding ->
+        LazyColumn(
+            modifier = Modifier.padding(scaffoldPadding),
+            contentPadding = PaddingValues(MaterialTheme.spacing.default),
+            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.default)
+        ) {
+            item {
+                Text(
+                    text = stringResource(R.string.documents_size, totalFilesSize),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+            documentsByCategory.forEach { (category, documents) ->
+                item(key = category.name) {
+                    DocumentListSection(
+                        category = category,
+                        documents = documents,
+                        modifier = Modifier.fillParentMaxWidth()
+                    )
+                }
             }
         }
     }
