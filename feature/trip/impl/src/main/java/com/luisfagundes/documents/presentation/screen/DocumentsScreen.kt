@@ -1,18 +1,25 @@
-    package com.luisfagundes.documents.presentation.screen
+package com.luisfagundes.documents.presentation.screen
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Description
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -22,7 +29,11 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.luisfagundes.core.common.presentation.arch.compose.CollectUiEffects
+import com.luisfagundes.designsystem.components.RedknotLoadingTemplate
 import com.luisfagundes.designsystem.theme.spacing
+import com.luisfagundes.documents.domain.model.Document
+import com.luisfagundes.documents.domain.model.DocumentCategory
+import com.luisfagundes.documents.presentation.extensions.displayTotalSize
 import com.luisfagundes.documents.presentation.viewmodel.DocumentsViewModel
 import com.luisfagundes.documents.presentation.viewmodel.effect.DocumentsUiEffect
 import com.luisfagundes.documents.presentation.viewmodel.state.DocumentsUiState
@@ -30,6 +41,7 @@ import com.luisfagundes.trip.R
 
 @Composable
 internal fun DocumentsScreen(
+    tripId: Int,
     onNavigateToDocumentForm: () -> Unit,
     viewModel: DocumentsViewModel = hiltViewModel()
 ) {
@@ -41,13 +53,26 @@ internal fun DocumentsScreen(
         }
     }
 
+    LaunchedEffect(Unit) {
+        viewModel.getDocuments(tripId)
+    }
+
     when (uiState) {
-        is DocumentsUiState.Loading -> Unit
+        is DocumentsUiState.Loading -> RedknotLoadingTemplate(
+            modifier = Modifier.fillMaxSize()
+        )
+
         is DocumentsUiState.Empty -> DocumentEmptyContent(
-            modifier = Modifier.fillMaxSize().padding(MaterialTheme.spacing.default),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(MaterialTheme.spacing.default),
             onAddDocumentClick = viewModel::navigateToDocumentForm
         )
-        is DocumentsUiState.Content -> Unit
+
+        is DocumentsUiState.Content -> DocumentsContent(
+            modifier = Modifier.fillMaxSize(),
+            documentsByCategory = (uiState as DocumentsUiState.Content).documentsByCategory
+        )
     }
 }
 
@@ -88,6 +113,38 @@ private fun DocumentEmptyContent(
             Text(
                 text = stringResource(R.string.add_first_document_btn_label)
             )
+        }
+    }
+}
+
+@Composable
+private fun DocumentsContent(
+    documentsByCategory: Map<DocumentCategory, List<Document>>,
+    modifier: Modifier = Modifier
+) {
+    val totalFilesSize = documentsByCategory.values.flatten().map { document ->
+        document.attachment
+    }.displayTotalSize()
+
+    LazyColumn(
+        modifier = modifier,
+        contentPadding = PaddingValues(MaterialTheme.spacing.default)
+    ) {
+        item {
+            Text(
+                text = stringResource(R.string.documents_size, totalFilesSize)
+            )
+        }
+        documentsByCategory.forEach { (category, documents) ->
+            item(key = category.name) {
+                Text(
+                    text = category.name,
+                    modifier = Modifier.padding(vertical = MaterialTheme.spacing.small)
+                )
+            }
+            items(documents) { document ->
+
+            }
         }
     }
 }

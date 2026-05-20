@@ -13,7 +13,10 @@ fun EntryProviderScope<NavKey>.documentsEntry(
 ) {
     entry<DocumentsRoute> { key ->
         DocumentsScreen(
-            onNavigateToDocumentForm = { navigator.navigateTo(AddDocumentFormRoute(key.tripId)) }
+            tripId = key.tripId,
+            onNavigateToDocumentForm = {
+                navigator.navigateTo(AddDocumentFormRoute(key.tripId))
+            }
         )
     }
     entry<AddDocumentFormRoute> { key ->

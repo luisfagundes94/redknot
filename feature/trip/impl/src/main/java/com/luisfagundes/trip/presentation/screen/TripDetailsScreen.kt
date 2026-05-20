@@ -115,6 +115,7 @@ private fun TripDetailsContent(
             },
             documentsContent = {
                 DocumentsScreen(
+                    tripId = uiState.trip.id,
                     onNavigateToDocumentForm = onNavigateToDocumentForm
                 )
             },
@@ -200,8 +201,7 @@ private fun TripDetailsSuccessContent(
                 modifier = Modifier.fillMaxWidth()
             )
             HorizontalPager(
-                state = pagerState,
-                modifier = Modifier.weight(1f)
+                state = pagerState
             ) { page ->
                 when (tabs[page]) {
                     TripDetailsTabs.ITINERARY -> itineraryContent()
