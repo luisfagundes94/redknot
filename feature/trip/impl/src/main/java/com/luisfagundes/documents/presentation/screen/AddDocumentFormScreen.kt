@@ -125,8 +125,7 @@ private fun AddDocumentFormContent(
             OutlinedTextField(
                 value = uiState.description,
                 onValueChange = onDescriptionChange,
-                label = { Text(stringResource(R.string.description)) },
-                placeholder = { Text(stringResource(R.string.document_placeholder_title)) },
+                label = { Text(stringResource(R.string.optional_description)) },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth()
             )

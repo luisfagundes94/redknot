@@ -127,6 +127,7 @@
     <string name="add_first_document_btn_label">Add first document</string>
     <string name="title">Title</string>
     <string name="description">Description</string>
+    <string name="optional_description">Description (Optional)</string>
     <string name="document_placeholder_title">e.g Passport, Id, Flight Ticket</string>
     <string name="document_placeholder_description">e.g My EU passport</string>
     <string name="id">ID</string>
