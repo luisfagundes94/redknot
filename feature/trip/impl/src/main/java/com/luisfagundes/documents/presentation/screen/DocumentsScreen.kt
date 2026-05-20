@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Description
@@ -30,6 +29,7 @@ import com.luisfagundes.designsystem.components.RedknotLoadingTemplate
 import com.luisfagundes.designsystem.theme.spacing
 import com.luisfagundes.documents.domain.model.Document
 import com.luisfagundes.documents.domain.model.DocumentCategory
+import com.luisfagundes.documents.presentation.components.DocumentListSection
 import com.luisfagundes.documents.presentation.extensions.displayTotalSize
 import com.luisfagundes.documents.presentation.viewmodel.DocumentsViewModel
 import com.luisfagundes.documents.presentation.viewmodel.effect.DocumentsUiEffect
@@ -125,22 +125,23 @@ private fun DocumentsContent(
 
     LazyColumn(
         modifier = modifier,
-        contentPadding = PaddingValues(MaterialTheme.spacing.default)
+        contentPadding = PaddingValues(MaterialTheme.spacing.default),
+        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.default)
     ) {
         item {
             Text(
-                text = stringResource(R.string.documents_size, totalFilesSize)
+                text = stringResource(R.string.documents_size, totalFilesSize),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
         documentsByCategory.forEach { (category, documents) ->
             item(key = category.name) {
-                Text(
-                    text = category.name,
-                    modifier = Modifier.padding(vertical = MaterialTheme.spacing.small)
+                DocumentListSection(
+                    category = category,
+                    documents = documents,
+                    modifier = Modifier.fillParentMaxWidth()
                 )
-            }
-            items(documents) { document ->
-
             }
         }
     }
