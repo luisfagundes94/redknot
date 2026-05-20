@@ -33,7 +33,6 @@ import com.luisfagundes.designsystem.theme.spacing
 import com.luisfagundes.documents.domain.model.Document
 import com.luisfagundes.documents.domain.model.DocumentCategory
 import com.luisfagundes.documents.presentation.components.DocumentListSection
-import com.luisfagundes.documents.presentation.extensions.displayTotalSize
 import com.luisfagundes.documents.presentation.viewmodel.DocumentsViewModel
 import com.luisfagundes.documents.presentation.viewmodel.effect.DocumentsUiEffect
 import com.luisfagundes.documents.presentation.viewmodel.state.DocumentsUiState
@@ -124,10 +123,6 @@ private fun DocumentsContent(
     onAddDocumentClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val totalFilesSize = documentsByCategory.values.flatten().map { document ->
-        document.attachment
-    }.displayTotalSize()
-
     Scaffold(
         modifier = modifier,
         contentWindowInsets = WindowInsets(),
@@ -147,13 +142,6 @@ private fun DocumentsContent(
             contentPadding = PaddingValues(MaterialTheme.spacing.default),
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.default)
         ) {
-            item {
-                Text(
-                    text = stringResource(R.string.documents_size, totalFilesSize),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
             documentsByCategory.forEach { (category, documents) ->
                 item(key = category.name) {
                     DocumentListSection(

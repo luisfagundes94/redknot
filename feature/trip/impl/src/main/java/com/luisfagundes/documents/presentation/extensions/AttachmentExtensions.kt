@@ -14,17 +14,6 @@ internal fun Attachment.displayName(): String = when (this) {
     is Attachment.Pending -> uri.lastPathSegment ?: "photo.jpg"
 }
 
-internal fun List<Attachment>.displayTotalSize(): String {
-    val total = this.map { attachment ->
-        if (attachment is Attachment.Loaded) {
-            attachment.sizeInBytes
-        } else {
-            0L
-        }
-    }
-    return formatBytes(total.sum())
-}
-
 internal fun Attachment.displaySize(): String = when (this) {
     is Attachment.Loaded -> formatBytes(sizeInBytes)
     is Attachment.Pending -> {
