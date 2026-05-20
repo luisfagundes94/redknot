@@ -237,7 +237,7 @@ private fun FlightFormContent(
                 hasError = uiState.dateError != null,
                 supportingText = { uiState.dateError?.let { Text(it.toMessage(context)) } },
                 onDateSelect = onDateChange,
-                initialDisplayedMonth = uiState.tripStartDate,
+                startDate = uiState.tripStartDate,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = MaterialTheme.spacing.default)

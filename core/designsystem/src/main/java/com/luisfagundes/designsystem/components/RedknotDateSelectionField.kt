@@ -37,7 +37,7 @@ fun RedknotDateSelectionField(
     onDateSelect: (LocalDate?) -> Unit,
     supportingText: @Composable (() -> Unit)?,
     modifier: Modifier = Modifier,
-    initialDisplayedMonth: LocalDate? = null,
+    startDate: LocalDate? = null,
 ) {
     var showDatePicker by remember { mutableStateOf(false) }
 
@@ -65,8 +65,7 @@ fun RedknotDateSelectionField(
 
     if (showDatePicker) {
         val datePickerState = rememberDatePickerState(
-            initialSelectedDateMillis = date?.toTimestampMillis(),
-            initialDisplayedMonthMillis = (date ?: initialDisplayedMonth)?.toTimestampMillis(),
+            initialSelectedDateMillis = (startDate ?: date)?.toTimestampMillis(),
         )
         DatePickerDialog(
             confirmButton = {

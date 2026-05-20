@@ -197,7 +197,7 @@ private fun AccommodationFormContent(
                 hasError = uiState.dateError != null,
                 supportingText = { uiState.dateError?.let { Text(it.toMessage(context)) } },
                 onDateSelect = onDateChange,
-                initialDisplayedMonth = uiState.tripStartDate,
+                startDate = uiState.tripStartDate,
                 modifier = Modifier.fillMaxWidth()
             )
             TimeSelectionField(

@@ -146,6 +146,7 @@ private fun TripFormContent(
             )
             RedknotDateSelectionField(
                 date = uiState.endDate,
+                startDate = uiState.startDate,
                 label = stringResource(R.string.end_date_label),
                 placeholder = stringResource(R.string.end_date_placeholder),
                 hasError = uiState.endDateError != null,
