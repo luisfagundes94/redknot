@@ -124,10 +124,6 @@ private fun DocumentsContent(
     onAddDocumentClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val totalFilesSize = documentsByCategory.values.flatten().map { document ->
-        document.attachment
-    }.displayTotalSize()
-
     Scaffold(
         modifier = modifier,
         contentWindowInsets = WindowInsets(),
@@ -147,13 +143,6 @@ private fun DocumentsContent(
             contentPadding = PaddingValues(MaterialTheme.spacing.default),
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.default)
         ) {
-            item {
-                Text(
-                    text = stringResource(R.string.documents_size, totalFilesSize),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
             documentsByCategory.forEach { (category, documents) ->
                 item(key = category.name) {
                     DocumentListSection(
