@@ -4,10 +4,10 @@ import android.net.Uri
 import androidx.lifecycle.viewModelScope
 import com.luisfagundes.core.common.di.IoDispatcher
 import com.luisfagundes.core.common.presentation.arch.viewmodel.ViewModel
-import com.luisfagundes.documents.domain.model.Attachment
 import com.luisfagundes.documents.domain.model.AttachmentSource
 import com.luisfagundes.documents.domain.model.Document
 import com.luisfagundes.documents.domain.model.DocumentCategory
+import com.luisfagundes.documents.domain.usecase.ResolveAttachmentUseCase
 import com.luisfagundes.documents.domain.usecase.SaveDocumentUseCase
 import com.luisfagundes.documents.presentation.viewmodel.effect.AddDocumentFormUiEffect
 import com.luisfagundes.documents.presentation.viewmodel.state.AddDocumentFormUiState
@@ -19,6 +19,7 @@ import javax.inject.Inject
 @HiltViewModel
 internal class AddDocumentFormViewModel @Inject constructor(
     private val saveDocumentUseCase: SaveDocumentUseCase,
+    private val resolveAttachmentUseCase: ResolveAttachmentUseCase,
     @param:IoDispatcher private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel<AddDocumentFormUiState, AddDocumentFormUiEffect>(
     initialState = AddDocumentFormUiState()
@@ -48,11 +49,17 @@ internal class AddDocumentFormViewModel @Inject constructor(
     }
 
     fun onPhotoTaken(uri: Uri) {
-        setState { it.copy(attachment = Attachment.Pending(uri, AttachmentSource.Camera)) }
+        viewModelScope.launch(ioDispatcher) {
+            val attachment = resolveAttachmentUseCase(uri, AttachmentSource.Camera)
+            setState { it.copy(attachment = attachment) }
+        }
     }
 
     fun onFilePicked(uri: Uri) {
-        setState { it.copy(attachment = Attachment.Pending(uri, AttachmentSource.FilePicker)) }
+        viewModelScope.launch(ioDispatcher) {
+            val attachment = resolveAttachmentUseCase(uri, AttachmentSource.FilePicker)
+            setState { it.copy(attachment = attachment) }
+        }
     }
 
     fun onAttachmentRemove() {
