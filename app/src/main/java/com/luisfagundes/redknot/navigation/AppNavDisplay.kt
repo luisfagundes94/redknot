@@ -7,31 +7,36 @@ import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
+import androidx.navigation3.runtime.NavBackStack
+import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
+import androidx.navigation3.runtime.rememberDecoratedNavEntries
+import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
-import com.luisfagundes.core.common.presentation.navigation.NavigationState
-import com.luisfagundes.core.common.presentation.navigation.Navigator
-import com.luisfagundes.core.common.presentation.navigation.toEntries
-import com.luisfagundes.documents.presentation.navigation.documentsEntry
-import com.luisfagundes.itinerary.presentation.navigation.itineraryEntry
-import com.luisfagundes.trip.presentation.navigation.tripEntry
+import com.luisfagundes.trip.presentation.navigation.tripFeatureEntries
 
 @Composable
 fun AppNavDisplay(
-    navigationState: NavigationState,
-    navigator: Navigator,
+    backStack: NavBackStack<NavKey>,
     modifier: Modifier = Modifier
 ) {
     val entryProvider = entryProvider {
-        tripEntry(navigator)
-        itineraryEntry(navigator)
-        documentsEntry(navigator)
+        tripFeatureEntries(
+            navigateTo = backStack::navigateTo,
+            goBack = backStack::goBack,
+        )
     }
+
+    val decorators = listOf(
+        rememberSaveableStateHolderNavEntryDecorator<NavKey>(),
+        rememberViewModelStoreNavEntryDecorator<NavKey>(),
+    )
 
     NavDisplay(
         modifier = modifier,
-        entries = navigationState.toEntries(entryProvider),
-        onBack = navigator::goBack,
+        entries = rememberDecoratedNavEntries(backStack, decorators, entryProvider),
+        onBack = { backStack.goBack() },
         transitionSpec = { slideForward() },
         popTransitionSpec = { slideBackward() },
         predictivePopTransitionSpec = { slideBackward() }

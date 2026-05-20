@@ -1,31 +1,31 @@
-package com.luisfagundes.trip.api.presentation.navigation
+package com.luisfagundes.itinerary.presentation.navigation
 
 import androidx.navigation3.runtime.NavKey
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class ItineraryItemTypePickerRoute(val tripId: Int) : NavKey
+internal data class ItineraryItemTypePickerRoute(val tripId: Int) : NavKey
 
 @Serializable
-data class ActivityFormRoute(
+internal data class ActivityFormRoute(
     val tripId: Int,
     val itineraryItemId: String? = null,
 ) : NavKey
 
 @Serializable
-data class AccommodationFormRoute(
+internal data class AccommodationFormRoute(
     val tripId: Int,
     val itineraryItemId: String? = null,
 ) : NavKey
 
 @Serializable
-data class FlightFormRoute(
+internal data class FlightFormRoute(
     val tripId: Int,
     val itineraryItemId: String? = null,
 ) : NavKey
 
 @Serializable
-data class RestaurantFormRoute(
+internal data class RestaurantFormRoute(
     val tripId: Int,
     val itineraryItemId: String? = null,
 ) : NavKey

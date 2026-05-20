@@ -7,18 +7,10 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarDefaults
-import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import com.luisfagundes.core.common.presentation.navigation.Navigator
-import com.luisfagundes.core.common.presentation.navigation.rememberNavigationState
+import androidx.navigation3.runtime.rememberNavBackStack
 import com.luisfagundes.designsystem.theme.RedknotTheme
 import com.luisfagundes.redknot.navigation.AppNavDisplay
 import com.luisfagundes.redknot.navigation.TopLevelDestinations
@@ -39,21 +31,15 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RedknotApp(
     modifier: Modifier = Modifier
 ) {
-    val navigationState = rememberNavigationState(
-        startRoute = TopLevelDestinations.TRIP_LIST.route,
-        topLevelRoutes = TopLevelDestinations.entries.map { it.route }.toSet()
-    )
-    val navigator = remember { Navigator(navigationState) }
+    val backStack = rememberNavBackStack(TopLevelDestinations.TRIP_LIST.route)
 
     Scaffold(modifier) { innerPadding ->
         AppNavDisplay(
-            navigationState = navigationState,
-            navigator = navigator,
+            backStack = backStack,
             modifier = Modifier
                 .padding(innerPadding)
                 .consumeWindowInsets(innerPadding)
