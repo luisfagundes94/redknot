@@ -19,7 +19,7 @@ import com.luisfagundes.trip.presentation.screen.TripListScreen
 
 internal fun EntryProviderScope<NavKey>.tripEntries(
     navigateTo: (NavKey) -> Unit,
-    goBack: (Int) -> Unit,
+    goBack: () -> Unit,
 ) {
     entry<TripListRoute> {
         TripListScreen(
@@ -29,7 +29,7 @@ internal fun EntryProviderScope<NavKey>.tripEntries(
     }
     entry<TripCreationRoute> {
         TripFormScreen(
-            onBackClick = { goBack(1) }
+            onBackClick = { goBack() }
         )
     }
     entry<TripDetailsRoute> { key ->
@@ -47,7 +47,7 @@ internal fun EntryProviderScope<NavKey>.tripEntries(
                 navigateTo(route)
             },
             onNavigateToDocumentForm = { navigateTo(AddDocumentFormRoute(tripId)) },
-            onNavigateBack = { goBack(1) }
+            onNavigateBack = { goBack() }
         )
     }
 }

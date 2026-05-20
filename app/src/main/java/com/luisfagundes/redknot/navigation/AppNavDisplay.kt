@@ -24,7 +24,8 @@ fun AppNavDisplay(
     val entryProvider = entryProvider {
         tripFeatureEntries(
             navigateTo = backStack::navigateTo,
-            goBack = backStack::goBack,
+            goBack = { backStack.goBack() },
+            popBackTo = backStack::popBackTo,
         )
     }
 

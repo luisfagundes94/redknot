@@ -7,7 +7,7 @@ import com.luisfagundes.documents.presentation.screen.DocumentsScreen
 
 internal fun EntryProviderScope<NavKey>.documentsEntries(
     navigateTo: (NavKey) -> Unit,
-    goBack: (Int) -> Unit,
+    goBack: () -> Unit,
 ) {
     entry<DocumentsRoute> { key ->
         DocumentsScreen(
@@ -18,7 +18,7 @@ internal fun EntryProviderScope<NavKey>.documentsEntries(
     entry<AddDocumentFormRoute> { key ->
         AddDocumentFormScreen(
             tripId = key.tripId,
-            onNavigateBack = { goBack(1) }
+            onNavigateBack = { goBack() }
         )
     }
 }
