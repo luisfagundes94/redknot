@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
@@ -29,8 +31,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -106,6 +111,7 @@ private fun AccommodationFormContent(
     onBackClick: () -> Unit
 ) {
     val context = LocalContext.current
+    val focusManager = LocalFocusManager.current
     var showDeleteDialog by rememberSaveable { mutableStateOf(false) }
 
     if (showDeleteDialog) {
@@ -150,6 +156,12 @@ private fun AccommodationFormContent(
                 singleLine = true,
                 isError = uiState.nameError != null,
                 supportingText = { uiState.nameError?.let { Text(it.toMessage(context)) } },
+                keyboardOptions = KeyboardOptions(
+                    imeAction = ImeAction.Next
+                ),
+                keyboardActions = KeyboardActions(
+                    onNext = { focusManager.moveFocus(FocusDirection.Down) }
+                ),
                 modifier = Modifier.fillMaxWidth()
             )
             OutlinedTextField(
