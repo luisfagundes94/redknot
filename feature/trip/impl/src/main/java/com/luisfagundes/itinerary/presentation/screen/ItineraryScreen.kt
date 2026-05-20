@@ -108,7 +108,7 @@ private fun ItineraryTimelineContent(
 ) {
     Scaffold(
         modifier = modifier,
-        contentWindowInsets = WindowInsets(0),
+        contentWindowInsets = WindowInsets(),
         floatingActionButton = {
             FloatingActionButton(
                 onClick = onAddItem
