@@ -4,6 +4,7 @@ import androidx.lifecycle.viewModelScope
 import com.luisfagundes.budget.domain.model.Expense
 import com.luisfagundes.budget.domain.model.ExpenseCategory
 import com.luisfagundes.budget.domain.usecase.AddExpenseUseCase
+import com.luisfagundes.budget.domain.usecase.GetBudgetCurrencyUseCase
 import com.luisfagundes.budget.presentation.viewmodel.effect.AddExpenseFormUiEffect
 import com.luisfagundes.budget.presentation.viewmodel.state.AddExpenseFormUiState
 import com.luisfagundes.common.domain.model.errorOrNull
@@ -14,7 +15,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.math.BigDecimal
 import java.time.LocalDate
 import javax.inject.Inject
 
@@ -22,13 +22,28 @@ import javax.inject.Inject
 internal class AddExpenseFormViewModel @Inject constructor(
     private val addExpenseUseCase: AddExpenseUseCase,
     private val validateDateUseCase: ValidateDateUseCase,
+    private val getBudgetCurrencyUseCase: GetBudgetCurrencyUseCase,
     @param:IoDispatcher private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : ViewModel<AddExpenseFormUiState, AddExpenseFormUiEffect>(
     initialState = AddExpenseFormUiState()
 ) {
-    fun onAmountChange(amount: BigDecimal) {
+    private var tripId: Int = 0
+
+    fun setTripId(tripId: Int) {
+        this.tripId = tripId
+        viewModelScope.launch(dispatcher) {
+            getBudgetCurrencyUseCase(tripId).fold(
+                onSuccess = { currency ->
+                    setState { currentState -> currentState.copy(currencySymbol = currency.symbol) }
+                },
+                onFailure = { /* keep default EUR */ }
+            )
+        }
+    }
+
+    fun onAmountChange(text: String) {
         setState { currentState ->
-            currentState.copy(amount = amount)
+            currentState.copy(amountText = text)
         }
     }
 
@@ -54,7 +69,7 @@ internal class AddExpenseFormViewModel @Inject constructor(
     }
 
     fun onAddExpenseClick() = viewModelScope.launch(dispatcher) {
-        addExpenseUseCase(createExpense()).fold(
+        addExpenseUseCase(tripId, createExpense()).fold(
             onSuccess = { sendEffect { AddExpenseFormUiEffect.NavigateBack } },
             onFailure = { sendEffect { AddExpenseFormUiEffect.ShowErrorToast(it.toString()) }}
         )
@@ -63,12 +78,12 @@ internal class AddExpenseFormViewModel @Inject constructor(
     fun onBackClick() {
         sendEffect { AddExpenseFormUiEffect.NavigateBack }
     }
-    
+
     private fun createExpense(): Expense {
         val state = getCurrentState()
 
         return Expense(
-            amount = state.amount,
+            amount = state.parsedAmount,
             category = state.selectedCategory,
             date = state.selectedDate ?: LocalDate.now(),
             description = state.description

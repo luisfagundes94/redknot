@@ -1,5 +1,6 @@
 package com.luisfagundes.trip.domain.model
 
+import java.math.BigDecimal
 import java.time.LocalDate
 
 internal data class Trip(
@@ -9,5 +10,6 @@ internal data class Trip(
     val imageUrl: String,
     val title: String,
     val location: String,
-    val status: TripStatus
+    val status: TripStatus,
+    val totalBudget: BigDecimal? = null
 )

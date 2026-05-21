@@ -37,6 +37,7 @@ import com.luisfagundes.designsystem.components.RedknotTopBar
 import com.luisfagundes.designsystem.theme.RedknotPreview
 import com.luisfagundes.designsystem.theme.RedknotThemeWrapper
 import com.luisfagundes.designsystem.theme.spacing
+import com.luisfagundes.budget.presentation.screen.BudgetScreen
 import com.luisfagundes.documents.presentation.screen.DocumentsScreen
 import com.luisfagundes.itinerary.domain.model.ItineraryItem
 import com.luisfagundes.itinerary.presentation.screen.ItineraryScreen
@@ -58,6 +59,7 @@ internal fun TripDetailsScreen(
     onNavigateToEditItineraryItem: (ItineraryItem) -> Unit,
     onNavigateToDocumentForm: () -> Unit,
     onNavigateToDocumentDetail: (Int) -> Unit,
+    onNavigateToAddExpense: () -> Unit,
     onNavigateBack: () -> Unit,
     viewModel: TripDetailsViewModel = hiltViewModel()
 ) {
@@ -86,6 +88,7 @@ internal fun TripDetailsScreen(
         onEditItineraryItemClick = onNavigateToEditItineraryItem,
         onNavigateToDocumentForm = onNavigateToDocumentForm,
         onNavigateToDocumentDetail = onNavigateToDocumentDetail,
+        onNavigateToAddExpense = onNavigateToAddExpense,
         onDeleteClick = { viewModel.deleteTrip(tripId) },
         onBackClick = onNavigateBack
     )
@@ -100,6 +103,7 @@ private fun TripDetailsContent(
     onEditItineraryItemClick: (ItineraryItem) -> Unit,
     onNavigateToDocumentForm: () -> Unit,
     onNavigateToDocumentDetail: (Int) -> Unit,
+    onNavigateToAddExpense: () -> Unit,
     onDeleteClick: () -> Unit,
     onBackClick: () -> Unit,
 ) {
@@ -121,6 +125,12 @@ private fun TripDetailsContent(
                     tripId = uiState.trip.id,
                     onAddItineraryItemClick = onAddItineraryItemClick,
                     onEditItineraryItemClick = onEditItineraryItemClick
+                )
+            },
+            budgetContent = {
+                BudgetScreen(
+                    tripId = uiState.trip.id,
+                    onNavigateToAddExpense = onNavigateToAddExpense
                 )
             },
             documentsContent = {
@@ -158,6 +168,7 @@ private fun TripDetailsSuccessContent(
     initialTabIndex: Int,
     onTabSelected: (Int) -> Unit,
     itineraryContent: @Composable () -> Unit,
+    budgetContent: @Composable () -> Unit,
     documentsContent: @Composable () -> Unit,
     onDeleteClick: () -> Unit,
     onBackClick: () -> Unit,
@@ -222,7 +233,7 @@ private fun TripDetailsSuccessContent(
             ) { page ->
                 when (tabs[page]) {
                     TripDetailsTabs.ITINERARY -> itineraryContent()
-                    TripDetailsTabs.BUDGET -> Unit
+                    TripDetailsTabs.BUDGET -> budgetContent()
                     TripDetailsTabs.DOCUMENTS -> documentsContent()
                 }
             }
@@ -242,6 +253,7 @@ private fun TripDetailsSuccessContentPreview(
         initialTabIndex = 0,
         onTabSelected = {},
         itineraryContent = {},
+        budgetContent = {},
         documentsContent = {},
         onDeleteClick = {},
         onBackClick = {},

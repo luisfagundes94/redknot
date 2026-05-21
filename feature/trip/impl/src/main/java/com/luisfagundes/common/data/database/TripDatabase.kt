@@ -3,6 +3,8 @@ package com.luisfagundes.common.data.database
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import com.luisfagundes.budget.data.dao.ExpenseDao
+import com.luisfagundes.budget.data.model.ExpenseEntity
 import com.luisfagundes.documents.data.dao.DocumentDao
 import com.luisfagundes.documents.data.model.DocumentEntity
 import com.luisfagundes.itinerary.data.dao.AccommodationDao
@@ -27,9 +29,10 @@ import com.luisfagundes.trip.data.model.TripEntity
         AccommodationEntity::class,
         RestaurantEntity::class,
         ActivityEntity::class,
-        DocumentEntity::class
+        DocumentEntity::class,
+        ExpenseEntity::class
     ],
-    version = 6,
+    version = 8,
     exportSchema = false
 )
 @TypeConverters(
@@ -45,4 +48,5 @@ internal abstract class TripDatabase : RoomDatabase() {
     abstract fun restaurantDao(): RestaurantDao
     abstract fun activityDao(): ActivityDao
     abstract fun documentDao(): DocumentDao
+    abstract fun expenseDao(): ExpenseDao
 }

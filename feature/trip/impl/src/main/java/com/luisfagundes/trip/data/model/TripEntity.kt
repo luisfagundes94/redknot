@@ -12,5 +12,7 @@ internal data class TripEntity(
     @ColumnInfo("end_date") val endDate: LocalDate,
     @ColumnInfo("image_url") val imageUrl: String,
     @ColumnInfo("title") val title: String,
-    @ColumnInfo("location") val location: String
+    @ColumnInfo("location") val location: String,
+    @ColumnInfo("total_budget") val totalBudget: String? = null,
+    @ColumnInfo("currency") val currency: String = "EUR"
 )

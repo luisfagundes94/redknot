@@ -3,6 +3,7 @@ package com.luisfagundes.trip.data.mapper
 import com.luisfagundes.trip.data.model.TripEntity
 import com.luisfagundes.trip.domain.model.Trip
 import com.luisfagundes.trip.domain.model.TripStatus
+import java.math.BigDecimal
 import javax.inject.Inject
 
 internal class TripMapper @Inject constructor() {
@@ -13,7 +14,8 @@ internal class TripMapper @Inject constructor() {
             endDate = trip.endDate,
             imageUrl = trip.imageUrl,
             title = trip.title,
-            location = trip.location
+            location = trip.location,
+            totalBudget = trip.totalBudget?.toPlainString()
         )
     }
 
@@ -25,7 +27,8 @@ internal class TripMapper @Inject constructor() {
             imageUrl = tripEntity.imageUrl,
             title = tripEntity.title,
             location = tripEntity.location,
-            status = TripStatus.UNSCHEDULED
+            status = TripStatus.UNSCHEDULED,
+            totalBudget = tripEntity.totalBudget?.let { BigDecimal(it) }
         )
     }
 }

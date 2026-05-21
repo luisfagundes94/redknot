@@ -4,8 +4,9 @@ import com.luisfagundes.budget.domain.model.Expense
 import com.luisfagundes.budget.domain.repository.BudgetRepository
 import javax.inject.Inject
 
-internal class AddExpenseUseCase @Inject constructor(
+internal class DeleteExpenseUseCase @Inject constructor(
     private val repository: BudgetRepository
 ) {
-    suspend operator fun invoke(tripId: Int, expense: Expense) = repository.addExpense(tripId, expense)
+    suspend operator fun invoke(tripId: Int, expense: Expense): Result<Unit> =
+        repository.deleteExpense(tripId, expense)
 }

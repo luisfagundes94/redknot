@@ -152,4 +152,16 @@
     <string name="delete_document_dialog_message">This will permanently remove this document.</string>
     <string name="show_file_btn_label">Open file</string>
     <string name="no_app_to_open_file">No app found to open this file</string>
+    <!-- Budget -->
+    <string name="budget_onboarding_message">Start tracking your trip expenses by setting a budget</string>
+    <string name="set_budget">Set Budget</string>
+    <string name="set_budget_title">Set your trip budget</string>
+    <string name="confirm">Confirm</string>
+    <string name="total_budget">Total Budget</string>
+    <string name="spent">Spent</string>
+    <string name="remaining">Remaining</string>
+    <string name="no_expenses_yet">No expenses yet. Tap + to log your first expense.</string>
+    <string name="budget_amount_placeholder">0.00</string>
+    <string name="currency_picker_label">Currency</string>
+    <string name="delete_expense">Delete expense</string>
 </resources>

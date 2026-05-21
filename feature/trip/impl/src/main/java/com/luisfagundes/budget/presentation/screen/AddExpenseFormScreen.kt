@@ -21,6 +21,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -44,16 +45,20 @@ import com.luisfagundes.designsystem.theme.RedknotPreview
 import com.luisfagundes.designsystem.theme.RedknotThemeWrapper
 import com.luisfagundes.designsystem.theme.spacing
 import com.luisfagundes.trip.R
-import java.math.BigDecimal
 import java.time.LocalDate
 
 @Composable
 internal fun AddExpenseFormScreen(
+    tripId: Int,
     onNavigateBack: () -> Unit,
     viewModel: AddExpenseFormViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) {
+        viewModel.setTripId(tripId)
+    }
 
     CollectUiEffects(viewModel.uiEffect) { effect ->
         when (effect) {
@@ -79,7 +84,7 @@ internal fun AddExpenseFormScreen(
 @Composable
 private fun AddExpenseFormContent(
     uiState: AddExpenseFormUiState,
-    onAmountChange: (BigDecimal) -> Unit,
+    onAmountChange: (String) -> Unit,
     onCategorySelect: (ExpenseCategory) -> Unit,
     onDateSelect: (LocalDate?) -> Unit,
     onDescriptionChange: (String) -> Unit,
@@ -144,7 +149,7 @@ private fun AddExpenseFormBottomButtonBundle(
 @Composable
 private fun AddExpenseForm(
     uiState: AddExpenseFormUiState,
-    onAmountChange: (BigDecimal) -> Unit,
+    onAmountChange: (String) -> Unit,
     onCategorySelect: (ExpenseCategory) -> Unit,
     onDateSelect: (LocalDate?) -> Unit,
     onDescriptionChange: (String) -> Unit,
@@ -159,8 +164,9 @@ private fun AddExpenseForm(
         verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.default)
     ) {
         AmountSection(
-            amount = uiState.amount.toPlainString(),
-            onAmountChange = { onAmountChange(it.toBigDecimal()) },
+            amount = uiState.amountText,
+            currencySymbol = uiState.currencySymbol,
+            onAmountChange = onAmountChange,
             modifier = Modifier.fillMaxWidth()
         )
         CategorySection(

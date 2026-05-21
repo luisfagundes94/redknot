@@ -19,4 +19,10 @@ internal interface TripDao {
 
     @Query("DELETE FROM trips WHERE id = :id")
     suspend fun deleteTripById(id: Int)
+
+    @Query("UPDATE trips SET total_budget = :totalBudget WHERE id = :tripId")
+    suspend fun updateTotalBudget(tripId: Int, totalBudget: String)
+
+    @Query("UPDATE trips SET currency = :currency WHERE id = :tripId")
+    suspend fun updateCurrency(tripId: Int, currency: String)
 }

@@ -5,5 +5,6 @@ import java.math.BigDecimal
 internal data class Budget(
     val total: BigDecimal,
     val spent: BigDecimal,
-    val remaining: BigDecimal
+    val remaining: BigDecimal,
+    val currency: BudgetCurrency = BudgetCurrency.EUR
 )

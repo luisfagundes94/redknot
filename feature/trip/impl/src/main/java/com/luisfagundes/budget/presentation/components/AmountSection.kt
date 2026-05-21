@@ -18,11 +18,10 @@ import androidx.compose.ui.text.style.TextAlign
 import com.luisfagundes.designsystem.theme.spacing
 import com.luisfagundes.trip.R
 
-private const val AMOUNT_FIELD_WIDTH_FRACTION = 0.65f
-
 @Composable
 internal fun AmountSection(
     amount: String,
+    currencySymbol: String,
     onAmountChange: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -39,6 +38,7 @@ internal fun AmountSection(
         TextField(
             value = amount,
             onValueChange = onAmountChange,
+            modifier = Modifier.fillMaxWidth(),
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = Color.Transparent,
                 unfocusedContainerColor = Color.Transparent,
@@ -48,13 +48,14 @@ internal fun AmountSection(
             placeholder = {
                 Text(
                     text = "0.00",
+                    modifier = Modifier.fillMaxWidth(),
                     style = MaterialTheme.typography.headlineMedium,
                     textAlign = TextAlign.Center
                 )
             },
             prefix = {
                 Text(
-                    text = "€",
+                    text = currencySymbol,
                     style = MaterialTheme.typography.headlineMedium,
                     color = MaterialTheme.colorScheme.primary
                 )
@@ -65,7 +66,6 @@ internal fun AmountSection(
             ),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
             singleLine = true,
-            modifier = Modifier.fillMaxWidth(AMOUNT_FIELD_WIDTH_FRACTION)
         )
     }
 }
