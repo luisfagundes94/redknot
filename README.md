@@ -6,6 +6,8 @@ A trip planning Android app built with Kotlin and Jetpack Compose.
 
 - Create, view, edit, and delete trips
 - Manage itinerary items per trip: flights, accommodations, restaurants, and activities
+- Track budget and expenses per trip (adding and categorizing expenses)
+- Document management per trip (storing travel documents, tickets, and bookings)
 
 ## Screenshots
 <p float="left">
@@ -38,11 +40,11 @@ redknot/
 ├── :app                  # Entry point, navigation host, bottom bar
 ├── :core
 │   ├── :common           # Base ViewModels, Hilt dispatcher qualifiers
+│   ├── :designsystem     # Compose components, Material 3 theme, spacing tokens
 │   └── :testing          # Shared test utilities (MainDispatcherRule)
-├── :designsystem         # Compose components, Material 3 theme, spacing tokens
 └── :feature:trip
     ├── :api              # Public navigation routes & interfaces
-    └── :impl             # Data, domain, and presentation layers
+    └── :impl             # Data, domain, and presentation layers (Trip, Itinerary, Budget, Documents)
 ```
 
 ## Setup
