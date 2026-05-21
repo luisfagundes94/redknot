@@ -1,17 +1,5 @@
 @file:Suppress("UnstableApiUsage")
 
-include(":core:common")
-
-
-include(":core:testing")
-
-
-include(":feature:trip:api")
-
-
-include(":feature:trip:impl")
-
-
 pluginManagement {
     repositories {
         google {

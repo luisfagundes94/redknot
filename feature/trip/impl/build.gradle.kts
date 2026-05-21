@@ -79,6 +79,7 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
 
     // Compose
+    implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.foundation)
     implementation(libs.androidx.compose.ui.graphics)
