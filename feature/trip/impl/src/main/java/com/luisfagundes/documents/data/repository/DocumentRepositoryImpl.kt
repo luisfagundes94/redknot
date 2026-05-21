@@ -20,4 +20,8 @@ internal class DocumentRepositoryImpl @Inject constructor(
             entities.map { mapper.mapToDomain(it) }
         }
     }
+
+    override suspend fun deleteDocument(document: Document): Result<Unit> {
+        return dataSource.deleteDocument(mapper.mapToEntity(document))
+    }
 }

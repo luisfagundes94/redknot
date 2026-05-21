@@ -15,4 +15,8 @@ internal class DocumentLocalDataSourceImpl @Inject constructor(
     override suspend fun getDocumentsByTripId(tripId: Int): Result<List<DocumentEntity>> {
         return runCatching { dao.getByTripId(tripId) }
     }
+
+    override suspend fun deleteDocument(entity: DocumentEntity): Result<Unit> {
+        return runCatching { dao.delete(entity) }
+    }
 }
