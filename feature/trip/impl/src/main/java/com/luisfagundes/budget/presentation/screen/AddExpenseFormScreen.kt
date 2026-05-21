@@ -185,7 +185,7 @@ private fun AddExpenseForm(
         )
         OutlinedTextField(
             value = uiState.description,
-            label = { Text(stringResource(R.string.description)) },
+            label = { Text(stringResource(R.string.optional_description)) },
             onValueChange = onDescriptionChange,
             placeholder = { Text(stringResource(R.string.expense_description_placeholder)) },
             minLines = 3,
