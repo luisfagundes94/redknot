@@ -1,11 +1,9 @@
 package com.luisfagundes.documents.presentation.screen
 
 import android.content.ActivityNotFoundException
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.widget.Toast
-import androidx.core.content.FileProvider
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -39,7 +37,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
-import java.io.File
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -51,6 +48,7 @@ import com.luisfagundes.documents.domain.model.Attachment
 import com.luisfagundes.documents.domain.model.Document
 import com.luisfagundes.documents.presentation.extensions.displayName
 import com.luisfagundes.documents.presentation.extensions.displaySize
+import com.luisfagundes.documents.presentation.extensions.resolveShareableUri
 import com.luisfagundes.documents.presentation.viewmodel.DocumentDetailViewModel
 import com.luisfagundes.documents.presentation.viewmodel.effect.DocumentDetailUiEffect
 import com.luisfagundes.documents.presentation.viewmodel.state.DocumentDetailUiState
@@ -236,27 +234,6 @@ private fun DocumentFileViewer(
     }
 }
 
-private fun resolveShareableUri(
-    context: Context,
-    sourceUri: Uri,
-    fileName: String,
-): Uri? {
-    if (sourceUri.authority == "${context.packageName}.fileprovider") return sourceUri
-
-    return try {
-        val cacheDir = File(context.cacheDir, "documents").also { it.mkdirs() }
-        val destName = fileName.ifBlank { "document_${System.currentTimeMillis()}" }
-        val destFile = File(cacheDir, destName)
-        if (!destFile.exists()) {
-            context.contentResolver.openInputStream(sourceUri)?.use { input ->
-                destFile.outputStream().use { output -> input.copyTo(output) }
-            }
-        }
-        FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", destFile)
-    } catch (e: Exception) {
-        null
-    }
-}
 
 @Composable
 private fun DocumentDetailErrorContent(

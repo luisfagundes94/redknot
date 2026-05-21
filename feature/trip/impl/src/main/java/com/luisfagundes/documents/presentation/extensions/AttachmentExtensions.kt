@@ -32,6 +32,28 @@ internal fun createImageUri(context: Context): Uri {
     )
 }
 
+internal fun resolveShareableUri(
+    context: Context,
+    sourceUri: Uri,
+    fileName: String,
+): Uri? {
+    if (sourceUri.authority == "${context.packageName}.fileprovider") return sourceUri
+
+    return try {
+        val cacheDir = File(context.cacheDir, "documents").also { it.mkdirs() }
+        val destName = fileName.ifBlank { "document_${System.currentTimeMillis()}" }
+        val destFile = File(cacheDir, destName)
+        if (!destFile.exists()) {
+            context.contentResolver.openInputStream(sourceUri)?.use { input ->
+                destFile.outputStream().use { output -> input.copyTo(output) }
+            }
+        }
+        FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", destFile)
+    } catch (e: Exception) {
+        null
+    }
+}
+
 private fun formatBytes(bytes: Long): String {
     return when {
         bytes >= BYTES_PER_MEGABYTE -> "${bytes / BYTES_PER_MEGABYTE} MB"
