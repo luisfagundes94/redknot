@@ -57,10 +57,12 @@ internal fun TripDetailsScreen(
     onNavigateToAddItineraryItem: () -> Unit,
     onNavigateToEditItineraryItem: (ItineraryItem) -> Unit,
     onNavigateToDocumentForm: () -> Unit,
+    onNavigateToDocumentDetail: (Int) -> Unit,
     onNavigateBack: () -> Unit,
     viewModel: TripDetailsViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val selectedTabIndex by viewModel.selectedTabIndex.collectAsStateWithLifecycle()
     val context = LocalContext.current
 
     LaunchedEffect(Unit) {
@@ -78,9 +80,12 @@ internal fun TripDetailsScreen(
 
     TripDetailsContent(
         uiState = uiState,
+        selectedTabIndex = selectedTabIndex,
+        onTabSelected = viewModel::onTabSelected,
         onAddItineraryItemClick = onNavigateToAddItineraryItem,
         onEditItineraryItemClick = onNavigateToEditItineraryItem,
         onNavigateToDocumentForm = onNavigateToDocumentForm,
+        onNavigateToDocumentDetail = onNavigateToDocumentDetail,
         onDeleteClick = { viewModel.deleteTrip(tripId) },
         onBackClick = onNavigateBack
     )
@@ -89,9 +94,12 @@ internal fun TripDetailsScreen(
 @Composable
 private fun TripDetailsContent(
     uiState: TripDetailsUiState,
+    selectedTabIndex: Int,
+    onTabSelected: (Int) -> Unit,
     onAddItineraryItemClick: () -> Unit,
     onEditItineraryItemClick: (ItineraryItem) -> Unit,
     onNavigateToDocumentForm: () -> Unit,
+    onNavigateToDocumentDetail: (Int) -> Unit,
     onDeleteClick: () -> Unit,
     onBackClick: () -> Unit,
 ) {
@@ -106,6 +114,8 @@ private fun TripDetailsContent(
 
         is TripDetailsUiState.Success -> TripDetailsSuccessContent(
             trip = uiState.trip,
+            initialTabIndex = selectedTabIndex,
+            onTabSelected = onTabSelected,
             itineraryContent = {
                 ItineraryScreen(
                     tripId = uiState.trip.id,
@@ -116,7 +126,8 @@ private fun TripDetailsContent(
             documentsContent = {
                 DocumentsScreen(
                     tripId = uiState.trip.id,
-                    onNavigateToDocumentForm = onNavigateToDocumentForm
+                    onNavigateToDocumentForm = onNavigateToDocumentForm,
+                    onNavigateToDocumentDetail = onNavigateToDocumentDetail
                 )
             },
             onDeleteClick = onDeleteClick,
@@ -144,6 +155,8 @@ private fun TripDetailsErrorContent(
 @Composable
 private fun TripDetailsSuccessContent(
     trip: Trip,
+    initialTabIndex: Int,
+    onTabSelected: (Int) -> Unit,
     itineraryContent: @Composable () -> Unit,
     documentsContent: @Composable () -> Unit,
     onDeleteClick: () -> Unit,
@@ -151,8 +164,12 @@ private fun TripDetailsSuccessContent(
     modifier: Modifier = Modifier
 ) {
     val tabs = TripDetailsTabs.entries
-    val pagerState = rememberPagerState { tabs.size }
+    val pagerState = rememberPagerState(initialPage = initialTabIndex) { tabs.size }
     val coroutineScope = rememberCoroutineScope()
+
+    LaunchedEffect(pagerState.currentPage) {
+        onTabSelected(pagerState.currentPage)
+    }
 
     var showDeleteDialog by rememberSaveable { mutableStateOf(false) }
 
@@ -222,6 +239,8 @@ private fun TripDetailsSuccessContentPreview(
 ) {
     TripDetailsSuccessContent(
         trip = uiState.trip,
+        initialTabIndex = 0,
+        onTabSelected = {},
         itineraryContent = {},
         documentsContent = {},
         onDeleteClick = {},

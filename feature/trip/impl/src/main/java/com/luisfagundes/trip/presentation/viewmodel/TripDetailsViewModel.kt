@@ -9,6 +9,9 @@ import com.luisfagundes.trip.presentation.viewmodel.effect.TripDetailsUiEffect
 import com.luisfagundes.trip.presentation.viewmodel.state.TripDetailsUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -20,6 +23,13 @@ internal class TripDetailsViewModel @Inject constructor(
 ) : ViewModel<TripDetailsUiState, TripDetailsUiEffect>(
     initialState = TripDetailsUiState.Loading
 ) {
+    private val _selectedTabIndex = MutableStateFlow(0)
+    val selectedTabIndex: StateFlow<Int> = _selectedTabIndex.asStateFlow()
+
+    fun onTabSelected(index: Int) {
+        _selectedTabIndex.value = index
+    }
+
     fun getTripById(id: Int) = viewModelScope.launch(dispatcher) {
         setState { TripDetailsUiState.Loading }
 

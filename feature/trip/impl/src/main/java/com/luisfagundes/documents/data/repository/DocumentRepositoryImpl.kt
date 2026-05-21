@@ -21,6 +21,13 @@ internal class DocumentRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun getDocumentById(id: Int): Result<Document> {
+        return dataSource.getDocumentById(id).mapCatching { entity ->
+            entity?.let { mapper.mapToDomain(it) }
+                ?: throw NoSuchElementException("Document with id $id not found")
+        }
+    }
+
     override suspend fun deleteDocument(document: Document): Result<Unit> {
         return dataSource.deleteDocument(mapper.mapToEntity(document))
     }

@@ -42,6 +42,7 @@ import com.luisfagundes.trip.R
 internal fun DocumentsScreen(
     tripId: Int,
     onNavigateToDocumentForm: () -> Unit,
+    onNavigateToDocumentDetail: (Int) -> Unit,
     viewModel: DocumentsViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -49,6 +50,7 @@ internal fun DocumentsScreen(
     CollectUiEffects(viewModel.uiEffect) { effect ->
         when (effect) {
             is DocumentsUiEffect.NavigateToDocumentForm -> onNavigateToDocumentForm()
+            is DocumentsUiEffect.NavigateToDocumentDetail -> onNavigateToDocumentDetail(effect.documentId)
         }
     }
 
@@ -71,7 +73,8 @@ internal fun DocumentsScreen(
         is DocumentsUiState.Content -> DocumentsContent(
             modifier = Modifier.fillMaxSize(),
             documentsByCategory = (uiState as DocumentsUiState.Content).documentsByCategory,
-            onAddDocumentClick = viewModel::navigateToDocumentForm
+            onAddDocumentClick = viewModel::navigateToDocumentForm,
+            onDocumentClick = { document -> viewModel.navigateToDocumentDetail(document.id) }
         )
     }
 }
@@ -121,6 +124,7 @@ private fun DocumentEmptyContent(
 private fun DocumentsContent(
     documentsByCategory: Map<DocumentCategory, List<Document>>,
     onAddDocumentClick: () -> Unit,
+    onDocumentClick: (Document) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Scaffold(
@@ -147,6 +151,7 @@ private fun DocumentsContent(
                     DocumentListSection(
                         category = category,
                         documents = documents,
+                        onDocumentClick = onDocumentClick,
                         modifier = Modifier.fillParentMaxWidth()
                     )
                 }

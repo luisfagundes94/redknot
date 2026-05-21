@@ -1,5 +1,6 @@
 package com.luisfagundes.documents.presentation.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -29,6 +30,7 @@ import com.luisfagundes.documents.presentation.mapper.toTitle
 internal fun DocumentListSection(
     category: DocumentCategory,
     documents: List<Document>,
+    onDocumentClick: (Document) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
@@ -47,6 +49,7 @@ internal fun DocumentListSection(
             documents.forEachIndexed { index, document ->
                 DocumentItem(
                     document = document,
+                    onClick = { onDocumentClick(document) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(MaterialTheme.spacing.default)
@@ -89,10 +92,11 @@ private fun DocumentListSectionHeader(
 @Composable
 private fun DocumentItem(
     document: Document,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Row(
-        modifier = modifier,
+        modifier = modifier.clickable(onClick = onClick),
         horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.default),
         verticalAlignment = Alignment.CenterVertically
     ) {

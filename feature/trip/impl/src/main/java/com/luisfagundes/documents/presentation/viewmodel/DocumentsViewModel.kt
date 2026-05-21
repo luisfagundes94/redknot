@@ -30,6 +30,10 @@ internal class DocumentsViewModel @Inject constructor(
         sendEffect { DocumentsUiEffect.NavigateToDocumentForm }
     }
 
+    fun navigateToDocumentDetail(documentId: Int) {
+        sendEffect { DocumentsUiEffect.NavigateToDocumentDetail(documentId) }
+    }
+
     private fun setDocuments(documents: Map<DocumentCategory, List<Document>>) {
         setState {
             if (documents.values.isNotEmpty()) DocumentsUiState.Content(documents)

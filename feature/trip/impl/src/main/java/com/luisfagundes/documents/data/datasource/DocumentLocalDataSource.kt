@@ -5,5 +5,6 @@ import com.luisfagundes.documents.data.model.DocumentEntity
 internal interface DocumentLocalDataSource {
     suspend fun saveDocument(entity: DocumentEntity): Result<Unit>
     suspend fun getDocumentsByTripId(tripId: Int): Result<List<DocumentEntity>>
+    suspend fun getDocumentById(id: Int): Result<DocumentEntity?>
     suspend fun deleteDocument(entity: DocumentEntity): Result<Unit>
 }

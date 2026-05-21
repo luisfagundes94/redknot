@@ -8,3 +8,6 @@ internal data class DocumentsRoute(val tripId: Int) : NavKey
 
 @Serializable
 internal data class AddDocumentFormRoute(val tripId: Int) : NavKey
+
+@Serializable
+internal data class DocumentDetailRoute(val tripId: Int, val documentId: Int) : NavKey

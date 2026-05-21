@@ -3,6 +3,7 @@ package com.luisfagundes.trip.presentation.navigation
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import com.luisfagundes.documents.presentation.navigation.AddDocumentFormRoute
+import com.luisfagundes.documents.presentation.navigation.DocumentDetailRoute
 import com.luisfagundes.itinerary.domain.model.Accommodation
 import com.luisfagundes.itinerary.domain.model.Activity
 import com.luisfagundes.itinerary.domain.model.Flight
@@ -47,6 +48,7 @@ internal fun EntryProviderScope<NavKey>.tripEntries(
                 navigateTo(route)
             },
             onNavigateToDocumentForm = { navigateTo(AddDocumentFormRoute(tripId)) },
+            onNavigateToDocumentDetail = { documentId -> navigateTo(DocumentDetailRoute(tripId, documentId)) },
             onNavigateBack = { goBack() }
         )
     }

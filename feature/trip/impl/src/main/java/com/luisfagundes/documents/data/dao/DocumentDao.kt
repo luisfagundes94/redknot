@@ -14,6 +14,9 @@ internal interface DocumentDao {
     @Query("SELECT * FROM documents WHERE trip_id = :tripId")
     suspend fun getByTripId(tripId: Int): List<DocumentEntity>
 
+    @Query("SELECT * FROM documents WHERE id = :id")
+    suspend fun getById(id: Int): DocumentEntity?
+
     @Delete
     suspend fun delete(document: DocumentEntity)
 }

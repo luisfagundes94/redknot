@@ -23,8 +23,8 @@ internal fun Attachment.displaySize(): String = when (this) {
 }
 
 internal fun createImageUri(context: Context): Uri {
-    val imagesDir = File(context.cacheDir, "images").also { it.mkdirs() }
-    val imageFile = File(imagesDir, "photo_${System.currentTimeMillis()}.jpg")
+    val documentsDir = File(context.cacheDir, "documents").also { it.mkdirs() }
+    val imageFile = File(documentsDir, "photo_${System.currentTimeMillis()}.jpg")
     return FileProvider.getUriForFile(
         context,
         "${context.packageName}.fileprovider",

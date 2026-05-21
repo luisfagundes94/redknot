@@ -148,4 +148,8 @@
     <string name="documents_size">Documents - %1$s</string>
     <string name="add_document_description">add document</string>
     <string name="delete_document_description">Delete document</string>
+    <string name="delete_document_dialog_title">Delete document?</string>
+    <string name="delete_document_dialog_message">This will permanently remove this document.</string>
+    <string name="show_file_btn_label">Open file</string>
+    <string name="no_app_to_open_file">No app found to open this file</string>
 </resources>
