@@ -89,7 +89,7 @@ class MyViewModelTest {
 }
 ```
 
-**Note**: Any new module with JUnit 5 tests must add `tasks.withType<Test> { useJUnitPlatform() }` in its `build.gradle.kts` and add `testImplementation` for `MainDispatcherRule` (it is `compileOnly` in `:core`).
+**Note**: Any new module with JUnit 5 tests must add `tasks.withType<Test> { useJUnitPlatform() }` in its `build.gradle.kts` and add `testImplementation` for `MainDispatcherRule`.
 
 ### Design System Conventions
 
