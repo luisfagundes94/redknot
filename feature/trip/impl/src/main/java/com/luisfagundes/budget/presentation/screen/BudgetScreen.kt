@@ -146,10 +146,10 @@ private fun BudgetDashboardContent(
             }
             if (state.expensesByCategory.isEmpty()) {
                 item {
-                    BudgetEmptyExpensesContent(
-                        modifier = Modifier
-                            .fillParentMaxWidth()
-                            .padding(MaterialTheme.spacing.default)
+                    Text(
+                        text = stringResource(R.string.no_expenses_yet),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
             } else {
@@ -166,22 +166,6 @@ private fun BudgetDashboardContent(
                 }
             }
         }
-    }
-}
-
-@Composable
-private fun BudgetEmptyExpensesContent(modifier: Modifier = Modifier) {
-    Column(
-        modifier = modifier.padding(MaterialTheme.spacing.default),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Text(
-            text = stringResource(R.string.no_expenses_yet),
-            textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
     }
 }
 
