@@ -26,11 +26,11 @@ internal class DocumentsViewModel @Inject constructor(
             onFailure = {}
         )
     }
-    fun navigateToDocumentForm() {
+    fun onAddDocumentClick() {
         sendEffect { DocumentsUiEffect.NavigateToDocumentForm }
     }
 
-    fun navigateToDocumentDetail(documentId: Int) {
+    fun onDocumentClick(documentId: Int) {
         sendEffect { DocumentsUiEffect.NavigateToDocumentDetail(documentId) }
     }
 

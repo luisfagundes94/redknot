@@ -30,7 +30,7 @@ import com.luisfagundes.documents.presentation.mapper.toTitle
 internal fun DocumentListSection(
     category: DocumentCategory,
     documents: List<Document>,
-    onDocumentClick: (Document) -> Unit,
+    onDocumentClick: (id: Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
@@ -49,7 +49,7 @@ internal fun DocumentListSection(
             documents.forEachIndexed { index, document ->
                 DocumentItem(
                     document = document,
-                    onClick = { onDocumentClick(document) },
+                    onClick = { onDocumentClick(document.id) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(MaterialTheme.spacing.default)

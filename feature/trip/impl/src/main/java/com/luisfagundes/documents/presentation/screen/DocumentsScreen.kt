@@ -58,29 +58,42 @@ internal fun DocumentsScreen(
         viewModel.getDocuments(tripId)
     }
 
+    DocumentsContent(
+        uiState = uiState,
+        onAddDocumentClick = viewModel::onAddDocumentClick,
+        onDocumentClick = viewModel::onDocumentClick
+    )
+}
+
+@Composable
+private fun DocumentsContent(
+    uiState: DocumentsUiState,
+    onAddDocumentClick: () -> Unit,
+    onDocumentClick: (id: Int) -> Unit
+) {
     when (uiState) {
         is DocumentsUiState.Loading -> RedknotLoadingTemplate(
             modifier = Modifier.fillMaxSize()
         )
 
-        is DocumentsUiState.Empty -> DocumentEmptyContent(
+        is DocumentsUiState.Empty -> DocumentsEmptyContent(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(MaterialTheme.spacing.default),
-            onAddDocumentClick = viewModel::navigateToDocumentForm
+            onAddDocumentClick = onAddDocumentClick
         )
 
-        is DocumentsUiState.Content -> DocumentsContent(
+        is DocumentsUiState.Content -> DocumentsListContent(
             modifier = Modifier.fillMaxSize(),
-            documentsByCategory = (uiState as DocumentsUiState.Content).documentsByCategory,
-            onAddDocumentClick = viewModel::navigateToDocumentForm,
-            onDocumentClick = { document -> viewModel.navigateToDocumentDetail(document.id) }
+            documentsByCategory = uiState.documentsByCategory,
+            onAddDocumentClick = onAddDocumentClick,
+            onDocumentClick = onDocumentClick
         )
     }
 }
 
 @Composable
-private fun DocumentEmptyContent(
+private fun DocumentsEmptyContent(
     modifier: Modifier = Modifier,
     onAddDocumentClick: () -> Unit
 ) {
@@ -121,10 +134,10 @@ private fun DocumentEmptyContent(
 }
 
 @Composable
-private fun DocumentsContent(
+private fun DocumentsListContent(
     documentsByCategory: Map<DocumentCategory, List<Document>>,
     onAddDocumentClick: () -> Unit,
-    onDocumentClick: (Document) -> Unit,
+    onDocumentClick: (id: Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Scaffold(
