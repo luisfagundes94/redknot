@@ -80,19 +80,44 @@ internal fun AccommodationFormScreen(
         }
     }
 
+    AccommodationFormContent(
+        uiState = uiState,
+        onNameChange = viewModel::updateName,
+        onAddressChange = viewModel::updateAddress,
+        onCheckInTypeChange = viewModel::updateCheckInType,
+        onDateChange = viewModel::updateDate,
+        onTimeChange = viewModel::updateTime,
+        onSubmitClick = { viewModel.submit(tripId) },
+        onDeleteAccommodationClick = viewModel::deleteAccommodation,
+        onBackClick = viewModel::navigateBack
+    )
+}
+
+@Composable
+private fun AccommodationFormContent(
+    uiState: AccommodationFormUiState,
+    onNameChange: (String) -> Unit,
+    onAddressChange: (String) -> Unit,
+    onCheckInTypeChange: (CheckInType) -> Unit,
+    onDateChange: (LocalDate?) -> Unit,
+    onTimeChange: (LocalTime) -> Unit,
+    onSubmitClick: () -> Unit,
+    onDeleteAccommodationClick: () -> Unit,
+    onBackClick: () -> Unit
+) {
     when (uiState) {
         is AccommodationFormUiState.Loading -> RedknotLoadingTemplate(
             modifier = Modifier.fillMaxSize()
         )
-        is AccommodationFormUiState.Content -> AccommodationFormContent(
-            uiState = uiState as AccommodationFormUiState.Content,
-            onNameChange = viewModel::onNameChange,
-            onAddressChange = viewModel::onAddressChange,
-            onCheckInTypeChange = viewModel::onCheckInTypeChange,
-            onDateChange = viewModel::onDateChange,
-            onTimeChange = viewModel::onTimeChange,
-            onSubmit = { viewModel.onSubmit(tripId) },
-            onDelete = viewModel::onDelete,
+        is AccommodationFormUiState.Content -> AccommodationForm(
+            uiState = uiState,
+            onNameChange = onNameChange,
+            onAddressChange = onAddressChange,
+            onCheckInTypeChange = onCheckInTypeChange,
+            onDateChange = onDateChange,
+            onTimeChange = onTimeChange,
+            onSubmit = onSubmitClick,
+            onDelete = onDeleteAccommodationClick,
             onBackClick = onBackClick
         )
     }
@@ -100,7 +125,7 @@ internal fun AccommodationFormScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun AccommodationFormContent(
+private fun AccommodationForm(
     uiState: AccommodationFormUiState.Content,
     onNameChange: (String) -> Unit,
     onAddressChange: (String) -> Unit,
