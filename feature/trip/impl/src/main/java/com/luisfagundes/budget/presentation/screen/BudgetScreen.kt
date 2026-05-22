@@ -72,43 +72,53 @@ internal fun BudgetScreen(
 
     if (showBottomSheet) {
         SetBudgetBottomSheet(
-            onConfirm = { amount, currency -> viewModel.onBudgetAmountConfirm(tripId, amount, currency) },
+            onConfirm = { amount, currency ->
+                viewModel.onBudgetAmountConfirm(
+                    tripId,
+                    amount,
+                    currency
+                )
+            },
             onDismiss = viewModel::onDismissBottomSheet
         )
     }
 
-    when (val state = uiState) {
-        is BudgetUiState.Loading -> RedknotLoadingTemplate(modifier = Modifier.fillMaxSize())
-
-        is BudgetUiState.Onboarding -> BudgetOnboardingContent(
-            onSetBudgetClick = viewModel::onSetBudgetClick,
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(MaterialTheme.spacing.default)
-        )
-
-        is BudgetUiState.Dashboard -> BudgetDashboardContent(
-            uiState = state,
-            currencySymbol = state.budget.currency.symbol,
-            onAddExpenseClick = viewModel::onAddExpenseClick,
-            onDeleteExpense = { expense -> viewModel.onDeleteExpense(tripId, expense) },
-            modifier = Modifier.fillMaxSize()
-        )
-    }
+    BudgetContent(
+        uiState = uiState,
+        onSetBudgetClick = viewModel::onSetBudgetClick,
+        onAddExpenseClick = viewModel::onAddExpenseClick,
+        onDeleteExpense = { expense -> viewModel.onDeleteExpense(tripId, expense) }
+    )
 }
 
 @Composable
-private fun BudgetOnboardingContent(
+private fun BudgetContent(
+    uiState: BudgetUiState,
     onSetBudgetClick: () -> Unit,
-    modifier: Modifier = Modifier
+    onAddExpenseClick: () -> Unit,
+    onDeleteExpense: (Expense) -> Unit
 ) {
-    RedknotEmptyTemplate(
-        title = stringResource(R.string.budget_onboarding_message),
-        primaryButtonLabel = stringResource(R.string.set_budget),
-        primaryButtonIcon = Icons.Default.AttachMoney,
-        onPrimaryButtonClick = onSetBudgetClick,
-        modifier = modifier
-    )
+    when (uiState) {
+        is BudgetUiState.Loading -> RedknotLoadingTemplate(
+            modifier = Modifier.fillMaxSize()
+        )
+
+        is BudgetUiState.Onboarding -> RedknotEmptyTemplate(
+            title = stringResource(R.string.budget_onboarding_message),
+            primaryButtonLabel = stringResource(R.string.set_budget),
+            primaryButtonIcon = Icons.Default.AttachMoney,
+            onPrimaryButtonClick = onSetBudgetClick,
+            modifier = Modifier.fillMaxSize().padding(MaterialTheme.spacing.default)
+        )
+
+        is BudgetUiState.Dashboard -> BudgetDashboardContent(
+            uiState = uiState,
+            currencySymbol = uiState.budget.currency.symbol,
+            onAddExpenseClick = onAddExpenseClick,
+            onDeleteExpense = { expense -> onDeleteExpense(expense) },
+            modifier = Modifier.fillMaxSize()
+        )
+    }
 }
 
 @Composable
