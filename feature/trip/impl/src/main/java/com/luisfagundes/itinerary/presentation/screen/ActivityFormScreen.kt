@@ -75,34 +75,59 @@ internal fun ActivityFormScreen(
         }
     }
 
-    when (uiState) {
-        is ActivityFormUiState.Loading -> RedknotLoadingTemplate(
-            modifier = Modifier.fillMaxSize()
-        )
-        is ActivityFormUiState -> ActivityFormContent(
-            uiState = uiState as ActivityFormUiState.Content,
-            onTitleChange = viewModel::onTitleChange,
-            onDescriptionChange = viewModel::onDescriptionChange,
-            onLocationChange = viewModel::onLocationChange,
-            onDateChange = viewModel::onDateChange,
-            onTimeChange = viewModel::onTimeChange,
-            onSubmit = { viewModel.onSubmit(tripId) },
-            onDelete = viewModel::onDelete,
-            onBackClick = onBackClick
-        )
-    }
+    ActivityFormContent(
+        uiState = uiState,
+        onTitleChange = viewModel::updateTitle,
+        onDescriptionChange = viewModel::updateDescription,
+        onLocationChange = viewModel::updateLocation,
+        onDateChange = viewModel::updateDate,
+        onTimeChange = viewModel::updateTime,
+        onSubmit = { viewModel.submit(tripId) },
+        onDeleteActivityClick = viewModel::deleteActivity,
+        onBackClick = viewModel::navigateBack
+    )
 }
 
 @Composable
 private fun ActivityFormContent(
-    uiState: ActivityFormUiState.Content,
+    uiState: ActivityFormUiState,
     onTitleChange: (String) -> Unit,
     onDescriptionChange: (String) -> Unit,
     onLocationChange: (String) -> Unit,
     onDateChange: (LocalDate?) -> Unit,
     onTimeChange: (LocalTime) -> Unit,
     onSubmit: () -> Unit,
-    onDelete: () -> Unit,
+    onDeleteActivityClick: () -> Unit,
+    onBackClick: () -> Unit
+) {
+    when (uiState) {
+        is ActivityFormUiState.Loading -> RedknotLoadingTemplate(
+            modifier = Modifier.fillMaxSize()
+        )
+        is ActivityFormUiState -> ActivityForm(
+            uiState = uiState as ActivityFormUiState.Content,
+            onTitleChange = onTitleChange,
+            onDescriptionChange = onDescriptionChange,
+            onLocationChange = onLocationChange,
+            onDateChange = onDateChange,
+            onTimeChange = onTimeChange,
+            onSubmitClick = onSubmit,
+            onDeleteActivityClick = onDeleteActivityClick,
+            onBackClick = onBackClick
+        )
+    }
+}
+
+@Composable
+private fun ActivityForm(
+    uiState: ActivityFormUiState.Content,
+    onTitleChange: (String) -> Unit,
+    onDescriptionChange: (String) -> Unit,
+    onLocationChange: (String) -> Unit,
+    onDateChange: (LocalDate?) -> Unit,
+    onTimeChange: (LocalTime) -> Unit,
+    onSubmitClick: () -> Unit,
+    onDeleteActivityClick: () -> Unit,
     onBackClick: () -> Unit
 ) {
     val context = LocalContext.current
@@ -114,7 +139,7 @@ private fun ActivityFormContent(
             title = stringResource(R.string.delete_itinerary_item_dialog_title),
             message = stringResource(R.string.delete_itinerary_item_dialog_message),
             onDismissRequest = { showDeleteDialog = false },
-            onDeleteClick = { showDeleteDialog = false; onDelete() }
+            onDeleteClick = { showDeleteDialog = false; onDeleteActivityClick() }
         )
     }
 
@@ -209,7 +234,7 @@ private fun ActivityFormContent(
                 modifier = Modifier.fillMaxWidth()
             )
             Button(
-                onClick = onSubmit,
+                onClick = onSubmitClick,
                 enabled = uiState.isFormValid && !uiState.isLoading,
                 modifier = Modifier
                     .fillMaxWidth()

@@ -61,7 +61,7 @@ internal class ActivityFormViewModel @Inject constructor(
         }
     }
 
-    fun onTitleChange(title: String) {
+    fun updateTitle(title: String) {
         setStateOf<ActivityFormUiState.Content> {
             it.copy(
                 title = title,
@@ -70,15 +70,15 @@ internal class ActivityFormViewModel @Inject constructor(
         }
     }
 
-    fun onDescriptionChange(description: String) {
+    fun updateDescription(description: String) {
         setStateOf<ActivityFormUiState.Content> { it.copy(description = description) }
     }
 
-    fun onLocationChange(location: String) {
+    fun updateLocation(location: String) {
         setStateOf<ActivityFormUiState.Content> { it.copy(location = location) }
     }
 
-    fun onDateChange(date: LocalDate?) {
+    fun updateDate(date: LocalDate?) {
         setStateOf<ActivityFormUiState.Content> {
             it.copy(
                 date = date,
@@ -87,7 +87,7 @@ internal class ActivityFormViewModel @Inject constructor(
         }
     }
 
-    fun onTimeChange(time: LocalTime) {
+    fun updateTime(time: LocalTime) {
         setStateOf<ActivityFormUiState.Content> {
             it.copy(
                 time = time,
@@ -96,7 +96,11 @@ internal class ActivityFormViewModel @Inject constructor(
         }
     }
 
-    fun onSubmit(tripId: Int) = viewModelScope.launch(dispatcher) {
+    fun navigateBack() {
+        sendEffect { ActivityFormUiEffect.NavigateBack }
+    }
+
+    fun submit(tripId: Int) = viewModelScope.launch(dispatcher) {
         val content = getCurrentState() as? ActivityFormUiState.Content ?: return@launch
         setStateOf<ActivityFormUiState.Content> { it.copy(isLoading = true) }
 
@@ -110,7 +114,7 @@ internal class ActivityFormViewModel @Inject constructor(
         setStateOf<ActivityFormUiState.Content> { it.copy(isLoading = false) }
     }
 
-    fun onDelete() = viewModelScope.launch(dispatcher) {
+    fun deleteActivity() = viewModelScope.launch(dispatcher) {
         val content = getCurrentState() as? ActivityFormUiState.Content ?: return@launch
         val itemId = content.editingItemId ?: return@launch
 
