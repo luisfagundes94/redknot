@@ -30,7 +30,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.luisfagundes.budget.domain.model.Expense
@@ -89,7 +88,7 @@ internal fun BudgetScreen(
         )
 
         is BudgetUiState.Dashboard -> BudgetDashboardContent(
-            state = state,
+            uiState = state,
             currencySymbol = state.budget.currency.symbol,
             onAddExpenseClick = viewModel::onAddExpenseClick,
             onDeleteExpense = { expense -> viewModel.onDeleteExpense(tripId, expense) },
@@ -114,7 +113,7 @@ private fun BudgetOnboardingContent(
 
 @Composable
 private fun BudgetDashboardContent(
-    state: BudgetUiState.Dashboard,
+    uiState: BudgetUiState.Dashboard,
     currencySymbol: String,
     onAddExpenseClick: () -> Unit,
     onDeleteExpense: (Expense) -> Unit,
@@ -138,13 +137,13 @@ private fun BudgetDashboardContent(
         ) {
             item {
                 BudgetOverviewCard(
-                    budget = state.budget,
+                    budget = uiState.budget,
                     modifier = Modifier
                         .fillMaxWidth()
                         .paddingExceptBottom(MaterialTheme.spacing.default)
                 )
             }
-            if (state.expensesByCategory.isEmpty()) {
+            if (uiState.expensesByCategory.isEmpty()) {
                 item {
                     Text(
                         text = stringResource(R.string.no_expenses_yet),
@@ -153,7 +152,7 @@ private fun BudgetDashboardContent(
                     )
                 }
             } else {
-                state.expensesByCategory.forEach { (category, expenses) ->
+                uiState.expensesByCategory.forEach { (category, expenses) ->
                     item(key = category.name) {
                         ExpenseCategorySection(
                             category = category,
