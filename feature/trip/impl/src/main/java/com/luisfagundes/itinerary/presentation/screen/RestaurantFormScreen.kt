@@ -77,26 +77,51 @@ internal fun RestaurantFormScreen(
         }
     }
 
+    RestaurantFormContent(
+        uiState = uiState,
+        onMealTypeChange = viewModel::onMealTypeChange,
+        onNameChange = viewModel::onNameChange,
+        onAddressChange = viewModel::onAddressChange,
+        onDateChange = viewModel::onDateChange,
+        onTimeChange = viewModel::onTimeChange,
+        onSubmit = { viewModel.onSubmit(tripId) },
+        onDelete = viewModel::onDelete,
+        onBackClick = onBackClick
+    )
+}
+
+@Composable
+private fun RestaurantFormContent(
+    uiState: RestaurantFormUiState,
+    onMealTypeChange: (MealType) -> Unit,
+    onNameChange: (String) -> Unit,
+    onAddressChange: (String) -> Unit,
+    onDateChange: (LocalDate?) -> Unit,
+    onTimeChange: (LocalTime) -> Unit,
+    onSubmit: () -> Unit,
+    onDelete: () -> Unit,
+    onBackClick: () -> Unit
+) {
     when (uiState) {
         is RestaurantFormUiState.Loading -> RedknotLoadingTemplate(
             modifier = Modifier.fillMaxSize()
         )
-        is RestaurantFormUiState.Content -> RestaurantFormContent(
-            uiState = uiState as RestaurantFormUiState.Content,
-            onMealTypeChange = viewModel::onMealTypeChange,
-            onNameChange = viewModel::onNameChange,
-            onAddressChange = viewModel::onAddressChange,
-            onDateChange = viewModel::onDateChange,
-            onTimeChange = viewModel::onTimeChange,
-            onSubmit = { viewModel.onSubmit(tripId) },
-            onDelete = viewModel::onDelete,
+        is RestaurantFormUiState.Content -> RestaurantForm(
+            uiState = uiState,
+            onMealTypeChange = onMealTypeChange,
+            onNameChange = onNameChange,
+            onAddressChange = onAddressChange,
+            onDateChange = onDateChange,
+            onTimeChange = onTimeChange,
+            onSubmit = onSubmit,
+            onDelete = onDelete,
             onBackClick = onBackClick
         )
     }
 }
 
 @Composable
-private fun RestaurantFormContent(
+private fun RestaurantForm(
     uiState: RestaurantFormUiState.Content,
     onMealTypeChange: (MealType) -> Unit,
     onNameChange: (String) -> Unit,

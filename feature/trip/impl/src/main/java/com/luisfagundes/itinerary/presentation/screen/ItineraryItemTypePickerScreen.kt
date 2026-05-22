@@ -34,6 +34,23 @@ internal fun ItineraryItemTypePickerScreen(
     onRestaurantClick: () -> Unit,
     onBackClick: () -> Unit
 ) {
+    ItineraryItemTypePickerContent(
+        onActivityClick = onActivityClick,
+        onAccommodationClick = onAccommodationClick,
+        onFlightClick = onFlightClick,
+        onRestaurantClick = onRestaurantClick,
+        onBackClick = onBackClick
+    )
+}
+
+@Composable
+private fun ItineraryItemTypePickerContent(
+    onActivityClick: () -> Unit,
+    onAccommodationClick: () -> Unit,
+    onFlightClick: () -> Unit,
+    onRestaurantClick: () -> Unit,
+    onBackClick: () -> Unit
+) {
     Scaffold(
         topBar = {
             RedknotTopBar(

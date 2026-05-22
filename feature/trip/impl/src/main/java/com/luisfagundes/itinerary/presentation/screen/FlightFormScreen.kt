@@ -81,29 +81,60 @@ internal fun FlightFormScreen(
         }
     )
 
+    FlightFormContent(
+        uiState = uiState,
+        onFlightNumberChange = viewModel::onFlightNumberChange,
+        onCompanyNameChange = viewModel::onCompanyNameChange,
+        onOriginChange = viewModel::onOriginChange,
+        onDestinationChange = viewModel::onDestinationChange,
+        onDurationChange = viewModel::onDurationChange,
+        onSeatNumberChange = viewModel::onSeatNumberChange,
+        onDateChange = viewModel::onDateChange,
+        onTimeChange = viewModel::onTimeChange,
+        onSubmit = { viewModel.onSubmit(tripId) },
+        onDelete = viewModel::onDelete,
+        onBackClick = onBackClick
+    )
+}
+
+@Composable
+private fun FlightFormContent(
+    uiState: FlightFormUiState,
+    onFlightNumberChange: (String) -> Unit,
+    onCompanyNameChange: (String) -> Unit,
+    onOriginChange: (city: String) -> Unit,
+    onDestinationChange: (city: String) -> Unit,
+    onDurationChange: (hours: String, minutes: String) -> Unit,
+    onSeatNumberChange: (String) -> Unit,
+    onDateChange: (LocalDate?) -> Unit,
+    onTimeChange: (LocalTime) -> Unit,
+    onSubmit: () -> Unit,
+    onDelete: () -> Unit,
+    onBackClick: () -> Unit
+) {
     when (uiState) {
         is FlightFormUiState.Loading -> RedknotLoadingTemplate(
             modifier = Modifier.fillMaxSize()
         )
-        is FlightFormUiState.Content -> FlightFormContent(
-            uiState = uiState as FlightFormUiState.Content,
-            onFlightNumberChange = viewModel::onFlightNumberChange,
-            onCompanyNameChange = viewModel::onCompanyNameChange,
-            onOriginChange = viewModel::onOriginChange,
-            onDestinationChange = viewModel::onDestinationChange,
-            onDurationChange = viewModel::onDurationChange,
-            onSeatNumberChange = viewModel::onSeatNumberChange,
-            onDateChange = viewModel::onDateChange,
-            onTimeChange = viewModel::onTimeChange,
-            onSubmit = { viewModel.onSubmit(tripId) },
-            onDelete = viewModel::onDelete,
+        is FlightFormUiState.Content -> FlightForm(
+            uiState = uiState,
+            onFlightNumberChange = onFlightNumberChange,
+            onCompanyNameChange = onCompanyNameChange,
+            onOriginChange = onOriginChange,
+            onDestinationChange = onDestinationChange,
+            onDurationChange = onDurationChange,
+            onSeatNumberChange = onSeatNumberChange,
+            onDateChange = onDateChange,
+            onTimeChange = onTimeChange,
+            onSubmit = onSubmit,
+            onDelete = onDelete,
             onBackClick = onBackClick
         )
     }
 }
 
 @Composable
-private fun FlightFormContent(
+private fun FlightForm(
     uiState: FlightFormUiState.Content,
     onFlightNumberChange: (String) -> Unit,
     onCompanyNameChange: (String) -> Unit,

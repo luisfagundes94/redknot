@@ -104,8 +104,8 @@ private fun ActivityFormContent(
         is ActivityFormUiState.Loading -> RedknotLoadingTemplate(
             modifier = Modifier.fillMaxSize()
         )
-        is ActivityFormUiState -> ActivityForm(
-            uiState = uiState as ActivityFormUiState.Content,
+        is ActivityFormUiState.Content -> ActivityForm(
+            uiState = uiState,
             onTitleChange = onTitleChange,
             onDescriptionChange = onDescriptionChange,
             onLocationChange = onLocationChange,
