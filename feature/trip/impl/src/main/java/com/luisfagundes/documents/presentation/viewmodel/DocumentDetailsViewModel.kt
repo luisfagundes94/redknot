@@ -3,6 +3,7 @@ package com.luisfagundes.documents.presentation.viewmodel
 import androidx.lifecycle.viewModelScope
 import com.luisfagundes.core.common.di.IoDispatcher
 import com.luisfagundes.core.common.presentation.arch.viewmodel.ViewModel
+import com.luisfagundes.documents.domain.model.Document
 import com.luisfagundes.documents.domain.usecase.DeleteDocumentUseCase
 import com.luisfagundes.documents.domain.usecase.GetDocumentByIdUseCase
 import com.luisfagundes.documents.presentation.viewmodel.effect.DocumentDetailUiEffect
@@ -13,7 +14,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-internal class DocumentDetailViewModel @Inject constructor(
+internal class DocumentDetailsViewModel @Inject constructor(
     private val getDocumentByIdUseCase: GetDocumentByIdUseCase,
     private val deleteDocumentUseCase: DeleteDocumentUseCase,
     @param:IoDispatcher private val dispatcher: CoroutineDispatcher
@@ -27,13 +28,14 @@ internal class DocumentDetailViewModel @Inject constructor(
         )
     }
 
-    fun deleteDocument() = viewModelScope.launch(dispatcher) {
-        val state = getCurrentState()
-        if (state !is DocumentDetailUiState.Content) return@launch
-
-        deleteDocumentUseCase(state.document).fold(
+    fun deleteDocument(document: Document) = viewModelScope.launch(dispatcher) {
+        deleteDocumentUseCase(document).fold(
             onSuccess = { sendEffect { DocumentDetailUiEffect.NavigateBack } },
             onFailure = {}
         )
+    }
+
+    fun navigateBack() {
+        sendEffect { DocumentDetailUiEffect.NavigateBack }
     }
 }

@@ -49,17 +49,17 @@ import com.luisfagundes.documents.domain.model.Document
 import com.luisfagundes.documents.presentation.extensions.displayName
 import com.luisfagundes.documents.presentation.extensions.displaySize
 import com.luisfagundes.documents.presentation.extensions.resolveShareableUri
-import com.luisfagundes.documents.presentation.viewmodel.DocumentDetailViewModel
+import com.luisfagundes.documents.presentation.viewmodel.DocumentDetailsViewModel
 import com.luisfagundes.documents.presentation.viewmodel.effect.DocumentDetailUiEffect
 import com.luisfagundes.documents.presentation.viewmodel.state.DocumentDetailUiState
 import com.luisfagundes.trip.R
 import com.luisfagundes.trip.presentation.components.DeleteConfirmationDialog
 
 @Composable
-internal fun DocumentDetailScreen(
+internal fun DocumentDetailsScreen(
     documentId: Int,
-    onNavigateBack: () -> Unit,
-    viewModel: DocumentDetailViewModel = hiltViewModel()
+    onBackClick: () -> Unit,
+    viewModel: DocumentDetailsViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -69,30 +69,67 @@ internal fun DocumentDetailScreen(
 
     CollectUiEffects(viewModel.uiEffect) { effect ->
         when (effect) {
-            is DocumentDetailUiEffect.NavigateBack -> onNavigateBack()
+            is DocumentDetailUiEffect.NavigateBack -> onBackClick()
         }
     }
 
-    when (val state = uiState) {
+   DocumentDetailsContent(
+       uiState = uiState,
+       onBackClick = viewModel::navigateBack,
+       onDeleteDocumentClick = viewModel::deleteDocument,
+   )
+}
+
+@Composable
+private fun DocumentDetailsContent(
+    uiState: DocumentDetailUiState,
+    onBackClick: () -> Unit,
+    onDeleteDocumentClick: (Document) -> Unit
+) {
+    when (uiState) {
         is DocumentDetailUiState.Loading -> RedknotLoadingTemplate(
             modifier = Modifier.fillMaxSize()
         )
         is DocumentDetailUiState.Error -> DocumentDetailErrorContent(
-            message = state.message ?: stringResource(R.string.generic_error_message),
-            onBackClick = onNavigateBack
+            message = uiState.message ?: stringResource(R.string.generic_error_message),
+            onBackClick = onBackClick
         )
-        is DocumentDetailUiState.Content -> DocumentDetailContent(
-            document = state.document,
-            onDeleteClick = viewModel::deleteDocument,
-            onBackClick = onNavigateBack
+        is DocumentDetailUiState.Content -> DocumentDetails(
+            document = uiState.document,
+            onDeleteDocumentClick = onDeleteDocumentClick,
+            onBackClick = onBackClick
         )
     }
 }
 
 @Composable
-private fun DocumentDetailContent(
+private fun DocumentDetailErrorContent(
+    message: String,
+    onBackClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Scaffold(
+        modifier = modifier,
+        contentWindowInsets = WindowInsets(),
+        topBar = {
+            RedknotTopBar(onBackClick = onBackClick)
+        }
+    ) { scaffoldPadding ->
+        Box(
+            modifier = Modifier
+                .padding(scaffoldPadding)
+                .fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(text = message)
+        }
+    }
+}
+
+@Composable
+private fun DocumentDetails(
     document: Document,
-    onDeleteClick: () -> Unit,
+    onDeleteDocumentClick: (Document) -> Unit,
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -103,7 +140,7 @@ private fun DocumentDetailContent(
             title = stringResource(R.string.delete_document_dialog_title),
             message = stringResource(R.string.delete_document_dialog_message),
             onDismissRequest = { showDeleteDialog = false },
-            onDeleteClick = { showDeleteDialog = false; onDeleteClick() }
+            onDeleteClick = { showDeleteDialog = false; onDeleteDocumentClick(document) }
         )
     }
 
@@ -230,31 +267,6 @@ private fun DocumentFileViewer(
             }
         ) {
             Text(text = stringResource(R.string.show_file_btn_label))
-        }
-    }
-}
-
-
-@Composable
-private fun DocumentDetailErrorContent(
-    message: String,
-    onBackClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Scaffold(
-        modifier = modifier,
-        contentWindowInsets = WindowInsets(),
-        topBar = {
-            RedknotTopBar(onBackClick = onBackClick)
-        }
-    ) { scaffoldPadding ->
-        Box(
-            modifier = Modifier
-                .padding(scaffoldPadding)
-                .fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(text = message)
         }
     }
 }

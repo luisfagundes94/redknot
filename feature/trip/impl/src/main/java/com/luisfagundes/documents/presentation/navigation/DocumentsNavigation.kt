@@ -3,7 +3,7 @@ package com.luisfagundes.documents.presentation.navigation
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import com.luisfagundes.documents.presentation.screen.AddDocumentFormScreen
-import com.luisfagundes.documents.presentation.screen.DocumentDetailScreen
+import com.luisfagundes.documents.presentation.screen.DocumentDetailsScreen
 import com.luisfagundes.documents.presentation.screen.DocumentsScreen
 
 internal fun EntryProviderScope<NavKey>.documentsEntries(
@@ -28,9 +28,9 @@ internal fun EntryProviderScope<NavKey>.documentsEntries(
         )
     }
     entry<DocumentDetailRoute> { key ->
-        DocumentDetailScreen(
+        DocumentDetailsScreen(
             documentId = key.documentId,
-            onNavigateBack = { goBack() }
+            onBackClick = { goBack() }
         )
     }
 }
