@@ -28,45 +28,45 @@ internal class AddDocumentFormViewModel @Inject constructor(
         setState { it.copy(tripId = tripId) }
     }
 
-    fun onCategorySelect(category: DocumentCategory) {
+    fun updateCategory(category: DocumentCategory) {
         setState { it.copy(category = category) }
     }
 
-    fun onTitleChange(title: String) {
+    fun updateTitle(title: String) {
         setState { it.copy(title = title) }
     }
 
-    fun onDescriptionChange(description: String) {
+    fun updateDescription(description: String) {
         setState { it.copy(description = description) }
     }
 
-    fun onTakePhotoClick() {
+    fun takePhoto() {
         sendEffect { AddDocumentFormUiEffect.LaunchCamera }
     }
 
-    fun onUploadFileClick() {
+    fun uploadFile() {
         sendEffect { AddDocumentFormUiEffect.LaunchFilePicker }
     }
 
-    fun onPhotoTaken(uri: Uri) {
+    fun handlePhoto(uri: Uri) {
         viewModelScope.launch(ioDispatcher) {
             val attachment = resolveAttachmentUseCase(uri, AttachmentSource.Camera)
             setState { it.copy(attachment = attachment) }
         }
     }
 
-    fun onFilePicked(uri: Uri) {
+    fun handleFile(uri: Uri) {
         viewModelScope.launch(ioDispatcher) {
             val attachment = resolveAttachmentUseCase(uri, AttachmentSource.FilePicker)
             setState { it.copy(attachment = attachment) }
         }
     }
 
-    fun onAttachmentRemove() {
+    fun removeAttachment() {
         setState { it.copy(attachment = null) }
     }
 
-    fun onSaveDocumentClick() {
+    fun saveDocument() {
         val state = getCurrentState()
         val attachment = state.attachment ?: return
 
@@ -87,7 +87,7 @@ internal class AddDocumentFormViewModel @Inject constructor(
         }
     }
 
-    fun onBackClick() {
+    fun navigateBack() {
         sendEffect { AddDocumentFormUiEffect.NavigateBack }
     }
 }

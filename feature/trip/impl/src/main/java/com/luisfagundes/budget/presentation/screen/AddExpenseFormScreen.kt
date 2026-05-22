@@ -71,12 +71,12 @@ internal fun AddExpenseFormScreen(
 
     AddExpenseFormContent(
         uiState = uiState,
-        onAmountChange = viewModel::onAmountChange,
-        onCategorySelect = viewModel::onCategorySelect,
-        onDateSelect = viewModel::onDateSelect,
-        onDescriptionChange = viewModel::onDescriptionChange,
-        onSaveExpense = viewModel::onAddExpenseClick,
-        onBackClick = viewModel::onBackClick
+        onAmountChange = viewModel::updateAmount,
+        onCategorySelect = viewModel::updateCategory,
+        onDateSelect = viewModel::updateDate,
+        onDescriptionChange = viewModel::updateDescription,
+        onSaveExpense = viewModel::addExpense,
+        onBackClick = viewModel::navigateBack
     )
 }
 

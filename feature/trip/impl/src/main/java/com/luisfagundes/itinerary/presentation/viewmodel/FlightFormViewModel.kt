@@ -71,7 +71,7 @@ internal class FlightFormViewModel @Inject constructor(
         }
     }
 
-    fun onFlightNumberChange(value: String) {
+    fun updateFlightNumber(value: String) {
         setStateOf<FlightFormUiState.Content> {
             it.copy(
                 flightNumber = value,
@@ -80,15 +80,15 @@ internal class FlightFormViewModel @Inject constructor(
         }
     }
 
-    fun onOriginChange(city: String) {
+    fun updateOrigin(city: String) {
         setStateOf<FlightFormUiState.Content> { it.copy(originAirportCity = city) }
     }
 
-    fun onDestinationChange(city: String) {
+    fun updateDestination(city: String) {
         setStateOf<FlightFormUiState.Content> { it.copy(destinationAirportCity = city) }
     }
 
-    fun onDurationChange(hoursStr: String, minutesStr: String) {
+    fun updateDuration(hoursStr: String, minutesStr: String) {
         val hours = hoursStr.toIntOrNull() ?: 0
         val mins = minutesStr.toIntOrNull() ?: 0
 
@@ -101,11 +101,11 @@ internal class FlightFormViewModel @Inject constructor(
         }
     }
 
-    fun onSeatNumberChange(value: String) {
+    fun updateSeatNumber(value: String) {
         setStateOf<FlightFormUiState.Content> { it.copy(seatNumber = value) }
     }
 
-    fun onDateChange(date: LocalDate?) {
+    fun updateDate(date: LocalDate?) {
         setStateOf<FlightFormUiState.Content> {
             it.copy(
                 date = date,
@@ -114,7 +114,7 @@ internal class FlightFormViewModel @Inject constructor(
         }
     }
 
-    fun onTimeChange(time: LocalTime) {
+    fun updateTime(time: LocalTime) {
         setStateOf<FlightFormUiState.Content> {
             it.copy(
                 time = time,
@@ -123,11 +123,11 @@ internal class FlightFormViewModel @Inject constructor(
         }
     }
 
-    fun onCompanyNameChange(name: String) {
+    fun updateCompanyName(name: String) {
         setStateOf<FlightFormUiState.Content> { it.copy(companyName = name) }
     }
 
-    fun onSubmit(tripId: Int) = viewModelScope.launch(dispatcher) {
+    fun submit(tripId: Int) = viewModelScope.launch(dispatcher) {
         val content = getCurrentState() as? FlightFormUiState.Content ?: return@launch
         setStateOf<FlightFormUiState.Content> { it.copy(isLoading = true) }
 
@@ -141,7 +141,7 @@ internal class FlightFormViewModel @Inject constructor(
         setStateOf<FlightFormUiState.Content> { it.copy(isLoading = false) }
     }
 
-    fun onDelete() = viewModelScope.launch(dispatcher) {
+    fun deleteFlight() = viewModelScope.launch(dispatcher) {
         val content = getCurrentState() as? FlightFormUiState.Content ?: return@launch
         val itemId = content.editingItemId ?: return@launch
 

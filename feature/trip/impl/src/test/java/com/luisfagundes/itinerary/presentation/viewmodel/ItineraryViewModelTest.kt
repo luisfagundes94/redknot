@@ -98,10 +98,10 @@ internal class ItineraryViewModelTest {
     }
 
     @Test
-    fun `onAddItineraryItem sends NavigateToItineraryItemForm effect`() = runTest {
+    fun `navigateToAddItineraryItem sends NavigateToItineraryItemForm effect`() = runTest {
         viewModel.uiEffect.test {
             // When
-            viewModel.onAddItineraryItem()
+            viewModel.navigateToAddItineraryItem()
 
             // Then
             assertEquals(ItineraryUiEffect.NavigateToItineraryItemForm, awaitItem())

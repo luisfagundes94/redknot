@@ -26,7 +26,7 @@ internal class TripDetailsViewModel @Inject constructor(
     private val _selectedTabIndex = MutableStateFlow(0)
     val selectedTabIndex: StateFlow<Int> = _selectedTabIndex.asStateFlow()
 
-    fun onTabSelected(index: Int) {
+    fun selectTab(index: Int) {
         _selectedTabIndex.value = index
     }
 

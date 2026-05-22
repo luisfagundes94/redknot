@@ -41,19 +41,19 @@ internal class AddExpenseFormViewModel @Inject constructor(
         }
     }
 
-    fun onAmountChange(text: String) {
+    fun updateAmount(text: String) {
         setState { currentState ->
             currentState.copy(amountText = text)
         }
     }
 
-    fun onCategorySelect(category: ExpenseCategory) {
+    fun updateCategory(category: ExpenseCategory) {
         setState { currentState ->
             currentState.copy(selectedCategory = category)
         }
     }
 
-    fun onDateSelect(date: LocalDate?) {
+    fun updateDate(date: LocalDate?) {
         setState { currentState ->
             currentState.copy(
                 selectedDate = date,
@@ -62,20 +62,20 @@ internal class AddExpenseFormViewModel @Inject constructor(
         }
     }
 
-    fun onDescriptionChange(description: String) {
+    fun updateDescription(description: String) {
         setState { currentState ->
             currentState.copy(description = description)
         }
     }
 
-    fun onAddExpenseClick() = viewModelScope.launch(dispatcher) {
+    fun addExpense() = viewModelScope.launch(dispatcher) {
         addExpenseUseCase(tripId, createExpense()).fold(
             onSuccess = { sendEffect { AddExpenseFormUiEffect.NavigateBack } },
             onFailure = { sendEffect { AddExpenseFormUiEffect.ShowErrorToast(it.toString()) }}
         )
     }
 
-    fun onBackClick() {
+    fun navigateBack() {
         sendEffect { AddExpenseFormUiEffect.NavigateBack }
     }
 

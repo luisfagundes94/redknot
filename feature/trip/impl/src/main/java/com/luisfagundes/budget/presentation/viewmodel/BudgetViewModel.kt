@@ -55,11 +55,11 @@ internal class BudgetViewModel @Inject constructor(
         )
     }
 
-    fun onSetBudgetClick() {
+    fun openSetBudget() {
         _showBudgetBottomSheet.value = true
     }
 
-    fun onBudgetAmountConfirm(tripId: Int, amount: BigDecimal, currency: BudgetCurrency) =
+    fun confirmBudgetAmount(tripId: Int, amount: BigDecimal, currency: BudgetCurrency) =
         viewModelScope.launch(dispatcher) {
             _showBudgetBottomSheet.value = false
             setTotalBudgetUseCase(tripId, amount, currency).fold(
@@ -68,15 +68,15 @@ internal class BudgetViewModel @Inject constructor(
             )
         }
 
-    fun onDismissBottomSheet() {
+    fun dismissBudgetBottomSheet() {
         _showBudgetBottomSheet.value = false
     }
 
-    fun onAddExpenseClick() {
+    fun navigateToAddExpense() {
         sendEffect { BudgetUiEffect.NavigateToAddExpense }
     }
 
-    fun onDeleteExpense(tripId: Int, expense: Expense) = viewModelScope.launch(dispatcher) {
+    fun deleteExpense(tripId: Int, expense: Expense) = viewModelScope.launch(dispatcher) {
         deleteExpenseUseCase(tripId, expense).fold(
             onSuccess = { loadBudget(tripId) },
             onFailure = { sendEffect { BudgetUiEffect.ShowErrorToast(it.toString()) } }

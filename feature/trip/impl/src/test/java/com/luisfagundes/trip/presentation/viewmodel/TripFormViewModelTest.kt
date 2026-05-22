@@ -58,7 +58,7 @@ internal class TripFormViewModelTest {
     }
 
     @Test
-    fun `onTitleChange updates title and clears error when valid`() = runTest {
+    fun `updateTitle updates title and clears error when valid`() = runTest {
         // Given
         every { validateTitleUseCase(any()) } returns FieldValidationResult.Valid
 
@@ -66,7 +66,7 @@ internal class TripFormViewModelTest {
             awaitItem() // consume initial state
 
             // When
-            viewModel.onTitleChange("Paris Trip")
+            viewModel.updateTitle("Paris Trip")
 
             // Then
             val currentState = awaitItem()
@@ -77,7 +77,7 @@ internal class TripFormViewModelTest {
     }
 
     @Test
-    fun `onTitleChange updates title and sets error when invalid`() = runTest {
+    fun `updateTitle updates title and sets error when invalid`() = runTest {
         // Given
         val error = CommonFieldError.EMPTY
         every { validateTitleUseCase(any()) } returns FieldValidationResult.Invalid(error)
@@ -86,7 +86,7 @@ internal class TripFormViewModelTest {
             awaitItem() // consume initial state
 
             // When
-            viewModel.onTitleChange("")
+            viewModel.updateTitle("")
 
             // Then
             val currentState = awaitItem()
@@ -97,7 +97,7 @@ internal class TripFormViewModelTest {
     }
 
     @Test
-    fun `onStartDateChange updates startDate and clears error when valid`() = runTest {
+    fun `updateStartDate updates startDate and clears error when valid`() = runTest {
         // Given
         val date = LocalDate.of(2025, 6, 15)
         every { validateDateUseCase(any()) } returns FieldValidationResult.Valid
@@ -106,7 +106,7 @@ internal class TripFormViewModelTest {
             awaitItem() // consume initial state
 
             // When
-            viewModel.onStartDateChange(date)
+            viewModel.updateStartDate(date)
 
             // Then
             val currentState = awaitItem()
@@ -117,7 +117,7 @@ internal class TripFormViewModelTest {
     }
 
     @Test
-    fun `onStartDateChange sets error when date is null`() = runTest {
+    fun `updateStartDate sets error when date is null`() = runTest {
         // Given
         val error = DateFieldError.MISSING
         every { validateDateUseCase(null) } returns FieldValidationResult.Invalid(error)
@@ -126,7 +126,7 @@ internal class TripFormViewModelTest {
             awaitItem() // consume initial state
 
             // When
-            viewModel.onStartDateChange(null)
+            viewModel.updateStartDate(null)
 
             // Then
             val currentState = awaitItem()
@@ -137,7 +137,7 @@ internal class TripFormViewModelTest {
     }
 
     @Test
-    fun `onEndDateChange updates endDate and clears error when valid`() = runTest {
+    fun `updateEndDate updates endDate and clears error when valid`() = runTest {
         // Given
         val date = LocalDate.of(2025, 6, 20)
         every { validateDateUseCase(any()) } returns FieldValidationResult.Valid
@@ -146,7 +146,7 @@ internal class TripFormViewModelTest {
             awaitItem() // consume initial state
 
             // When
-            viewModel.onEndDateChange(date)
+            viewModel.updateEndDate(date)
 
             // Then
             val currentState = awaitItem()
@@ -157,7 +157,7 @@ internal class TripFormViewModelTest {
     }
 
     @Test
-    fun `onEndDateChange sets error when date is null`() = runTest {
+    fun `updateEndDate sets error when date is null`() = runTest {
         // Given
         val error = DateFieldError.MISSING
         every { validateDateUseCase(null) } returns FieldValidationResult.Invalid(error)
@@ -166,7 +166,7 @@ internal class TripFormViewModelTest {
             awaitItem() // consume initial state
 
             // When
-            viewModel.onEndDateChange(null)
+            viewModel.updateEndDate(null)
 
             // Then
             val currentState = awaitItem()
@@ -177,7 +177,7 @@ internal class TripFormViewModelTest {
     }
 
     @Test
-    fun `onDestinationChange updates destination and clears error when valid`() = runTest {
+    fun `updateDestination updates destination and clears error when valid`() = runTest {
         // Given
         every { validateDestinationUseCase(any()) } returns FieldValidationResult.Valid
 
@@ -185,7 +185,7 @@ internal class TripFormViewModelTest {
             awaitItem() // consume initial state
 
             // When
-            viewModel.onDestinationChange("Paris, France")
+            viewModel.updateDestination("Paris, France")
 
             // Then
             val currentState = awaitItem()
@@ -196,7 +196,7 @@ internal class TripFormViewModelTest {
     }
 
     @Test
-    fun `onDestinationChange sets error when invalid`() = runTest {
+    fun `updateDestination sets error when invalid`() = runTest {
         // Given
         val error = CommonFieldError.EMPTY
         every { validateDestinationUseCase(any()) } returns FieldValidationResult.Invalid(error)
@@ -205,7 +205,7 @@ internal class TripFormViewModelTest {
             awaitItem() // consume initial state
 
             // When
-            viewModel.onDestinationChange("")
+            viewModel.updateDestination("")
 
             // Then
             val currentState = awaitItem()
@@ -216,7 +216,7 @@ internal class TripFormViewModelTest {
     }
 
     @Test
-    fun `onSubmit sets isLoading to true while processing`() = runTest {
+    fun `submit sets isLoading to true while processing`() = runTest {
         // Given
         coEvery { getUnsplashImageUseCase(any()) } coAnswers {
             delay(100)
@@ -228,7 +228,7 @@ internal class TripFormViewModelTest {
             awaitItem() // consume initial state
 
             // When
-            viewModel.onSubmit()
+            viewModel.submit()
 
             // Then
             assertTrue(awaitItem().isLoading)
@@ -237,7 +237,7 @@ internal class TripFormViewModelTest {
     }
 
     @Test
-    fun `onSubmit with successful creation sends NavigateBack effect`() = runTest {
+    fun `submit with successful creation sends NavigateBack effect`() = runTest {
         // Given
         val imageUrl = "https://example.com/image.jpg"
         coEvery { getUnsplashImageUseCase(any()) } returns Result.success(imageUrl)
@@ -245,7 +245,7 @@ internal class TripFormViewModelTest {
 
         viewModel.uiEffect.test {
             // When
-            viewModel.onSubmit()
+            viewModel.submit()
 
             // Then
             assertEquals(TripFormUiEffect.NavigateBack, awaitItem())
@@ -254,7 +254,7 @@ internal class TripFormViewModelTest {
     }
 
     @Test
-    fun `onSubmit with failed creation sends ShowErrorToast effect`() = runTest {
+    fun `submit with failed creation sends ShowErrorToast effect`() = runTest {
         // Given
         val exception = Exception("Creation failed")
         coEvery { getUnsplashImageUseCase(any()) } returns Result.success("")
@@ -262,7 +262,7 @@ internal class TripFormViewModelTest {
 
         viewModel.uiEffect.test {
             // When
-            viewModel.onSubmit()
+            viewModel.submit()
 
             // Then
             assertTrue(awaitItem() is TripFormUiEffect.ShowErrorToast)
@@ -271,14 +271,14 @@ internal class TripFormViewModelTest {
     }
 
     @Test
-    fun `onSubmit with failed image fetch continues with empty imageUrl`() = runTest {
+    fun `submit with failed image fetch continues with empty imageUrl`() = runTest {
         // Given
         coEvery { getUnsplashImageUseCase(any()) } returns Result.failure(Exception("Image fetch failed"))
         coEvery { createTripUseCase(any()) } returns Result.success(Unit)
 
         viewModel.uiEffect.test {
             // When
-            viewModel.onSubmit()
+            viewModel.submit()
 
             // Then
             coVerify { createTripUseCase(match { it.imageUrl.isEmpty() }) }
@@ -288,7 +288,7 @@ internal class TripFormViewModelTest {
     }
 
     @Test
-    fun `onSubmit creates trip with correct data from state`() = runTest {
+    fun `submit creates trip with correct data from state`() = runTest {
         // Given
         val imageUrl = "https://example.com/paris.jpg"
         val startDate = LocalDate.of(2025, 6, 15)
@@ -300,14 +300,14 @@ internal class TripFormViewModelTest {
         coEvery { getUnsplashImageUseCase("Paris") } returns Result.success(imageUrl)
         coEvery { createTripUseCase(any()) } returns Result.success(Unit)
 
-        viewModel.onTitleChange("Paris Trip")
-        viewModel.onStartDateChange(startDate)
-        viewModel.onEndDateChange(endDate)
-        viewModel.onDestinationChange("Paris")
+        viewModel.updateTitle("Paris Trip")
+        viewModel.updateStartDate(startDate)
+        viewModel.updateEndDate(endDate)
+        viewModel.updateDestination("Paris")
 
         viewModel.uiEffect.test {
             // When
-            viewModel.onSubmit()
+            viewModel.submit()
 
             // Then
             coVerify {

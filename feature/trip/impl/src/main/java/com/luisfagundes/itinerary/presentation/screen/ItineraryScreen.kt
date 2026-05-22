@@ -64,8 +64,8 @@ internal fun ItineraryScreen(
 
     ItineraryContent(
         uiState = uiState,
-        onAddItem = viewModel::onAddItineraryItem,
-        onItemClick = viewModel::onItineraryItemClick,
+        onAddItem = viewModel::navigateToAddItineraryItem,
+        onItemClick = viewModel::navigateToEditItineraryItem,
     )
 }
 

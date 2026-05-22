@@ -73,21 +73,21 @@ internal fun BudgetScreen(
     if (showBottomSheet) {
         SetBudgetBottomSheet(
             onConfirm = { amount, currency ->
-                viewModel.onBudgetAmountConfirm(
+                viewModel.confirmBudgetAmount(
                     tripId,
                     amount,
                     currency
                 )
             },
-            onDismiss = viewModel::onDismissBottomSheet
+            onDismiss = viewModel::dismissBudgetBottomSheet
         )
     }
 
     BudgetContent(
         uiState = uiState,
-        onSetBudgetClick = viewModel::onSetBudgetClick,
-        onAddExpenseClick = viewModel::onAddExpenseClick,
-        onDeleteExpense = { expense -> viewModel.onDeleteExpense(tripId, expense) }
+        onSetBudgetClick = viewModel::openSetBudget,
+        onAddExpenseClick = viewModel::navigateToAddExpense,
+        onDeleteExpense = { expense -> viewModel.deleteExpense(tripId, expense) }
     )
 }
 

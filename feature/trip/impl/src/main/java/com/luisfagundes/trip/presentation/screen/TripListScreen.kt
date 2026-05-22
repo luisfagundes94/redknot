@@ -75,8 +75,8 @@ internal fun TripListScreen(
 
     TripListContent(
         uiState = uiState,
-        onCreateTripClick = viewModel::onCreateTripClick,
-        onTripClick = viewModel::onTripClick,
+        onCreateTripClick = viewModel::navigateToTripForm,
+        onTripClick = viewModel::navigateToTripDetails,
         onTryAgainClick = viewModel::getTripList
     )
 }

@@ -64,7 +64,7 @@ internal class RestaurantFormViewModel @Inject constructor(
         }
     }
 
-    fun onNameChange(name: String) {
+    fun updateName(name: String) {
         setStateOf<RestaurantFormUiState.Content> {
             it.copy(
                 name = name,
@@ -73,7 +73,7 @@ internal class RestaurantFormViewModel @Inject constructor(
         }
     }
 
-    fun onAddressChange(address: String) {
+    fun updateAddress(address: String) {
         setStateOf<RestaurantFormUiState.Content> {
             it.copy(
                 address = address,
@@ -82,11 +82,11 @@ internal class RestaurantFormViewModel @Inject constructor(
         }
     }
 
-    fun onMealTypeChange(mealType: MealType) {
+    fun updateMealType(mealType: MealType) {
         setStateOf<RestaurantFormUiState.Content> { it.copy(mealType = mealType) }
     }
 
-    fun onDateChange(date: LocalDate?) {
+    fun updateDate(date: LocalDate?) {
         setStateOf<RestaurantFormUiState.Content> {
             it.copy(
                 date = date,
@@ -95,7 +95,7 @@ internal class RestaurantFormViewModel @Inject constructor(
         }
     }
 
-    fun onTimeChange(time: LocalTime) {
+    fun updateTime(time: LocalTime) {
         setStateOf<RestaurantFormUiState.Content> {
             it.copy(
                 time = time,
@@ -104,7 +104,7 @@ internal class RestaurantFormViewModel @Inject constructor(
         }
     }
 
-    fun onSubmit(tripId: Int) = viewModelScope.launch(dispatcher) {
+    fun submit(tripId: Int) = viewModelScope.launch(dispatcher) {
         val content = getCurrentState() as? RestaurantFormUiState.Content ?: return@launch
         setStateOf<RestaurantFormUiState.Content> { it.copy(isLoading = true) }
 
@@ -118,7 +118,7 @@ internal class RestaurantFormViewModel @Inject constructor(
         setStateOf<RestaurantFormUiState.Content> { it.copy(isLoading = false) }
     }
 
-    fun onDelete() = viewModelScope.launch(dispatcher) {
+    fun deleteRestaurant() = viewModelScope.launch(dispatcher) {
         val content = getCurrentState() as? RestaurantFormUiState.Content ?: return@launch
         val itemId = content.editingItemId ?: return@launch
 

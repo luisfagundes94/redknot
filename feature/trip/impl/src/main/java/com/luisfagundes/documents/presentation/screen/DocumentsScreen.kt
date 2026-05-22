@@ -60,8 +60,8 @@ internal fun DocumentsScreen(
 
     DocumentsContent(
         uiState = uiState,
-        onAddDocumentClick = viewModel::onAddDocumentClick,
-        onDocumentClick = viewModel::onDocumentClick
+        onAddDocumentClick = viewModel::navigateToAddDocument,
+        onDocumentClick = viewModel::navigateToDocumentDetails
     )
 }
 

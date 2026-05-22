@@ -96,13 +96,13 @@ internal class TripListViewModelTest {
     }
 
     @Test
-    fun `onTripClick event should send NavigateToTripForm effect`() = runTest {
+    fun `navigateToTripDetails event should send NavigateToTripDetails effect`() = runTest {
         // Given
         val id = 123
 
         viewModel.uiEffect.test {
             // When
-            viewModel.onTripClick(id)
+            viewModel.navigateToTripDetails(id)
 
             // Then
             assertEquals(TripListUiEffect.NavigateToTripDetails(id), awaitItem())
@@ -110,10 +110,10 @@ internal class TripListViewModelTest {
     }
 
     @Test
-    fun `onCreateTripClick should send NavigateToTripForm effect`() = runTest {
+    fun `navigateToTripForm should send NavigateToTripForm effect`() = runTest {
         viewModel.uiEffect.test {
             // When
-            viewModel.onCreateTripClick()
+            viewModel.navigateToTripForm()
 
             // Then
             assertEquals(TripListUiEffect.NavigateToTripForm, awaitItem())

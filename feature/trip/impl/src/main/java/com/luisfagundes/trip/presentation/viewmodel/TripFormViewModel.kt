@@ -30,7 +30,7 @@ internal class TripFormViewModel @Inject constructor(
 ) : ViewModel<TripFormUiState, TripFormUiEffect>(
     initialState = TripFormUiState()
 ) {
-    fun onTitleChange(title: String) {
+    fun updateTitle(title: String) {
         setState { state ->
             state.copy(
                 title = title,
@@ -39,7 +39,7 @@ internal class TripFormViewModel @Inject constructor(
         }
     }
 
-    fun onStartDateChange(startDate: LocalDate?) {
+    fun updateStartDate(startDate: LocalDate?) {
         setState { state ->
             state.copy(
                 startDate = startDate,
@@ -48,7 +48,7 @@ internal class TripFormViewModel @Inject constructor(
         }
     }
 
-    fun onEndDateChange(endDate: LocalDate?) {
+    fun updateEndDate(endDate: LocalDate?) {
         setState { state ->
             state.copy(
                 endDate = endDate,
@@ -57,7 +57,7 @@ internal class TripFormViewModel @Inject constructor(
         }
     }
 
-    fun onDestinationChange(destination: String) {
+    fun updateDestination(destination: String) {
         setState { state ->
             state.copy(
                 destination = destination,
@@ -66,7 +66,7 @@ internal class TripFormViewModel @Inject constructor(
         }
     }
 
-    fun onSubmit() = viewModelScope.launch(dispatcher) {
+    fun submit() = viewModelScope.launch(dispatcher) {
         val state = getCurrentState()
 
         setState { it.copy(isLoading = true) }

@@ -45,8 +45,8 @@ internal fun AddDocumentFormScreen(
     }
 
     val attachmentLaunchers = rememberDocumentAttachmentLaunchers(
-        onPhotoTaken = viewModel::onPhotoTaken,
-        onFilePicked = viewModel::onFilePicked,
+        onPhotoTaken = viewModel::handlePhoto,
+        onFilePicked = viewModel::handleFile,
     )
 
     CollectUiEffects(viewModel.uiEffect) { effect ->
@@ -59,14 +59,14 @@ internal fun AddDocumentFormScreen(
 
     AddDocumentFormContent(
         uiState = uiState,
-        onCategorySelect = viewModel::onCategorySelect,
-        onTitleChange = viewModel::onTitleChange,
-        onDescriptionChange = viewModel::onDescriptionChange,
-        onTakePhotoClick = viewModel::onTakePhotoClick,
-        onUploadFileClick = viewModel::onUploadFileClick,
-        onAttachmentRemove = viewModel::onAttachmentRemove,
-        onSaveDocumentClick = viewModel::onSaveDocumentClick,
-        onBackClick = viewModel::onBackClick
+        onCategorySelect = viewModel::updateCategory,
+        onTitleChange = viewModel::updateTitle,
+        onDescriptionChange = viewModel::updateDescription,
+        onTakePhotoClick = viewModel::takePhoto,
+        onUploadFileClick = viewModel::uploadFile,
+        onAttachmentRemove = viewModel::removeAttachment,
+        onSaveDocumentClick = viewModel::saveDocument,
+        onBackClick = viewModel::navigateBack
     )
 }
 

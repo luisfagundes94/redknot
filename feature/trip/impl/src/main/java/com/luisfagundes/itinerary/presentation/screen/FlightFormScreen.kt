@@ -83,16 +83,16 @@ internal fun FlightFormScreen(
 
     FlightFormContent(
         uiState = uiState,
-        onFlightNumberChange = viewModel::onFlightNumberChange,
-        onCompanyNameChange = viewModel::onCompanyNameChange,
-        onOriginChange = viewModel::onOriginChange,
-        onDestinationChange = viewModel::onDestinationChange,
-        onDurationChange = viewModel::onDurationChange,
-        onSeatNumberChange = viewModel::onSeatNumberChange,
-        onDateChange = viewModel::onDateChange,
-        onTimeChange = viewModel::onTimeChange,
-        onSubmit = { viewModel.onSubmit(tripId) },
-        onDelete = viewModel::onDelete,
+        onFlightNumberChange = viewModel::updateFlightNumber,
+        onCompanyNameChange = viewModel::updateCompanyName,
+        onOriginChange = viewModel::updateOrigin,
+        onDestinationChange = viewModel::updateDestination,
+        onDurationChange = viewModel::updateDuration,
+        onSeatNumberChange = viewModel::updateSeatNumber,
+        onDateChange = viewModel::updateDate,
+        onTimeChange = viewModel::updateTime,
+        onSubmit = { viewModel.submit(tripId) },
+        onDelete = viewModel::deleteFlight,
         onBackClick = onBackClick
     )
 }

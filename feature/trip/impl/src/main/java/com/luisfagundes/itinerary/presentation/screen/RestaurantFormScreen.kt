@@ -79,13 +79,13 @@ internal fun RestaurantFormScreen(
 
     RestaurantFormContent(
         uiState = uiState,
-        onMealTypeChange = viewModel::onMealTypeChange,
-        onNameChange = viewModel::onNameChange,
-        onAddressChange = viewModel::onAddressChange,
-        onDateChange = viewModel::onDateChange,
-        onTimeChange = viewModel::onTimeChange,
-        onSubmit = { viewModel.onSubmit(tripId) },
-        onDelete = viewModel::onDelete,
+        onMealTypeChange = viewModel::updateMealType,
+        onNameChange = viewModel::updateName,
+        onAddressChange = viewModel::updateAddress,
+        onDateChange = viewModel::updateDate,
+        onTimeChange = viewModel::updateTime,
+        onSubmit = { viewModel.submit(tripId) },
+        onDelete = viewModel::deleteRestaurant,
         onBackClick = onBackClick
     )
 }

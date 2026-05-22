@@ -83,7 +83,7 @@ internal fun TripDetailsScreen(
     TripDetailsContent(
         uiState = uiState,
         selectedTabIndex = selectedTabIndex,
-        onTabSelected = viewModel::onTabSelected,
+        onTabSelected = viewModel::selectTab,
         onAddItineraryItemClick = onNavigateToAddItineraryItem,
         onEditItineraryItemClick = onNavigateToEditItineraryItem,
         onNavigateToDocumentForm = onNavigateToDocumentForm,

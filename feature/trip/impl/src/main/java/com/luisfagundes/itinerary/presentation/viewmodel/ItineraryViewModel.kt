@@ -28,11 +28,11 @@ internal class ItineraryViewModel @Inject constructor(
         }
     }
 
-    fun onAddItineraryItem() {
+    fun navigateToAddItineraryItem() {
         sendEffect { ItineraryUiEffect.NavigateToItineraryItemForm }
     }
 
-    fun onItineraryItemClick(item: ItineraryItem) {
+    fun navigateToEditItineraryItem(item: ItineraryItem) {
         sendEffect { ItineraryUiEffect.NavigateToEditItineraryItem(item) }
     }
 }

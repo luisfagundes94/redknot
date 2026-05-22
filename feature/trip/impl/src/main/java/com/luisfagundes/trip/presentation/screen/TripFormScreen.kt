@@ -73,11 +73,11 @@ internal fun TripFormScreen(
 
     TripFormContent(
         uiState = uiState,
-        onTitleChange = viewModel::onTitleChange,
-        onDestinationChange = viewModel::onDestinationChange,
-        onStartDateChange = viewModel::onStartDateChange,
-        onEndDateChange = viewModel::onEndDateChange,
-        onSubmitForm = viewModel::onSubmit,
+        onTitleChange = viewModel::updateTitle,
+        onDestinationChange = viewModel::updateDestination,
+        onStartDateChange = viewModel::updateStartDate,
+        onEndDateChange = viewModel::updateEndDate,
+        onSubmitForm = viewModel::submit,
         onBackClick = onBackClick,
     )
 }
