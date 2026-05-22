@@ -89,7 +89,7 @@ private fun ItineraryContent(
                 .fillMaxSize()
         )
 
-        is ItineraryUiState.Content -> ItineraryTimelineContent(
+        is ItineraryUiState.Content -> ItineraryTimeline(
             itemsByDay = uiState.itemsByDay,
             onAddItem = onAddItem,
             onItemClick = onItemClick,
@@ -100,7 +100,7 @@ private fun ItineraryContent(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun ItineraryTimelineContent(
+private fun ItineraryTimeline(
     itemsByDay: Map<LocalDate, List<ItineraryItem>>,
     onAddItem: () -> Unit,
     onItemClick: (ItineraryItem) -> Unit,
@@ -149,11 +149,11 @@ private fun ItineraryTimelineContent(
 @PreviewWrapper(RedknotThemeWrapper::class)
 @RedknotPreview
 @Composable
-private fun ItineraryContentPreview(
+private fun ItineraryTimelinePreview(
     @PreviewParameter(ItineraryPreviewParameterProvider::class)
     uiState: ItineraryUiState.Content
 ) {
-    ItineraryTimelineContent(
+    ItineraryTimeline(
         itemsByDay = uiState.itemsByDay,
         onAddItem = {},
         onItemClick = {},
