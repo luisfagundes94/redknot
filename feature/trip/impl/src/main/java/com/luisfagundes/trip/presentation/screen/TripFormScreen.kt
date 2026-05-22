@@ -30,6 +30,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -44,7 +45,6 @@ import com.luisfagundes.trip.R
 import com.luisfagundes.trip.presentation.viewmodel.TripFormViewModel
 import com.luisfagundes.trip.presentation.viewmodel.effect.TripFormUiEffect
 import com.luisfagundes.trip.presentation.viewmodel.state.TripFormUiState
-import com.luisfagundes.trip.tools.extensions.capitalizeEveryWord
 import java.time.LocalDate
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -111,7 +111,7 @@ private fun TripFormContent(
         ) {
             OutlinedTextField(
                 value = uiState.title,
-                onValueChange = { onTitleChange.invoke(it.capitalizeEveryWord()) },
+                onValueChange = { onTitleChange.invoke(it) },
                 label = { Text(stringResource(R.string.trip_name_label)) },
                 placeholder = { Text(stringResource(R.string.trip_name_placeholder)) },
                 singleLine = true,
@@ -122,7 +122,8 @@ private fun TripFormContent(
                     }
                 },
                 keyboardOptions = KeyboardOptions(
-                    imeAction = ImeAction.Next
+                    imeAction = ImeAction.Next,
+                    capitalization = KeyboardCapitalization.Words
                 ),
                 keyboardActions = KeyboardActions(
                     onNext = { focusManager.moveFocus(FocusDirection.Down) }
@@ -131,7 +132,7 @@ private fun TripFormContent(
             )
             OutlinedTextField(
                 value = uiState.destination,
-                onValueChange = { onDestinationChange.invoke(it.capitalizeEveryWord()) },
+                onValueChange = { onDestinationChange.invoke(it) },
                 label = { Text(stringResource(R.string.trip_destination_label)) },
                 placeholder = { Text(stringResource(R.string.trip_destination_placeholder)) },
                 singleLine = true,
@@ -141,6 +142,9 @@ private fun TripFormContent(
                         Text(it.toMessage(context))
                     }
                 },
+                keyboardOptions = KeyboardOptions(
+                    capitalization = KeyboardCapitalization.Words
+                ),
                 modifier = Modifier.fillMaxWidth()
             )
             RedknotDateSelectionField(
