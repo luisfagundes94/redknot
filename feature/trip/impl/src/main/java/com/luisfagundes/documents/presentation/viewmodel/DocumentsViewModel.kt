@@ -7,6 +7,7 @@ import com.luisfagundes.documents.domain.model.Document
 import com.luisfagundes.documents.domain.model.DocumentCategory
 import com.luisfagundes.documents.domain.usecase.GetDocumentsByCategoryUseCase
 import com.luisfagundes.documents.presentation.viewmodel.effect.DocumentsUiEffect
+import com.luisfagundes.documents.presentation.viewmodel.event.DocumentsUiEvent
 import com.luisfagundes.documents.presentation.viewmodel.state.DocumentsUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -17,20 +18,29 @@ import javax.inject.Inject
 internal class DocumentsViewModel @Inject constructor(
     private val getDocumentsByCategoryIdUseCase: GetDocumentsByCategoryUseCase,
     @param:IoDispatcher private val dispatcher: CoroutineDispatcher
-) : ViewModel<DocumentsUiState, DocumentsUiEffect>(
+) : ViewModel<DocumentsUiState, DocumentsUiEvent, DocumentsUiEffect>(
     initialState = DocumentsUiState.Empty
 ) {
-    fun getDocuments(tripId: Int) = viewModelScope.launch(dispatcher) {
+    override fun dispatchEvent(event: DocumentsUiEvent) {
+        when (event) {
+            is DocumentsUiEvent.GetDocuments -> getDocuments(event.tripId)
+            is DocumentsUiEvent.NavigateToAddDocument -> navigateToAddDocument()
+            is DocumentsUiEvent.NavigateToDocumentDetails -> navigateToDocumentDetails(event.documentId)
+        }
+    }
+
+    private fun getDocuments(tripId: Int) = viewModelScope.launch(dispatcher) {
         getDocumentsByCategoryIdUseCase(tripId).fold(
             onSuccess = { setDocuments(it) },
             onFailure = {}
         )
     }
-    fun navigateToAddDocument() {
+
+    private fun navigateToAddDocument() {
         sendEffect { DocumentsUiEffect.NavigateToDocumentForm }
     }
 
-    fun navigateToDocumentDetails(documentId: Int) {
+    private fun navigateToDocumentDetails(documentId: Int) {
         sendEffect { DocumentsUiEffect.NavigateToDocumentDetail(documentId) }
     }
 

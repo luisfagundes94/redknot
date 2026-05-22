@@ -8,7 +8,7 @@ Use Android CLI Skills
 
 ## Architecture Overview
 
-**Pattern**: Clean Architecture + MVVM with MVI-style state/action flow (immutable state + one-shot action channel).
+**Pattern**: Clean Architecture + MVI (Model-View-Intent) 
 
 **Modules:**
 - `:app` — Entry point, navigation host, bottom bar
@@ -40,10 +40,13 @@ Each sub-feature has its own `data/`, `domain/`, `presentation/`, and `di/` sub-
 
 Two base classes in `core/presentation/arch/viewmodel/`:
 
-- `ViewModel<State, Effect>` — use when the screen needs one-shot side effects like navigation (effects sent via `Channel`, collected as `uiEffect`)
-- `StateViewModel<State>` — use when no side effects are needed; exposes only `uiState`
+- `ViewModel<State : UiState, Event : UiEvent, Effect : UiEffect>` — use when the screen needs MVI events and one-shot side effects like navigation (effects sent via `Channel`, collected as `uiEffect`).
+- `StateViewModel<State : UiState, Event : UiEvent>` — use when MVI events are needed but no side effects are required; exposes only `uiState` and handles incoming `UiEvent`s.
 
-Data flow: UI collects `uiState` → calls specific ViewModel methods (e.g. `viewModel.getTripList()`, `viewModel.onTripClick(id)`) → ViewModel updates state via `setState { }` / `setStateOf<T> { }` or emits an effect via `sendEffect { }` → UI collects `uiEffect` with `CollectUiEffects` to execute the effect.
+Data flow: 
+1. **User Action / Events**: The Compose screen dispatches immutable events implementing `UiEvent` by calling `viewModel.dispatchEvent(event)`. All public business methods on the ViewModel are kept `private`, exposing only `dispatchEvent`.
+2. **State Updates**: The ViewModel handles incoming events within `dispatchEvent(event)`. It updates the immutable `uiState` via `setState { }` or `setStateOf<T> { }` (to only update state when matching a specific subtype in a sealed hierarchy).
+3. **Side Effects**: One-shot side-effects (e.g. navigation, toasts) are dispatched from the ViewModel using `sendEffect { }` and collected in Compose screens using `CollectUiEffects(viewModel.uiEffect)`.
 
 **State updates**: Use `setState { }` for unconditional updates. Use `setStateOf<SpecificState> { }` to only update when the current state matches a specific subtype in a sealed hierarchy (e.g., only mutate if currently in `Success` state).
 

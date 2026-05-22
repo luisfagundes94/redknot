@@ -6,6 +6,7 @@ import com.luisfagundes.core.common.presentation.arch.viewmodel.ViewModel
 import com.luisfagundes.trip.domain.usecase.DeleteTripUseCase
 import com.luisfagundes.trip.domain.usecase.GetTripByIdUseCase
 import com.luisfagundes.trip.presentation.viewmodel.effect.TripDetailsUiEffect
+import com.luisfagundes.trip.presentation.viewmodel.event.TripDetailsUiEvent
 import com.luisfagundes.trip.presentation.viewmodel.state.TripDetailsUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -20,17 +21,25 @@ internal class TripDetailsViewModel @Inject constructor(
     private val getTripByIdUseCase: GetTripByIdUseCase,
     private val deleteTripUseCase: DeleteTripUseCase,
     @param:IoDispatcher private val dispatcher: CoroutineDispatcher
-) : ViewModel<TripDetailsUiState, TripDetailsUiEffect>(
+) : ViewModel<TripDetailsUiState, TripDetailsUiEvent, TripDetailsUiEffect>(
     initialState = TripDetailsUiState.Loading
 ) {
     private val _selectedTabIndex = MutableStateFlow(0)
     val selectedTabIndex: StateFlow<Int> = _selectedTabIndex.asStateFlow()
 
-    fun selectTab(index: Int) {
+    override fun dispatchEvent(event: TripDetailsUiEvent) {
+        when (event) {
+            is TripDetailsUiEvent.GetTripById -> getTripById(event.id)
+            is TripDetailsUiEvent.DeleteTrip -> deleteTrip(event.id)
+            is TripDetailsUiEvent.SelectTab -> selectTab(event.index)
+        }
+    }
+
+    private fun selectTab(index: Int) {
         _selectedTabIndex.value = index
     }
 
-    fun getTripById(id: Int) = viewModelScope.launch(dispatcher) {
+    private fun getTripById(id: Int) = viewModelScope.launch(dispatcher) {
         setState { TripDetailsUiState.Loading }
 
         getTripByIdUseCase.invoke(id).fold(
@@ -39,7 +48,7 @@ internal class TripDetailsViewModel @Inject constructor(
         )
     }
 
-    fun deleteTrip(id: Int) = viewModelScope.launch(dispatcher) {
+    private fun deleteTrip(id: Int) = viewModelScope.launch(dispatcher) {
         deleteTripUseCase(id).fold(
             onSuccess = { sendEffect { TripDetailsUiEffect.NavigateBack } },
             onFailure = { sendEffect { TripDetailsUiEffect.ShowErrorToast(it.toString()) } }

@@ -7,6 +7,7 @@ import com.luisfagundes.trip.domain.usecase.GetTripListUseCase
 import com.luisfagundes.trip.presentation.fixtures.fakePastTrip
 import com.luisfagundes.trip.presentation.fixtures.fakeUpcomingTrip
 import com.luisfagundes.trip.presentation.viewmodel.effect.TripListUiEffect
+import com.luisfagundes.trip.presentation.viewmodel.event.TripListUiEvent
 import com.luisfagundes.trip.presentation.viewmodel.state.TripListUiState
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -52,7 +53,7 @@ internal class TripListViewModelTest {
             awaitItem() // Consume initial loading
 
             // When
-            viewModel.getTripList()
+            viewModel.dispatchEvent(TripListUiEvent.GetTripList)
 
             // Then
             assertEquals(TripListUiState.Success(tripsByStatus), awaitItem())
@@ -69,7 +70,7 @@ internal class TripListViewModelTest {
             awaitItem() // Consume initial loading
 
             // When
-            viewModel.getTripList()
+            viewModel.dispatchEvent(TripListUiEvent.GetTripList)
 
             // Then
             assertEquals(TripListUiState.Empty, awaitItem())
@@ -87,7 +88,7 @@ internal class TripListViewModelTest {
             awaitItem() // Consume initial loading
 
             // When
-            viewModel.getTripList()
+            viewModel.dispatchEvent(TripListUiEvent.GetTripList)
 
             // Then
             assertEquals(TripListUiState.Error, awaitItem())
@@ -102,7 +103,7 @@ internal class TripListViewModelTest {
 
         viewModel.uiEffect.test {
             // When
-            viewModel.navigateToTripDetails(id)
+            viewModel.dispatchEvent(TripListUiEvent.NavigateToTripDetails(id))
 
             // Then
             assertEquals(TripListUiEffect.NavigateToTripDetails(id), awaitItem())
@@ -113,7 +114,7 @@ internal class TripListViewModelTest {
     fun `navigateToTripForm should send NavigateToTripForm effect`() = runTest {
         viewModel.uiEffect.test {
             // When
-            viewModel.navigateToTripForm()
+            viewModel.dispatchEvent(TripListUiEvent.NavigateToTripForm)
 
             // Then
             assertEquals(TripListUiEffect.NavigateToTripForm, awaitItem())

@@ -12,6 +12,7 @@ import com.luisfagundes.common.domain.usecase.ValidateAddressUseCase
 import com.luisfagundes.common.domain.usecase.ValidateNameUseCase
 import com.luisfagundes.common.domain.usecase.ValidateTimeUseCase
 import com.luisfagundes.itinerary.presentation.viewmodel.effect.AccommodationFormUiEffect
+import com.luisfagundes.itinerary.presentation.viewmodel.event.AccommodationFormUiEvent
 import com.luisfagundes.itinerary.presentation.viewmodel.state.AccommodationFormUiState
 import com.luisfagundes.common.domain.usecase.ValidateDateUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -30,10 +31,24 @@ internal class AccommodationFormViewModel @Inject constructor(
     private val validateTimeUseCase: ValidateTimeUseCase,
     private val formUseCase: ItineraryItemFormUseCase,
     @param:IoDispatcher private val dispatcher: CoroutineDispatcher
-) : ViewModel<AccommodationFormUiState, AccommodationFormUiEffect>(
+) : ViewModel<AccommodationFormUiState, AccommodationFormUiEvent, AccommodationFormUiEffect>(
     initialState = AccommodationFormUiState.Loading
 ) {
-    fun initForm(tripId: Int, itemId: String?) {
+    override fun dispatchEvent(event: AccommodationFormUiEvent) {
+        when (event) {
+            is AccommodationFormUiEvent.InitForm -> initForm(event.tripId, event.itemId)
+            is AccommodationFormUiEvent.UpdateName -> updateName(event.name)
+            is AccommodationFormUiEvent.UpdateAddress -> updateAddress(event.address)
+            is AccommodationFormUiEvent.UpdateCheckInType -> updateCheckInType(event.checkInType)
+            is AccommodationFormUiEvent.UpdateDate -> updateDate(event.date)
+            is AccommodationFormUiEvent.UpdateTime -> updateTime(event.time)
+            is AccommodationFormUiEvent.NavigateBack -> navigateBack()
+            is AccommodationFormUiEvent.Submit -> submit(event.tripId)
+            is AccommodationFormUiEvent.DeleteAccommodation -> deleteAccommodation()
+        }
+    }
+
+    private fun initForm(tripId: Int, itemId: String?) {
         viewModelScope.launch(dispatcher) {
             val tripStartDate = formUseCase.getTripStartDate(tripId)
 
@@ -64,7 +79,7 @@ internal class AccommodationFormViewModel @Inject constructor(
         }
     }
 
-    fun updateName(name: String) {
+    private fun updateName(name: String) {
         setStateOf<AccommodationFormUiState.Content> {
             it.copy(
                 name = name,
@@ -73,7 +88,7 @@ internal class AccommodationFormViewModel @Inject constructor(
         }
     }
 
-    fun updateAddress(address: String) {
+    private fun updateAddress(address: String) {
         setStateOf<AccommodationFormUiState.Content> {
             it.copy(
                 address = address,
@@ -82,11 +97,11 @@ internal class AccommodationFormViewModel @Inject constructor(
         }
     }
 
-    fun updateCheckInType(checkInType: CheckInType) {
+    private fun updateCheckInType(checkInType: CheckInType) {
         setStateOf<AccommodationFormUiState.Content> { it.copy(checkInType = checkInType) }
     }
 
-    fun updateDate(date: LocalDate?) {
+    private fun updateDate(date: LocalDate?) {
         setStateOf<AccommodationFormUiState.Content> {
             it.copy(
                 date = date,
@@ -95,7 +110,7 @@ internal class AccommodationFormViewModel @Inject constructor(
         }
     }
 
-    fun updateTime(time: LocalTime) {
+    private fun updateTime(time: LocalTime) {
         setStateOf<AccommodationFormUiState.Content> {
             it.copy(
                 time = time,
@@ -104,11 +119,11 @@ internal class AccommodationFormViewModel @Inject constructor(
         }
     }
 
-    fun navigateBack() {
+    private fun navigateBack() {
         sendEffect { AccommodationFormUiEffect.NavigateBack }
     }
 
-    fun submit(tripId: Int) = viewModelScope.launch(dispatcher) {
+    private fun submit(tripId: Int) = viewModelScope.launch(dispatcher) {
         val content = getCurrentState() as? AccommodationFormUiState.Content ?: return@launch
         setStateOf<AccommodationFormUiState.Content> { it.copy(isLoading = true) }
 
@@ -122,7 +137,7 @@ internal class AccommodationFormViewModel @Inject constructor(
         setStateOf<AccommodationFormUiState.Content> { it.copy(isLoading = false) }
     }
 
-    fun deleteAccommodation() = viewModelScope.launch(dispatcher) {
+    private fun deleteAccommodation() = viewModelScope.launch(dispatcher) {
         val content = getCurrentState() as? AccommodationFormUiState.Content ?: return@launch
         val itemId = content.editingItemId ?: return@launch
 

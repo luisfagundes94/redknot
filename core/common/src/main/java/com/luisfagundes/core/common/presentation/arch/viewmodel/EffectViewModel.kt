@@ -5,39 +5,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.luisfagundes.core.common.presentation.arch.effect.UiEffect
 import com.luisfagundes.core.common.presentation.arch.event.UiEvent
-import com.luisfagundes.core.common.presentation.arch.state.UiState
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-abstract class ViewModel<State : UiState, Event : UiEvent, Effect : UiEffect>(
-    initialState: State
-) : ViewModel() {
-
-    protected val _uiState = MutableStateFlow(initialState)
-    val uiState = _uiState.asStateFlow()
-
+abstract class EffectViewModel<Effect : UiEffect, Event : UiEvent> : ViewModel() {
     private val _uiEffect = Channel<Effect>()
     val uiEffect = _uiEffect.receiveAsFlow()
 
     abstract fun dispatchEvent(event: Event)
-
-    protected fun getCurrentState(): State = uiState.value
-
-    protected fun setState(reducer: (State) -> State) {
-        _uiState.update(reducer)
-    }
-
-    protected inline fun <reified UiStateType : State> setStateOf(
-        noinline reducer: (UiStateType) -> State
-    ) {
-        _uiState.update { current ->
-            if (current is UiStateType) reducer(current) else current
-        }
-    }
 
     protected fun sendEffect(effect: () -> Effect) = viewModelScope.launch {
         runCatching {

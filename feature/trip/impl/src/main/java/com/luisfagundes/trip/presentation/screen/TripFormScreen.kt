@@ -44,8 +44,8 @@ import com.luisfagundes.designsystem.theme.spacing
 import com.luisfagundes.trip.R
 import com.luisfagundes.trip.presentation.viewmodel.TripFormViewModel
 import com.luisfagundes.trip.presentation.viewmodel.effect.TripFormUiEffect
+import com.luisfagundes.trip.presentation.viewmodel.event.TripFormUiEvent
 import com.luisfagundes.trip.presentation.viewmodel.state.TripFormUiState
-import java.time.LocalDate
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -73,11 +73,7 @@ internal fun TripFormScreen(
 
     TripFormContent(
         uiState = uiState,
-        onTitleChange = viewModel::updateTitle,
-        onDestinationChange = viewModel::updateDestination,
-        onStartDateChange = viewModel::updateStartDate,
-        onEndDateChange = viewModel::updateEndDate,
-        onSubmitForm = viewModel::submit,
+        onEvent = viewModel::dispatchEvent,
         onBackClick = onBackClick,
     )
 }
@@ -85,11 +81,7 @@ internal fun TripFormScreen(
 @Composable
 private fun TripFormContent(
     uiState: TripFormUiState,
-    onTitleChange: (String) -> Unit,
-    onDestinationChange: (String) -> Unit,
-    onStartDateChange: (LocalDate?) -> Unit,
-    onEndDateChange: (LocalDate?) -> Unit,
-    onSubmitForm: () -> Unit,
+    onEvent: (TripFormUiEvent) -> Unit,
     onBackClick: () -> Unit
 ) {
     val context = LocalContext.current
@@ -111,7 +103,7 @@ private fun TripFormContent(
         ) {
             OutlinedTextField(
                 value = uiState.title,
-                onValueChange = { onTitleChange.invoke(it) },
+                onValueChange = { onEvent(TripFormUiEvent.UpdateTitle(it)) },
                 label = { Text(stringResource(R.string.trip_name_label)) },
                 placeholder = { Text(stringResource(R.string.trip_name_placeholder)) },
                 singleLine = true,
@@ -132,7 +124,7 @@ private fun TripFormContent(
             )
             OutlinedTextField(
                 value = uiState.destination,
-                onValueChange = { onDestinationChange.invoke(it) },
+                onValueChange = { onEvent(TripFormUiEvent.UpdateDestination(it)) },
                 label = { Text(stringResource(R.string.trip_destination_label)) },
                 placeholder = { Text(stringResource(R.string.trip_destination_placeholder)) },
                 singleLine = true,
@@ -157,7 +149,7 @@ private fun TripFormContent(
                         Text(error.toMessage(context))
                     }
                 },
-                onDateSelect = onStartDateChange,
+                onDateSelect = { onEvent(TripFormUiEvent.UpdateStartDate(it)) },
                 modifier = Modifier.fillMaxWidth()
             )
             RedknotDateSelectionField(
@@ -171,12 +163,12 @@ private fun TripFormContent(
                         Text(error.toMessage(context))
                     }
                 },
-                onDateSelect = onEndDateChange,
+                onDateSelect = { onEvent(TripFormUiEvent.UpdateEndDate(it)) },
                 modifier = Modifier.fillMaxWidth()
             )
             CreateTripButton(
                 uiState = uiState,
-                onSubmitForm = onSubmitForm
+                onEvent = onEvent
             )
         }
     }
@@ -185,10 +177,10 @@ private fun TripFormContent(
 @Composable
 private fun CreateTripButton(
     uiState: TripFormUiState,
-    onSubmitForm: () -> Unit
+    onEvent: (TripFormUiEvent) -> Unit
 ) {
     Button(
-        onClick = onSubmitForm,
+        onClick = { onEvent(TripFormUiEvent.Submit) },
         enabled = uiState.isFormValid && !uiState.isLoading,
         modifier = Modifier
             .fillMaxWidth()
@@ -223,11 +215,7 @@ private fun CreateTripButton(
 private fun TripFormScreenPreview() {
     TripFormContent(
         uiState = TripFormUiState(),
-        onTitleChange = {},
-        onDestinationChange = {},
-        onStartDateChange = {},
-        onEndDateChange = {},
-        onSubmitForm = {},
+        onEvent = {},
         onBackClick = {}
     )
 }

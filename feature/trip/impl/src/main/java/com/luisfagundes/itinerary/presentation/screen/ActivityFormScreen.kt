@@ -44,6 +44,7 @@ import com.luisfagundes.designsystem.components.RedknotTopBar
 import com.luisfagundes.designsystem.theme.spacing
 import com.luisfagundes.itinerary.presentation.viewmodel.ActivityFormViewModel
 import com.luisfagundes.itinerary.presentation.viewmodel.effect.ActivityFormUiEffect
+import com.luisfagundes.itinerary.presentation.viewmodel.event.ActivityFormUiEvent
 import com.luisfagundes.itinerary.presentation.viewmodel.state.ActivityFormUiState
 import com.luisfagundes.trip.R
 import com.luisfagundes.trip.presentation.components.DeleteConfirmationDialog
@@ -62,7 +63,7 @@ internal fun ActivityFormScreen(
     val context = LocalContext.current
 
     LaunchedEffect(Unit) {
-        viewModel.initForm(tripId, itineraryItemId)
+        viewModel.dispatchEvent(ActivityFormUiEvent.InitForm(tripId, itineraryItemId))
     }
 
     CollectUiEffects(viewModel.uiEffect) { effect ->
@@ -76,59 +77,35 @@ internal fun ActivityFormScreen(
     }
 
     ActivityFormContent(
+        tripId = tripId,
         uiState = uiState,
-        onTitleChange = viewModel::updateTitle,
-        onDescriptionChange = viewModel::updateDescription,
-        onLocationChange = viewModel::updateLocation,
-        onDateChange = viewModel::updateDate,
-        onTimeChange = viewModel::updateTime,
-        onSubmit = { viewModel.submit(tripId) },
-        onDeleteActivityClick = viewModel::deleteActivity,
-        onBackClick = viewModel::navigateBack
+        onEvent = viewModel::dispatchEvent
     )
 }
 
 @Composable
 private fun ActivityFormContent(
+    tripId: Int,
     uiState: ActivityFormUiState,
-    onTitleChange: (String) -> Unit,
-    onDescriptionChange: (String) -> Unit,
-    onLocationChange: (String) -> Unit,
-    onDateChange: (LocalDate?) -> Unit,
-    onTimeChange: (LocalTime) -> Unit,
-    onSubmit: () -> Unit,
-    onDeleteActivityClick: () -> Unit,
-    onBackClick: () -> Unit
+    onEvent: (ActivityFormUiEvent) -> Unit
 ) {
     when (uiState) {
         is ActivityFormUiState.Loading -> RedknotLoadingTemplate(
             modifier = Modifier.fillMaxSize()
         )
         is ActivityFormUiState.Content -> ActivityForm(
+            tripId = tripId,
             uiState = uiState,
-            onTitleChange = onTitleChange,
-            onDescriptionChange = onDescriptionChange,
-            onLocationChange = onLocationChange,
-            onDateChange = onDateChange,
-            onTimeChange = onTimeChange,
-            onSubmitClick = onSubmit,
-            onDeleteActivityClick = onDeleteActivityClick,
-            onBackClick = onBackClick
+            onEvent = onEvent
         )
     }
 }
 
 @Composable
 private fun ActivityForm(
+    tripId: Int,
     uiState: ActivityFormUiState.Content,
-    onTitleChange: (String) -> Unit,
-    onDescriptionChange: (String) -> Unit,
-    onLocationChange: (String) -> Unit,
-    onDateChange: (LocalDate?) -> Unit,
-    onTimeChange: (LocalTime) -> Unit,
-    onSubmitClick: () -> Unit,
-    onDeleteActivityClick: () -> Unit,
-    onBackClick: () -> Unit
+    onEvent: (ActivityFormUiEvent) -> Unit
 ) {
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
@@ -139,7 +116,10 @@ private fun ActivityForm(
             title = stringResource(R.string.delete_itinerary_item_dialog_title),
             message = stringResource(R.string.delete_itinerary_item_dialog_message),
             onDismissRequest = { showDeleteDialog = false },
-            onDeleteClick = { showDeleteDialog = false; onDeleteActivityClick() }
+            onDeleteClick = {
+                showDeleteDialog = false
+                onEvent(ActivityFormUiEvent.DeleteActivity)
+            }
         )
     }
 
@@ -147,7 +127,7 @@ private fun ActivityForm(
         topBar = {
             RedknotTopBar(
                 title = stringResource(R.string.create_activity),
-                onBackClick = onBackClick,
+                onBackClick = { onEvent(ActivityFormUiEvent.NavigateBack) },
                 actions = {
                     if (uiState.isEditMode) {
                         IconButton(onClick = { showDeleteDialog = true }) {
@@ -170,7 +150,7 @@ private fun ActivityForm(
         ) {
             OutlinedTextField(
                 value = uiState.title,
-                onValueChange = onTitleChange,
+                onValueChange = { onEvent(ActivityFormUiEvent.UpdateTitle(it)) },
                 label = { Text(stringResource(R.string.activity_title_label)) },
                 placeholder = { Text(stringResource(R.string.activity_title_placeholder)) },
                 singleLine = true,
@@ -187,7 +167,7 @@ private fun ActivityForm(
             )
             OutlinedTextField(
                 value = uiState.description,
-                onValueChange = onDescriptionChange,
+                onValueChange = { onEvent(ActivityFormUiEvent.UpdateDescription(it)) },
                 label = { Text(stringResource(R.string.activity_description_label)) },
                 placeholder = { Text(stringResource(R.string.activity_description_placeholder)) },
                 keyboardOptions = KeyboardOptions(
@@ -201,7 +181,7 @@ private fun ActivityForm(
             )
             OutlinedTextField(
                 value = uiState.location,
-                onValueChange = onLocationChange,
+                onValueChange = { onEvent(ActivityFormUiEvent.UpdateLocation(it)) },
                 label = { Text(stringResource(R.string.activity_location_label)) },
                 placeholder = { Text(stringResource(R.string.activity_location_placeholder)) },
                 singleLine = true,
@@ -218,7 +198,7 @@ private fun ActivityForm(
                 placeholder = stringResource(R.string.date_placeholder),
                 hasError = uiState.dateError != null,
                 supportingText = { uiState.dateError?.let { Text(it.toMessage(context)) } },
-                onDateSelect = onDateChange,
+                onDateSelect = { onEvent(ActivityFormUiEvent.UpdateDate(it)) },
                 startDate = uiState.tripStartDate,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -230,11 +210,11 @@ private fun ActivityForm(
                 placeholder = stringResource(R.string.time_placeholder),
                 hasError = uiState.timeError != null,
                 supportingText = { uiState.timeError?.let { Text(it.toMessage(context)) } },
-                onTimeSelect = onTimeChange,
+                onTimeSelect = { onEvent(ActivityFormUiEvent.UpdateTime(it)) },
                 modifier = Modifier.fillMaxWidth()
             )
             Button(
-                onClick = onSubmitClick,
+                onClick = { onEvent(ActivityFormUiEvent.Submit(tripId)) },
                 enabled = uiState.isFormValid && !uiState.isLoading,
                 modifier = Modifier
                     .fillMaxWidth()

@@ -51,6 +51,7 @@ import com.luisfagundes.trip.presentation.mapper.toStringResId
 import com.luisfagundes.trip.presentation.provider.TripListPreviewParameterProvider
 import com.luisfagundes.trip.presentation.viewmodel.TripListViewModel
 import com.luisfagundes.trip.presentation.viewmodel.effect.TripListUiEffect
+import com.luisfagundes.trip.presentation.viewmodel.event.TripListUiEvent
 import com.luisfagundes.trip.presentation.viewmodel.state.TripListUiState
 import com.luisfagundes.trip.tools.extensions.formatTripPeriod
 
@@ -63,7 +64,7 @@ internal fun TripListScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
-        viewModel.getTripList()
+        viewModel.dispatchEvent(TripListUiEvent.GetTripList)
     }
 
     CollectUiEffects(viewModel.uiEffect) { effect ->
@@ -75,18 +76,14 @@ internal fun TripListScreen(
 
     TripListContent(
         uiState = uiState,
-        onCreateTripClick = viewModel::navigateToTripForm,
-        onTripClick = viewModel::navigateToTripDetails,
-        onTryAgainClick = viewModel::getTripList
+        onEvent = viewModel::dispatchEvent
     )
 }
 
 @Composable
 private fun TripListContent(
     uiState: TripListUiState,
-    onCreateTripClick: () -> Unit,
-    onTripClick: (id: Int) -> Unit,
-    onTryAgainClick: () -> Unit
+    onEvent: (TripListUiEvent) -> Unit
 ) {
     when (uiState) {
         is TripListUiState.Loading -> RedknotLoadingTemplate(
@@ -98,14 +95,14 @@ private fun TripListContent(
             title = stringResource(R.string.no_trips_found_description),
             primaryButtonLabel = stringResource(R.string.create_new_trip),
             primaryButtonIcon = Icons.Default.Add,
-            onPrimaryButtonClick = onCreateTripClick,
+            onPrimaryButtonClick = { onEvent(TripListUiEvent.NavigateToTripForm) },
             modifier = Modifier
                 .padding(MaterialTheme.spacing.default)
                 .fillMaxSize()
         )
 
         is TripListUiState.Error -> TripListErrorContent(
-            onTryAgainClick = onTryAgainClick,
+            onEvent = onEvent,
             modifier = Modifier
                 .padding(MaterialTheme.spacing.default)
                 .fillMaxSize()
@@ -113,8 +110,7 @@ private fun TripListContent(
 
         is TripListUiState.Success -> TripListSuccessContent(
             tripsByStatus = uiState.tripsByStatus,
-            onCreateTripClick = onCreateTripClick,
-            onTripClick = onTripClick,
+            onEvent = onEvent,
             modifier = Modifier.fillMaxWidth()
         )
     }
@@ -122,7 +118,7 @@ private fun TripListContent(
 
 @Composable
 private fun TripListErrorContent(
-    onTryAgainClick: () -> Unit,
+    onEvent: (TripListUiEvent) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -138,7 +134,7 @@ private fun TripListErrorContent(
             modifier = Modifier.height(MaterialTheme.spacing.default)
         )
         Button(
-            onClick = onTryAgainClick
+            onClick = { onEvent(TripListUiEvent.GetTripList) }
         ) {
             Text(
                 text = stringResource(R.string.try_again)
@@ -150,15 +146,14 @@ private fun TripListErrorContent(
 @Composable
 private fun TripListSuccessContent(
     tripsByStatus: Map<TripStatus, List<Trip>>,
-    onCreateTripClick: () -> Unit,
-    onTripClick: (Int) -> Unit,
+    onEvent: (TripListUiEvent) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Scaffold(
         modifier = modifier,
         floatingActionButton = {
             FloatingActionButton(
-                onClick = onCreateTripClick
+                onClick = { onEvent(TripListUiEvent.NavigateToTripForm) }
             ) {
                 Icon(
                     imageVector = Icons.Default.Add,
@@ -179,7 +174,7 @@ private fun TripListSuccessContent(
                         tripSection(
                             titleResId = state.toStringResId(),
                             trips = trips,
-                            onTripClick = onTripClick
+                            onEvent = onEvent
                         )
                     }
                 }
@@ -190,7 +185,7 @@ private fun TripListSuccessContent(
 private fun LazyListScope.tripSection(
     @StringRes titleResId: Int,
     trips: List<Trip>,
-    onTripClick: (id: Int) -> Unit
+    onEvent: (TripListUiEvent) -> Unit
 ) {
     if (trips.isEmpty()) {
         return
@@ -210,7 +205,7 @@ private fun LazyListScope.tripSection(
         TripContent(
             modifier = Modifier
                 .fillMaxWidth()
-                .clickable { onTripClick(trip.id) }
+                .clickable { onEvent(TripListUiEvent.NavigateToTripDetails(trip.id)) }
                 .animateItem(),
             trip = trip,
         )
@@ -261,8 +256,7 @@ private fun TripListSuccessContentPreview(
 ) {
     TripListSuccessContent(
         tripsByStatus = uiState.tripsByStatus,
-        onCreateTripClick = {},
-        onTripClick = {},
+        onEvent = {},
         modifier = Modifier.fillMaxWidth()
     )
 }

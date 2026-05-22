@@ -46,6 +46,7 @@ import com.luisfagundes.itinerary.domain.model.MealType
 import com.luisfagundes.itinerary.presentation.components.MealTypeComboBox
 import com.luisfagundes.itinerary.presentation.viewmodel.RestaurantFormViewModel
 import com.luisfagundes.itinerary.presentation.viewmodel.effect.RestaurantFormUiEffect
+import com.luisfagundes.itinerary.presentation.viewmodel.event.RestaurantFormUiEvent
 import com.luisfagundes.itinerary.presentation.viewmodel.state.RestaurantFormUiState
 import com.luisfagundes.trip.R
 import com.luisfagundes.trip.presentation.components.DeleteConfirmationDialog
@@ -64,7 +65,7 @@ internal fun RestaurantFormScreen(
     val context = LocalContext.current
 
     LaunchedEffect(Unit) {
-        viewModel.initForm(tripId, itineraryItemId)
+        viewModel.dispatchEvent(RestaurantFormUiEvent.InitForm(tripId, itineraryItemId))
     }
 
     CollectUiEffects(viewModel.uiEffect) { effect ->
@@ -78,59 +79,35 @@ internal fun RestaurantFormScreen(
     }
 
     RestaurantFormContent(
+        tripId = tripId,
         uiState = uiState,
-        onMealTypeChange = viewModel::updateMealType,
-        onNameChange = viewModel::updateName,
-        onAddressChange = viewModel::updateAddress,
-        onDateChange = viewModel::updateDate,
-        onTimeChange = viewModel::updateTime,
-        onSubmit = { viewModel.submit(tripId) },
-        onDelete = viewModel::deleteRestaurant,
-        onBackClick = onBackClick
+        onEvent = viewModel::dispatchEvent
     )
 }
 
 @Composable
 private fun RestaurantFormContent(
+    tripId: Int,
     uiState: RestaurantFormUiState,
-    onMealTypeChange: (MealType) -> Unit,
-    onNameChange: (String) -> Unit,
-    onAddressChange: (String) -> Unit,
-    onDateChange: (LocalDate?) -> Unit,
-    onTimeChange: (LocalTime) -> Unit,
-    onSubmit: () -> Unit,
-    onDelete: () -> Unit,
-    onBackClick: () -> Unit
+    onEvent: (RestaurantFormUiEvent) -> Unit
 ) {
     when (uiState) {
         is RestaurantFormUiState.Loading -> RedknotLoadingTemplate(
             modifier = Modifier.fillMaxSize()
         )
         is RestaurantFormUiState.Content -> RestaurantForm(
+            tripId = tripId,
             uiState = uiState,
-            onMealTypeChange = onMealTypeChange,
-            onNameChange = onNameChange,
-            onAddressChange = onAddressChange,
-            onDateChange = onDateChange,
-            onTimeChange = onTimeChange,
-            onSubmit = onSubmit,
-            onDelete = onDelete,
-            onBackClick = onBackClick
+            onEvent = onEvent
         )
     }
 }
 
 @Composable
 private fun RestaurantForm(
+    tripId: Int,
     uiState: RestaurantFormUiState.Content,
-    onMealTypeChange: (MealType) -> Unit,
-    onNameChange: (String) -> Unit,
-    onAddressChange: (String) -> Unit,
-    onDateChange: (LocalDate?) -> Unit,
-    onTimeChange: (LocalTime) -> Unit,
-    onSubmit: () -> Unit,
-    onDelete: () -> Unit,
-    onBackClick: () -> Unit
+    onEvent: (RestaurantFormUiEvent) -> Unit
 ) {
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
@@ -141,7 +118,10 @@ private fun RestaurantForm(
             title = stringResource(R.string.delete_itinerary_item_dialog_title),
             message = stringResource(R.string.delete_itinerary_item_dialog_message),
             onDismissRequest = { showDeleteDialog = false },
-            onDeleteClick = { showDeleteDialog = false; onDelete() }
+            onDeleteClick = {
+                showDeleteDialog = false
+                onEvent(RestaurantFormUiEvent.DeleteRestaurant)
+            }
         )
     }
 
@@ -149,7 +129,7 @@ private fun RestaurantForm(
         topBar = {
             RedknotTopBar(
                 title = stringResource(R.string.create_restaurant),
-                onBackClick = onBackClick,
+                onBackClick = { onEvent(RestaurantFormUiEvent.NavigateBack) },
                 actions = {
                     if (uiState.isEditMode) {
                         IconButton(onClick = { showDeleteDialog = true }) {
@@ -172,14 +152,14 @@ private fun RestaurantForm(
         ) {
             MealTypeComboBox(
                 selectedMealType = uiState.mealType,
-                onMealTypeSelected = onMealTypeChange,
+                onMealTypeSelected = { onEvent(RestaurantFormUiEvent.UpdateMealType(it)) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = MaterialTheme.spacing.default)
             )
             OutlinedTextField(
                 value = uiState.name,
-                onValueChange = onNameChange,
+                onValueChange = { onEvent(RestaurantFormUiEvent.UpdateName(it)) },
                 label = { Text(stringResource(R.string.restaurant_name_label)) },
                 placeholder = { Text(stringResource(R.string.restaurant_name_placeholder)) },
                 singleLine = true,
@@ -196,7 +176,7 @@ private fun RestaurantForm(
             )
             OutlinedTextField(
                 value = uiState.address,
-                onValueChange = onAddressChange,
+                onValueChange = { onEvent(RestaurantFormUiEvent.UpdateAddress(it)) },
                 label = { Text(stringResource(R.string.address_label)) },
                 placeholder = { Text(stringResource(R.string.address_placeholder)) },
                 singleLine = true,
@@ -213,7 +193,7 @@ private fun RestaurantForm(
                 placeholder = stringResource(R.string.date_placeholder),
                 hasError = uiState.dateError != null,
                 supportingText = { uiState.dateError?.let { Text(it.toMessage(context)) } },
-                onDateSelect = onDateChange,
+                onDateSelect = { onEvent(RestaurantFormUiEvent.UpdateDate(it)) },
                 startDate = uiState.tripStartDate,
                 modifier = Modifier.fillMaxWidth()
             )
@@ -223,11 +203,11 @@ private fun RestaurantForm(
                 placeholder = stringResource(R.string.time_placeholder),
                 hasError = uiState.timeError != null,
                 supportingText = { uiState.timeError?.let { Text(it.toMessage(context)) } },
-                onTimeSelect = onTimeChange,
+                onTimeSelect = { onEvent(RestaurantFormUiEvent.UpdateTime(it)) },
                 modifier = Modifier.fillMaxWidth()
             )
             Button(
-                onClick = onSubmit,
+                onClick = { onEvent(RestaurantFormUiEvent.Submit(tripId)) },
                 enabled = uiState.isFormValid && !uiState.isLoading,
                 modifier = Modifier
                     .fillMaxWidth()

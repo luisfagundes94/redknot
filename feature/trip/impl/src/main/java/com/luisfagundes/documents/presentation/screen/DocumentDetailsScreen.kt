@@ -55,6 +55,8 @@ import com.luisfagundes.documents.presentation.viewmodel.state.DocumentDetailUiS
 import com.luisfagundes.trip.R
 import com.luisfagundes.trip.presentation.components.DeleteConfirmationDialog
 
+import com.luisfagundes.documents.presentation.viewmodel.event.DocumentDetailsUiEvent
+
 @Composable
 internal fun DocumentDetailsScreen(
     documentId: Int,
@@ -64,7 +66,7 @@ internal fun DocumentDetailsScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
-        viewModel.getDocument(documentId)
+        viewModel.dispatchEvent(DocumentDetailsUiEvent.GetDocument(documentId))
     }
 
     CollectUiEffects(viewModel.uiEffect) { effect ->
@@ -73,18 +75,16 @@ internal fun DocumentDetailsScreen(
         }
     }
 
-   DocumentDetailsContent(
-       uiState = uiState,
-       onBackClick = viewModel::navigateBack,
-       onDeleteDocumentClick = viewModel::deleteDocument,
-   )
+    DocumentDetailsContent(
+        uiState = uiState,
+        onEvent = viewModel::dispatchEvent
+    )
 }
 
 @Composable
 private fun DocumentDetailsContent(
     uiState: DocumentDetailUiState,
-    onBackClick: () -> Unit,
-    onDeleteDocumentClick: (Document) -> Unit
+    onEvent: (DocumentDetailsUiEvent) -> Unit
 ) {
     when (uiState) {
         is DocumentDetailUiState.Loading -> RedknotLoadingTemplate(
@@ -92,12 +92,11 @@ private fun DocumentDetailsContent(
         )
         is DocumentDetailUiState.Error -> DocumentDetailErrorContent(
             message = uiState.message ?: stringResource(R.string.generic_error_message),
-            onBackClick = onBackClick
+            onEvent = onEvent
         )
         is DocumentDetailUiState.Content -> DocumentDetails(
             document = uiState.document,
-            onDeleteDocumentClick = onDeleteDocumentClick,
-            onBackClick = onBackClick
+            onEvent = onEvent
         )
     }
 }
@@ -105,14 +104,14 @@ private fun DocumentDetailsContent(
 @Composable
 private fun DocumentDetailErrorContent(
     message: String,
-    onBackClick: () -> Unit,
+    onEvent: (DocumentDetailsUiEvent) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Scaffold(
         modifier = modifier,
         contentWindowInsets = WindowInsets(),
         topBar = {
-            RedknotTopBar(onBackClick = onBackClick)
+            RedknotTopBar(onBackClick = { onEvent(DocumentDetailsUiEvent.NavigateBack) })
         }
     ) { scaffoldPadding ->
         Box(
@@ -129,8 +128,7 @@ private fun DocumentDetailErrorContent(
 @Composable
 private fun DocumentDetails(
     document: Document,
-    onDeleteDocumentClick: (Document) -> Unit,
-    onBackClick: () -> Unit,
+    onEvent: (DocumentDetailsUiEvent) -> Unit,
     modifier: Modifier = Modifier
 ) {
     var showDeleteDialog by rememberSaveable { mutableStateOf(false) }
@@ -140,7 +138,10 @@ private fun DocumentDetails(
             title = stringResource(R.string.delete_document_dialog_title),
             message = stringResource(R.string.delete_document_dialog_message),
             onDismissRequest = { showDeleteDialog = false },
-            onDeleteClick = { showDeleteDialog = false; onDeleteDocumentClick(document) }
+            onDeleteClick = {
+                showDeleteDialog = false
+                onEvent(DocumentDetailsUiEvent.DeleteDocument(document))
+            }
         )
     }
 
@@ -150,7 +151,7 @@ private fun DocumentDetails(
         topBar = {
             RedknotTopBar(
                 title = document.title,
-                onBackClick = onBackClick,
+                onBackClick = { onEvent(DocumentDetailsUiEvent.NavigateBack) },
                 actions = {
                     IconButton(onClick = { showDeleteDialog = true }) {
                         Icon(

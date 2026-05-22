@@ -39,6 +39,8 @@ import com.luisfagundes.itinerary.presentation.viewmodel.effect.ItineraryUiEffec
 import com.luisfagundes.itinerary.presentation.viewmodel.state.ItineraryUiState
 import com.luisfagundes.trip.R
 
+import com.luisfagundes.itinerary.presentation.viewmodel.event.ItineraryUiEvent
+
 @Composable
 internal fun ItineraryScreen(
     tripId: Int,
@@ -49,7 +51,7 @@ internal fun ItineraryScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
-        viewModel.getItineraryItemsByDay(tripId)
+        viewModel.dispatchEvent(ItineraryUiEvent.GetItineraryItems(tripId))
     }
 
     CollectUiEffects(
@@ -64,16 +66,14 @@ internal fun ItineraryScreen(
 
     ItineraryContent(
         uiState = uiState,
-        onAddItem = viewModel::navigateToAddItineraryItem,
-        onItemClick = viewModel::navigateToEditItineraryItem,
+        onEvent = viewModel::dispatchEvent
     )
 }
 
 @Composable
 private fun ItineraryContent(
     uiState: ItineraryUiState,
-    onAddItem: () -> Unit,
-    onItemClick: (ItineraryItem) -> Unit,
+    onEvent: (ItineraryUiEvent) -> Unit
 ) {
     when (uiState) {
         ItineraryUiState.Loading -> RedknotLoadingTemplate(
@@ -83,7 +83,9 @@ private fun ItineraryContent(
         ItineraryUiState.Empty -> RedknotEmptyTemplate(
             title = stringResource(R.string.empty_itinerary_message),
             primaryButtonLabel = stringResource(R.string.add_itinerary_item),
-            onPrimaryButtonClick = onAddItem,
+            onPrimaryButtonClick = {
+                onEvent(ItineraryUiEvent.NavigateToAddItineraryItem)
+            },
             modifier = Modifier
                 .padding(MaterialTheme.spacing.default)
                 .fillMaxSize()
@@ -91,8 +93,7 @@ private fun ItineraryContent(
 
         is ItineraryUiState.Content -> ItineraryTimeline(
             itemsByDay = uiState.itemsByDay,
-            onAddItem = onAddItem,
-            onItemClick = onItemClick,
+            onEvent = onEvent,
             modifier = Modifier.fillMaxWidth()
         )
     }
@@ -102,8 +103,7 @@ private fun ItineraryContent(
 @Composable
 private fun ItineraryTimeline(
     itemsByDay: Map<LocalDate, List<ItineraryItem>>,
-    onAddItem: () -> Unit,
-    onItemClick: (ItineraryItem) -> Unit,
+    onEvent: (ItineraryUiEvent) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Scaffold(
@@ -111,7 +111,9 @@ private fun ItineraryTimeline(
         contentWindowInsets = WindowInsets(),
         floatingActionButton = {
             FloatingActionButton(
-                onClick = onAddItem
+                onClick = {
+                    onEvent(ItineraryUiEvent.NavigateToAddItineraryItem)
+                }
             ) {
                 Icon(
                     imageVector = Icons.Default.Add,
@@ -138,7 +140,9 @@ private fun ItineraryTimeline(
                         item = item,
                         isFirst = index == 0,
                         isLast = index == dayItems.lastIndex,
-                        onClick = { onItemClick(item) }
+                        onClick = {
+                            onEvent(ItineraryUiEvent.NavigateToEditItineraryItem(item))
+                        }
                     )
                 }
             }
@@ -155,8 +159,7 @@ private fun ItineraryTimelinePreview(
 ) {
     ItineraryTimeline(
         itemsByDay = uiState.itemsByDay,
-        onAddItem = {},
-        onItemClick = {},
+        onEvent = {},
         modifier = Modifier.fillMaxWidth()
     )
 }

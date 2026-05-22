@@ -12,6 +12,7 @@ import com.luisfagundes.itinerary.domain.usecase.ValidateDurationErrorUseCase
 import com.luisfagundes.itinerary.domain.usecase.ValidateFlightNumberUseCase
 import com.luisfagundes.common.domain.usecase.ValidateTimeUseCase
 import com.luisfagundes.itinerary.presentation.viewmodel.effect.FlightFormUiEffect
+import com.luisfagundes.itinerary.presentation.viewmodel.event.FlightFormUiEvent
 import com.luisfagundes.itinerary.presentation.viewmodel.state.FlightFormUiState
 import com.luisfagundes.common.domain.usecase.ValidateDateUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -32,10 +33,27 @@ internal class FlightFormViewModel @Inject constructor(
     private val validateTimeUseCase: ValidateTimeUseCase,
     private val formUseCase: ItineraryItemFormUseCase,
     @param:IoDispatcher private val dispatcher: CoroutineDispatcher
-) : ViewModel<FlightFormUiState, FlightFormUiEffect>(
+) : ViewModel<FlightFormUiState, FlightFormUiEvent, FlightFormUiEffect>(
     initialState = FlightFormUiState.Loading
 ) {
-    fun initForm(tripId: Int, itemId: String?) {
+    override fun dispatchEvent(event: FlightFormUiEvent) {
+        when (event) {
+            is FlightFormUiEvent.InitForm -> initForm(event.tripId, event.itemId)
+            is FlightFormUiEvent.UpdateFlightNumber -> updateFlightNumber(event.value)
+            is FlightFormUiEvent.UpdateOrigin -> updateOrigin(event.city)
+            is FlightFormUiEvent.UpdateDestination -> updateDestination(event.city)
+            is FlightFormUiEvent.UpdateDuration -> updateDuration(event.hoursStr, event.minutesStr)
+            is FlightFormUiEvent.UpdateSeatNumber -> updateSeatNumber(event.value)
+            is FlightFormUiEvent.UpdateDate -> updateDate(event.date)
+            is FlightFormUiEvent.UpdateTime -> updateTime(event.time)
+            is FlightFormUiEvent.UpdateCompanyName -> updateCompanyName(event.name)
+            is FlightFormUiEvent.Submit -> submit(event.tripId)
+            is FlightFormUiEvent.DeleteFlight -> deleteFlight()
+            is FlightFormUiEvent.NavigateBack -> navigateBack()
+        }
+    }
+
+    private fun initForm(tripId: Int, itemId: String?) {
         viewModelScope.launch(dispatcher) {
             val tripStartDate = formUseCase.getTripStartDate(tripId)
 
@@ -71,7 +89,7 @@ internal class FlightFormViewModel @Inject constructor(
         }
     }
 
-    fun updateFlightNumber(value: String) {
+    private fun updateFlightNumber(value: String) {
         setStateOf<FlightFormUiState.Content> {
             it.copy(
                 flightNumber = value,
@@ -80,15 +98,15 @@ internal class FlightFormViewModel @Inject constructor(
         }
     }
 
-    fun updateOrigin(city: String) {
+    private fun updateOrigin(city: String) {
         setStateOf<FlightFormUiState.Content> { it.copy(originAirportCity = city) }
     }
 
-    fun updateDestination(city: String) {
+    private fun updateDestination(city: String) {
         setStateOf<FlightFormUiState.Content> { it.copy(destinationAirportCity = city) }
     }
 
-    fun updateDuration(hoursStr: String, minutesStr: String) {
+    private fun updateDuration(hoursStr: String, minutesStr: String) {
         val hours = hoursStr.toIntOrNull() ?: 0
         val mins = minutesStr.toIntOrNull() ?: 0
 
@@ -101,11 +119,11 @@ internal class FlightFormViewModel @Inject constructor(
         }
     }
 
-    fun updateSeatNumber(value: String) {
+    private fun updateSeatNumber(value: String) {
         setStateOf<FlightFormUiState.Content> { it.copy(seatNumber = value) }
     }
 
-    fun updateDate(date: LocalDate?) {
+    private fun updateDate(date: LocalDate?) {
         setStateOf<FlightFormUiState.Content> {
             it.copy(
                 date = date,
@@ -114,7 +132,7 @@ internal class FlightFormViewModel @Inject constructor(
         }
     }
 
-    fun updateTime(time: LocalTime) {
+    private fun updateTime(time: LocalTime) {
         setStateOf<FlightFormUiState.Content> {
             it.copy(
                 time = time,
@@ -123,11 +141,11 @@ internal class FlightFormViewModel @Inject constructor(
         }
     }
 
-    fun updateCompanyName(name: String) {
+    private fun updateCompanyName(name: String) {
         setStateOf<FlightFormUiState.Content> { it.copy(companyName = name) }
     }
 
-    fun submit(tripId: Int) = viewModelScope.launch(dispatcher) {
+    private fun submit(tripId: Int) = viewModelScope.launch(dispatcher) {
         val content = getCurrentState() as? FlightFormUiState.Content ?: return@launch
         setStateOf<FlightFormUiState.Content> { it.copy(isLoading = true) }
 
@@ -141,7 +159,7 @@ internal class FlightFormViewModel @Inject constructor(
         setStateOf<FlightFormUiState.Content> { it.copy(isLoading = false) }
     }
 
-    fun deleteFlight() = viewModelScope.launch(dispatcher) {
+    private fun deleteFlight() = viewModelScope.launch(dispatcher) {
         val content = getCurrentState() as? FlightFormUiState.Content ?: return@launch
         val itemId = content.editingItemId ?: return@launch
 
@@ -153,6 +171,10 @@ internal class FlightFormViewModel @Inject constructor(
         )
 
         setStateOf<FlightFormUiState.Content> { it.copy(isLoading = false) }
+    }
+
+    private fun navigateBack() {
+        sendEffect { FlightFormUiEffect.NavigateBack }
     }
 
     private fun buildFlight(tripId: Int, content: FlightFormUiState.Content): Flight {

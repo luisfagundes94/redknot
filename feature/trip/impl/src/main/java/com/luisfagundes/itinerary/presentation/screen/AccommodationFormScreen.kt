@@ -55,6 +55,8 @@ import com.luisfagundes.trip.presentation.components.DeleteConfirmationDialog
 import java.time.LocalDate
 import java.time.LocalTime
 
+import com.luisfagundes.itinerary.presentation.viewmodel.event.AccommodationFormUiEvent
+
 @Composable
 internal fun AccommodationFormScreen(
     tripId: Int,
@@ -67,7 +69,7 @@ internal fun AccommodationFormScreen(
     val context = LocalContext.current
 
     LaunchedEffect(Unit) {
-        viewModel.initForm(tripId, itineraryItemId)
+        viewModel.dispatchEvent(AccommodationFormUiEvent.InitForm(tripId, itineraryItemId))
     }
 
     CollectUiEffects(viewModel.uiEffect) { effect ->
@@ -81,44 +83,26 @@ internal fun AccommodationFormScreen(
     }
 
     AccommodationFormContent(
+        tripId = tripId,
         uiState = uiState,
-        onNameChange = viewModel::updateName,
-        onAddressChange = viewModel::updateAddress,
-        onCheckInTypeChange = viewModel::updateCheckInType,
-        onDateChange = viewModel::updateDate,
-        onTimeChange = viewModel::updateTime,
-        onSubmitClick = { viewModel.submit(tripId) },
-        onDeleteAccommodationClick = viewModel::deleteAccommodation,
-        onBackClick = viewModel::navigateBack
+        onEvent = viewModel::dispatchEvent,
     )
 }
 
 @Composable
 private fun AccommodationFormContent(
+    tripId: Int,
     uiState: AccommodationFormUiState,
-    onNameChange: (String) -> Unit,
-    onAddressChange: (String) -> Unit,
-    onCheckInTypeChange: (CheckInType) -> Unit,
-    onDateChange: (LocalDate?) -> Unit,
-    onTimeChange: (LocalTime) -> Unit,
-    onSubmitClick: () -> Unit,
-    onDeleteAccommodationClick: () -> Unit,
-    onBackClick: () -> Unit
+    onEvent: (AccommodationFormUiEvent) -> Unit
 ) {
     when (uiState) {
         is AccommodationFormUiState.Loading -> RedknotLoadingTemplate(
             modifier = Modifier.fillMaxSize()
         )
         is AccommodationFormUiState.Content -> AccommodationForm(
+            tripId = tripId,
             uiState = uiState,
-            onNameChange = onNameChange,
-            onAddressChange = onAddressChange,
-            onCheckInTypeChange = onCheckInTypeChange,
-            onDateChange = onDateChange,
-            onTimeChange = onTimeChange,
-            onSubmit = onSubmitClick,
-            onDelete = onDeleteAccommodationClick,
-            onBackClick = onBackClick
+            onEvent = onEvent
         )
     }
 }
@@ -126,15 +110,9 @@ private fun AccommodationFormContent(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun AccommodationForm(
+    tripId: Int,
     uiState: AccommodationFormUiState.Content,
-    onNameChange: (String) -> Unit,
-    onAddressChange: (String) -> Unit,
-    onCheckInTypeChange: (CheckInType) -> Unit,
-    onDateChange: (LocalDate?) -> Unit,
-    onTimeChange: (LocalTime) -> Unit,
-    onSubmit: () -> Unit,
-    onDelete: () -> Unit,
-    onBackClick: () -> Unit
+    onEvent: (AccommodationFormUiEvent) -> Unit
 ) {
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
@@ -145,7 +123,10 @@ private fun AccommodationForm(
             title = stringResource(R.string.delete_itinerary_item_dialog_title),
             message = stringResource(R.string.delete_itinerary_item_dialog_message),
             onDismissRequest = { showDeleteDialog = false },
-            onDeleteClick = { showDeleteDialog = false; onDelete() }
+            onDeleteClick = {
+                showDeleteDialog = false;
+                onEvent(AccommodationFormUiEvent.DeleteAccommodation)
+            }
         )
     }
 
@@ -153,7 +134,7 @@ private fun AccommodationForm(
         topBar = {
             RedknotTopBar(
                 title = stringResource(R.string.create_accommodation),
-                onBackClick = onBackClick,
+                onBackClick = { onEvent(AccommodationFormUiEvent.NavigateBack) },
                 actions = {
                     if (uiState.isEditMode) {
                         IconButton(onClick = { showDeleteDialog = true }) {
@@ -176,7 +157,7 @@ private fun AccommodationForm(
         ) {
             OutlinedTextField(
                 value = uiState.name,
-                onValueChange = onNameChange,
+                onValueChange = { onEvent(AccommodationFormUiEvent.UpdateName(it)) },
                 label = { Text(stringResource(R.string.accommodation_name_label)) },
                 placeholder = { Text(stringResource(R.string.accommodation_name_placeholder)) },
                 singleLine = true,
@@ -193,7 +174,7 @@ private fun AccommodationForm(
             )
             OutlinedTextField(
                 value = uiState.address,
-                onValueChange = onAddressChange,
+                onValueChange = { onEvent(AccommodationFormUiEvent.UpdateAddress(it)) },
                 label = { Text(stringResource(R.string.accommodation_address_label)) },
                 placeholder = { Text(stringResource(R.string.accommodation_address_placeholder)) },
                 singleLine = true,
@@ -216,7 +197,7 @@ private fun AccommodationForm(
                 CheckInType.entries.forEachIndexed { index, type ->
                     SegmentedButton(
                         selected = uiState.checkInType == type,
-                        onClick = { onCheckInTypeChange(type) },
+                        onClick = { onEvent(AccommodationFormUiEvent.UpdateCheckInType(type)) },
                         shape = SegmentedButtonDefaults.itemShape(
                             index = index,
                             count = CheckInType.entries.size
@@ -238,7 +219,7 @@ private fun AccommodationForm(
                 placeholder = stringResource(R.string.date_placeholder),
                 hasError = uiState.dateError != null,
                 supportingText = { uiState.dateError?.let { Text(it.toMessage(context)) } },
-                onDateSelect = onDateChange,
+                onDateSelect = { onEvent(AccommodationFormUiEvent.UpdateDate(it)) },
                 startDate = uiState.tripStartDate,
                 modifier = Modifier.fillMaxWidth()
             )
@@ -248,11 +229,11 @@ private fun AccommodationForm(
                 placeholder = stringResource(R.string.time_placeholder),
                 hasError = uiState.timeError != null,
                 supportingText = { uiState.timeError?.let { Text(it.toMessage(context)) } },
-                onTimeSelect = onTimeChange,
+                onTimeSelect = { onEvent(AccommodationFormUiEvent.UpdateTime(it)) },
                 modifier = Modifier.fillMaxWidth()
             )
             Button(
-                onClick = onSubmit,
+                onClick = { onEvent(AccommodationFormUiEvent.Submit(tripId)) },
                 enabled = uiState.isFormValid && !uiState.isLoading,
                 modifier = Modifier
                     .fillMaxWidth()

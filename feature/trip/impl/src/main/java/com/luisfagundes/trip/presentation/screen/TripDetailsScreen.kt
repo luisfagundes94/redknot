@@ -51,6 +51,7 @@ import com.luisfagundes.trip.presentation.provider.TripDetailsPreviewParameterPr
 import com.luisfagundes.trip.presentation.viewmodel.state.TripDetailsUiState
 import com.luisfagundes.trip.presentation.viewmodel.TripDetailsViewModel
 import com.luisfagundes.trip.presentation.viewmodel.effect.TripDetailsUiEffect
+import com.luisfagundes.trip.presentation.viewmodel.event.TripDetailsUiEvent
 
 @Composable
 internal fun TripDetailsScreen(
@@ -68,7 +69,7 @@ internal fun TripDetailsScreen(
     val context = LocalContext.current
 
     LaunchedEffect(Unit) {
-        viewModel.getTripById(id = tripId)
+        viewModel.dispatchEvent(TripDetailsUiEvent.GetTripById(id = tripId))
     }
 
     CollectUiEffects(viewModel.uiEffect) { effect ->
@@ -83,13 +84,12 @@ internal fun TripDetailsScreen(
     TripDetailsContent(
         uiState = uiState,
         selectedTabIndex = selectedTabIndex,
-        onTabSelected = viewModel::selectTab,
+        onEvent = viewModel::dispatchEvent,
         onAddItineraryItemClick = onNavigateToAddItineraryItem,
         onEditItineraryItemClick = onNavigateToEditItineraryItem,
         onNavigateToDocumentForm = onNavigateToDocumentForm,
         onNavigateToDocumentDetail = onNavigateToDocumentDetail,
         onNavigateToAddExpense = onNavigateToAddExpense,
-        onDeleteClick = { viewModel.deleteTrip(tripId) },
         onBackClick = onNavigateBack
     )
 }
@@ -98,13 +98,12 @@ internal fun TripDetailsScreen(
 private fun TripDetailsContent(
     uiState: TripDetailsUiState,
     selectedTabIndex: Int,
-    onTabSelected: (Int) -> Unit,
+    onEvent: (TripDetailsUiEvent) -> Unit,
     onAddItineraryItemClick: () -> Unit,
     onEditItineraryItemClick: (ItineraryItem) -> Unit,
     onNavigateToDocumentForm: () -> Unit,
     onNavigateToDocumentDetail: (Int) -> Unit,
     onNavigateToAddExpense: () -> Unit,
-    onDeleteClick: () -> Unit,
     onBackClick: () -> Unit,
 ) {
     when (uiState) {
@@ -119,7 +118,7 @@ private fun TripDetailsContent(
         is TripDetailsUiState.Success -> TripDetailsSuccessContent(
             trip = uiState.trip,
             initialTabIndex = selectedTabIndex,
-            onTabSelected = onTabSelected,
+            onEvent = onEvent,
             itineraryContent = {
                 ItineraryScreen(
                     tripId = uiState.trip.id,
@@ -140,7 +139,6 @@ private fun TripDetailsContent(
                     onNavigateToDocumentDetail = onNavigateToDocumentDetail
                 )
             },
-            onDeleteClick = onDeleteClick,
             onBackClick = onBackClick,
             modifier = Modifier.fillMaxWidth()
         )
@@ -166,11 +164,10 @@ private fun TripDetailsErrorContent(
 private fun TripDetailsSuccessContent(
     trip: Trip,
     initialTabIndex: Int,
-    onTabSelected: (Int) -> Unit,
+    onEvent: (TripDetailsUiEvent) -> Unit,
     itineraryContent: @Composable () -> Unit,
     budgetContent: @Composable () -> Unit,
     documentsContent: @Composable () -> Unit,
-    onDeleteClick: () -> Unit,
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -179,7 +176,7 @@ private fun TripDetailsSuccessContent(
     val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(pagerState.currentPage) {
-        onTabSelected(pagerState.currentPage)
+        onEvent(TripDetailsUiEvent.SelectTab(pagerState.currentPage))
     }
 
     var showDeleteDialog by rememberSaveable { mutableStateOf(false) }
@@ -187,7 +184,10 @@ private fun TripDetailsSuccessContent(
     if (showDeleteDialog) {
         DeleteTripConfirmationDialog(
             onDismissRequest = { showDeleteDialog = false },
-            onDeleteClick = { showDeleteDialog = false; onDeleteClick() }
+            onDeleteClick = {
+                showDeleteDialog = false
+                onEvent(TripDetailsUiEvent.DeleteTrip(trip.id))
+            }
         )
     }
 
@@ -251,11 +251,10 @@ private fun TripDetailsSuccessContentPreview(
     TripDetailsSuccessContent(
         trip = uiState.trip,
         initialTabIndex = 0,
-        onTabSelected = {},
+        onEvent = {},
         itineraryContent = {},
         budgetContent = {},
         documentsContent = {},
-        onDeleteClick = {},
         onBackClick = {},
         modifier = Modifier.fillMaxSize()
     )

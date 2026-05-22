@@ -38,6 +38,8 @@ import com.luisfagundes.documents.presentation.viewmodel.effect.DocumentsUiEffec
 import com.luisfagundes.documents.presentation.viewmodel.state.DocumentsUiState
 import com.luisfagundes.trip.R
 
+import com.luisfagundes.documents.presentation.viewmodel.event.DocumentsUiEvent
+
 @Composable
 internal fun DocumentsScreen(
     tripId: Int,
@@ -55,21 +57,19 @@ internal fun DocumentsScreen(
     }
 
     LaunchedEffect(Unit) {
-        viewModel.getDocuments(tripId)
+        viewModel.dispatchEvent(DocumentsUiEvent.GetDocuments(tripId))
     }
 
     DocumentsContent(
         uiState = uiState,
-        onAddDocumentClick = viewModel::navigateToAddDocument,
-        onDocumentClick = viewModel::navigateToDocumentDetails
+        onEvent = viewModel::dispatchEvent
     )
 }
 
 @Composable
 private fun DocumentsContent(
     uiState: DocumentsUiState,
-    onAddDocumentClick: () -> Unit,
-    onDocumentClick: (id: Int) -> Unit
+    onEvent: (DocumentsUiEvent) -> Unit
 ) {
     when (uiState) {
         is DocumentsUiState.Loading -> RedknotLoadingTemplate(
@@ -80,22 +80,21 @@ private fun DocumentsContent(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(MaterialTheme.spacing.default),
-            onAddDocumentClick = onAddDocumentClick
+            onEvent = onEvent
         )
 
         is DocumentsUiState.Content -> DocumentsListContent(
             modifier = Modifier.fillMaxSize(),
             documentsByCategory = uiState.documentsByCategory,
-            onAddDocumentClick = onAddDocumentClick,
-            onDocumentClick = onDocumentClick
+            onEvent = onEvent
         )
     }
 }
 
 @Composable
 private fun DocumentsEmptyContent(
-    modifier: Modifier = Modifier,
-    onAddDocumentClick: () -> Unit
+    onEvent: (DocumentsUiEvent) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Column(
         modifier = modifier,
@@ -120,7 +119,7 @@ private fun DocumentsEmptyContent(
             textAlign = TextAlign.Center
         )
         Button(
-            onClick = onAddDocumentClick
+            onClick = { onEvent(DocumentsUiEvent.NavigateToAddDocument) }
         ) {
             Icon(
                 imageVector = Icons.Default.Add,
@@ -136,8 +135,7 @@ private fun DocumentsEmptyContent(
 @Composable
 private fun DocumentsListContent(
     documentsByCategory: Map<DocumentCategory, List<Document>>,
-    onAddDocumentClick: () -> Unit,
-    onDocumentClick: (id: Int) -> Unit,
+    onEvent: (DocumentsUiEvent) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Scaffold(
@@ -145,7 +143,7 @@ private fun DocumentsListContent(
         contentWindowInsets = WindowInsets(),
         floatingActionButton = {
             FloatingActionButton(
-                onClick = onAddDocumentClick
+                onClick = { onEvent(DocumentsUiEvent.NavigateToAddDocument) }
             ) {
                 Icon(
                     imageVector = Icons.Default.Add,
@@ -164,7 +162,7 @@ private fun DocumentsListContent(
                     DocumentListSection(
                         category = category,
                         documents = documents,
-                        onDocumentClick = onDocumentClick,
+                        onDocumentClick = { onEvent(DocumentsUiEvent.NavigateToDocumentDetails(it)) },
                         modifier = Modifier.fillParentMaxWidth()
                     )
                 }

@@ -47,6 +47,7 @@ import com.luisfagundes.designsystem.components.RedknotTopBar
 import com.luisfagundes.designsystem.theme.spacing
 import com.luisfagundes.itinerary.presentation.viewmodel.FlightFormViewModel
 import com.luisfagundes.itinerary.presentation.viewmodel.effect.FlightFormUiEffect
+import com.luisfagundes.itinerary.presentation.viewmodel.event.FlightFormUiEvent
 import com.luisfagundes.itinerary.presentation.viewmodel.state.FlightFormUiState
 import com.luisfagundes.trip.R
 import com.luisfagundes.trip.presentation.components.DeleteConfirmationDialog
@@ -65,7 +66,7 @@ internal fun FlightFormScreen(
     val context = LocalContext.current
 
     LaunchedEffect(Unit) {
-        viewModel.initForm(tripId, itineraryItemId)
+        viewModel.dispatchEvent(FlightFormUiEvent.InitForm(tripId, itineraryItemId))
     }
 
     CollectUiEffects(
@@ -82,71 +83,35 @@ internal fun FlightFormScreen(
     )
 
     FlightFormContent(
+        tripId = tripId,
         uiState = uiState,
-        onFlightNumberChange = viewModel::updateFlightNumber,
-        onCompanyNameChange = viewModel::updateCompanyName,
-        onOriginChange = viewModel::updateOrigin,
-        onDestinationChange = viewModel::updateDestination,
-        onDurationChange = viewModel::updateDuration,
-        onSeatNumberChange = viewModel::updateSeatNumber,
-        onDateChange = viewModel::updateDate,
-        onTimeChange = viewModel::updateTime,
-        onSubmit = { viewModel.submit(tripId) },
-        onDelete = viewModel::deleteFlight,
-        onBackClick = onBackClick
+        onEvent = viewModel::dispatchEvent
     )
 }
 
 @Composable
 private fun FlightFormContent(
+    tripId: Int,
     uiState: FlightFormUiState,
-    onFlightNumberChange: (String) -> Unit,
-    onCompanyNameChange: (String) -> Unit,
-    onOriginChange: (city: String) -> Unit,
-    onDestinationChange: (city: String) -> Unit,
-    onDurationChange: (hours: String, minutes: String) -> Unit,
-    onSeatNumberChange: (String) -> Unit,
-    onDateChange: (LocalDate?) -> Unit,
-    onTimeChange: (LocalTime) -> Unit,
-    onSubmit: () -> Unit,
-    onDelete: () -> Unit,
-    onBackClick: () -> Unit
+    onEvent: (FlightFormUiEvent) -> Unit
 ) {
     when (uiState) {
         is FlightFormUiState.Loading -> RedknotLoadingTemplate(
             modifier = Modifier.fillMaxSize()
         )
         is FlightFormUiState.Content -> FlightForm(
+            tripId = tripId,
             uiState = uiState,
-            onFlightNumberChange = onFlightNumberChange,
-            onCompanyNameChange = onCompanyNameChange,
-            onOriginChange = onOriginChange,
-            onDestinationChange = onDestinationChange,
-            onDurationChange = onDurationChange,
-            onSeatNumberChange = onSeatNumberChange,
-            onDateChange = onDateChange,
-            onTimeChange = onTimeChange,
-            onSubmit = onSubmit,
-            onDelete = onDelete,
-            onBackClick = onBackClick
+            onEvent = onEvent
         )
     }
 }
 
 @Composable
 private fun FlightForm(
+    tripId: Int,
     uiState: FlightFormUiState.Content,
-    onFlightNumberChange: (String) -> Unit,
-    onCompanyNameChange: (String) -> Unit,
-    onOriginChange: (city: String) -> Unit,
-    onDestinationChange: (city: String) -> Unit,
-    onDurationChange: (hours: String, minutes: String) -> Unit,
-    onSeatNumberChange: (String) -> Unit,
-    onDateChange: (LocalDate?) -> Unit,
-    onTimeChange: (LocalTime) -> Unit,
-    onSubmit: () -> Unit,
-    onDelete: () -> Unit,
-    onBackClick: () -> Unit
+    onEvent: (FlightFormUiEvent) -> Unit
 ) {
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
@@ -157,7 +122,10 @@ private fun FlightForm(
             title = stringResource(R.string.delete_itinerary_item_dialog_title),
             message = stringResource(R.string.delete_itinerary_item_dialog_message),
             onDismissRequest = { showDeleteDialog = false },
-            onDeleteClick = { showDeleteDialog = false; onDelete() }
+            onDeleteClick = {
+                showDeleteDialog = false
+                onEvent(FlightFormUiEvent.DeleteFlight)
+            }
         )
     }
 
@@ -165,7 +133,7 @@ private fun FlightForm(
         topBar = {
             RedknotTopBar(
                 title = stringResource(R.string.create_flight),
-                onBackClick = onBackClick,
+                onBackClick = { onEvent(FlightFormUiEvent.NavigateBack) },
                 actions = {
                     if (uiState.isEditMode) {
                         IconButton(onClick = { showDeleteDialog = true }) {
@@ -188,7 +156,7 @@ private fun FlightForm(
         ) {
             OutlinedTextField(
                 value = uiState.flightNumber,
-                onValueChange = onFlightNumberChange,
+                onValueChange = { onEvent(FlightFormUiEvent.UpdateFlightNumber(it)) },
                 label = { Text(stringResource(R.string.flight_number_label)) },
                 placeholder = { Text(stringResource(R.string.flight_number_placeholder)) },
                 singleLine = true,
@@ -207,7 +175,7 @@ private fun FlightForm(
             )
             OutlinedTextField(
                 value = uiState.companyName,
-                onValueChange = onCompanyNameChange,
+                onValueChange = { onEvent(FlightFormUiEvent.UpdateCompanyName(it)) },
                 label = { Text(stringResource(R.string.company_name_label)) },
                 placeholder = { Text(stringResource(R.string.company_name_placeholder)) },
                 singleLine = true,
@@ -222,7 +190,7 @@ private fun FlightForm(
             )
             OutlinedTextField(
                 value = uiState.originAirportCity,
-                onValueChange = { onOriginChange(it) },
+                onValueChange = { onEvent(FlightFormUiEvent.UpdateOrigin(it)) },
                 label = { Text(stringResource(R.string.origin_airport_city_label)) },
                 placeholder = { Text(stringResource(R.string.origin_airport_city_placeholder)) },
                 singleLine = true,
@@ -239,7 +207,7 @@ private fun FlightForm(
             )
             OutlinedTextField(
                 value = uiState.destinationAirportCity,
-                onValueChange = { onDestinationChange(it) },
+                onValueChange = { onEvent(FlightFormUiEvent.UpdateDestination(it)) },
                 label = { Text(stringResource(R.string.destination_airport_city_label)) },
                 placeholder = {
                     Text(stringResource(R.string.destination_airport_city_placeholder))
@@ -266,7 +234,7 @@ private fun FlightForm(
             ) {
                 OutlinedTextField(
                     value = uiState.durationHours,
-                    onValueChange = { onDurationChange(it, uiState.durationMinutes) },
+                    onValueChange = { onEvent(FlightFormUiEvent.UpdateDuration(it, uiState.durationMinutes)) },
                     label = { Text(stringResource(R.string.flight_duration_hours_label)) },
                     singleLine = true,
                     isError = uiState.durationError != null,
@@ -284,7 +252,7 @@ private fun FlightForm(
                 )
                 OutlinedTextField(
                     value = uiState.durationMinutes,
-                    onValueChange = { onDurationChange(uiState.durationHours, it) },
+                    onValueChange = { onEvent(FlightFormUiEvent.UpdateDuration(uiState.durationHours, it)) },
                     label = { Text(stringResource(R.string.flight_duration_minutes_label)) },
                     singleLine = true,
                     keyboardOptions = KeyboardOptions(
@@ -299,7 +267,7 @@ private fun FlightForm(
             }
             OutlinedTextField(
                 value = uiState.seatNumber,
-                onValueChange = onSeatNumberChange,
+                onValueChange = { onEvent(FlightFormUiEvent.UpdateSeatNumber(it)) },
                 label = { Text(stringResource(R.string.seat_number_label)) },
                 placeholder = { Text(stringResource(R.string.seat_number_placeholder)) },
                 singleLine = true,
@@ -314,7 +282,7 @@ private fun FlightForm(
                 placeholder = stringResource(R.string.date_placeholder),
                 hasError = uiState.dateError != null,
                 supportingText = { uiState.dateError?.let { Text(it.toMessage(context)) } },
-                onDateSelect = onDateChange,
+                onDateSelect = { onEvent(FlightFormUiEvent.UpdateDate(it)) },
                 startDate = uiState.tripStartDate,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -326,11 +294,11 @@ private fun FlightForm(
                 placeholder = stringResource(R.string.time_placeholder),
                 hasError = uiState.timeError != null,
                 supportingText = { uiState.timeError?.let { Text(it.toMessage(context)) } },
-                onTimeSelect = onTimeChange,
+                onTimeSelect = { onEvent(FlightFormUiEvent.UpdateTime(it)) },
                 modifier = Modifier.fillMaxWidth()
             )
             Button(
-                onClick = onSubmit,
+                onClick = { onEvent(FlightFormUiEvent.Submit(tripId)) },
                 enabled = uiState.isFormValid && !uiState.isLoading,
                 modifier = Modifier
                     .fillMaxWidth()

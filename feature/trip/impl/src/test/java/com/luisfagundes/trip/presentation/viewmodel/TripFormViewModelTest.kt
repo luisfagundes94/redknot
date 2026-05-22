@@ -12,6 +12,7 @@ import com.luisfagundes.trip.domain.model.TripStatus
 import com.luisfagundes.trip.domain.usecase.CreateTripUseCase
 import com.luisfagundes.trip.domain.usecase.ValidateDestinationUseCase
 import com.luisfagundes.trip.presentation.viewmodel.effect.TripFormUiEffect
+import com.luisfagundes.trip.presentation.viewmodel.event.TripFormUiEvent
 import com.luisfagundes.trip.presentation.viewmodel.state.TripFormUiState
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -66,7 +67,7 @@ internal class TripFormViewModelTest {
             awaitItem() // consume initial state
 
             // When
-            viewModel.updateTitle("Paris Trip")
+            viewModel.dispatchEvent(TripFormUiEvent.UpdateTitle("Paris Trip"))
 
             // Then
             val currentState = awaitItem()
@@ -86,7 +87,7 @@ internal class TripFormViewModelTest {
             awaitItem() // consume initial state
 
             // When
-            viewModel.updateTitle("")
+            viewModel.dispatchEvent(TripFormUiEvent.UpdateTitle(""))
 
             // Then
             val currentState = awaitItem()
@@ -106,7 +107,7 @@ internal class TripFormViewModelTest {
             awaitItem() // consume initial state
 
             // When
-            viewModel.updateStartDate(date)
+            viewModel.dispatchEvent(TripFormUiEvent.UpdateStartDate(date))
 
             // Then
             val currentState = awaitItem()
@@ -126,7 +127,7 @@ internal class TripFormViewModelTest {
             awaitItem() // consume initial state
 
             // When
-            viewModel.updateStartDate(null)
+            viewModel.dispatchEvent(TripFormUiEvent.UpdateStartDate(null))
 
             // Then
             val currentState = awaitItem()
@@ -146,7 +147,7 @@ internal class TripFormViewModelTest {
             awaitItem() // consume initial state
 
             // When
-            viewModel.updateEndDate(date)
+            viewModel.dispatchEvent(TripFormUiEvent.UpdateEndDate(date))
 
             // Then
             val currentState = awaitItem()
@@ -166,7 +167,7 @@ internal class TripFormViewModelTest {
             awaitItem() // consume initial state
 
             // When
-            viewModel.updateEndDate(null)
+            viewModel.dispatchEvent(TripFormUiEvent.UpdateEndDate(null))
 
             // Then
             val currentState = awaitItem()
@@ -185,7 +186,7 @@ internal class TripFormViewModelTest {
             awaitItem() // consume initial state
 
             // When
-            viewModel.updateDestination("Paris, France")
+            viewModel.dispatchEvent(TripFormUiEvent.UpdateDestination("Paris, France"))
 
             // Then
             val currentState = awaitItem()
@@ -205,7 +206,7 @@ internal class TripFormViewModelTest {
             awaitItem() // consume initial state
 
             // When
-            viewModel.updateDestination("")
+            viewModel.dispatchEvent(TripFormUiEvent.UpdateDestination(""))
 
             // Then
             val currentState = awaitItem()
@@ -228,7 +229,7 @@ internal class TripFormViewModelTest {
             awaitItem() // consume initial state
 
             // When
-            viewModel.submit()
+            viewModel.dispatchEvent(TripFormUiEvent.Submit)
 
             // Then
             assertTrue(awaitItem().isLoading)
@@ -245,7 +246,7 @@ internal class TripFormViewModelTest {
 
         viewModel.uiEffect.test {
             // When
-            viewModel.submit()
+            viewModel.dispatchEvent(TripFormUiEvent.Submit)
 
             // Then
             assertEquals(TripFormUiEffect.NavigateBack, awaitItem())
@@ -262,7 +263,7 @@ internal class TripFormViewModelTest {
 
         viewModel.uiEffect.test {
             // When
-            viewModel.submit()
+            viewModel.dispatchEvent(TripFormUiEvent.Submit)
 
             // Then
             assertTrue(awaitItem() is TripFormUiEffect.ShowErrorToast)
@@ -278,7 +279,7 @@ internal class TripFormViewModelTest {
 
         viewModel.uiEffect.test {
             // When
-            viewModel.submit()
+            viewModel.dispatchEvent(TripFormUiEvent.Submit)
 
             // Then
             coVerify { createTripUseCase(match { it.imageUrl.isEmpty() }) }
@@ -300,14 +301,14 @@ internal class TripFormViewModelTest {
         coEvery { getUnsplashImageUseCase("Paris") } returns Result.success(imageUrl)
         coEvery { createTripUseCase(any()) } returns Result.success(Unit)
 
-        viewModel.updateTitle("Paris Trip")
-        viewModel.updateStartDate(startDate)
-        viewModel.updateEndDate(endDate)
-        viewModel.updateDestination("Paris")
+        viewModel.dispatchEvent(TripFormUiEvent.UpdateTitle("Paris Trip"))
+        viewModel.dispatchEvent(TripFormUiEvent.UpdateStartDate(startDate))
+        viewModel.dispatchEvent(TripFormUiEvent.UpdateEndDate(endDate))
+        viewModel.dispatchEvent(TripFormUiEvent.UpdateDestination("Paris"))
 
         viewModel.uiEffect.test {
             // When
-            viewModel.submit()
+            viewModel.dispatchEvent(TripFormUiEvent.Submit)
 
             // Then
             coVerify {

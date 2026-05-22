@@ -12,6 +12,7 @@ import com.luisfagundes.common.domain.usecase.ValidateDateUseCase
 import com.luisfagundes.common.domain.usecase.ValidateTitleUseCase
 import com.luisfagundes.trip.domain.usecase.ValidateDestinationUseCase
 import com.luisfagundes.trip.presentation.viewmodel.effect.TripFormUiEffect
+import com.luisfagundes.trip.presentation.viewmodel.event.TripFormUiEvent
 import com.luisfagundes.trip.presentation.viewmodel.state.TripFormUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -27,10 +28,20 @@ internal class TripFormViewModel @Inject constructor(
     private val getUnsplashImageUseCase: GetUnsplashImageUseCase,
     private val createTripUseCase: CreateTripUseCase,
     @param:IoDispatcher private val dispatcher: CoroutineDispatcher
-) : ViewModel<TripFormUiState, TripFormUiEffect>(
+) : ViewModel<TripFormUiState, TripFormUiEvent, TripFormUiEffect>(
     initialState = TripFormUiState()
 ) {
-    fun updateTitle(title: String) {
+    override fun dispatchEvent(event: TripFormUiEvent) {
+        when (event) {
+            is TripFormUiEvent.UpdateTitle -> updateTitle(event.title)
+            is TripFormUiEvent.UpdateStartDate -> updateStartDate(event.startDate)
+            is TripFormUiEvent.UpdateEndDate -> updateEndDate(event.endDate)
+            is TripFormUiEvent.UpdateDestination -> updateDestination(event.destination)
+            is TripFormUiEvent.Submit -> submit()
+        }
+    }
+
+    private fun updateTitle(title: String) {
         setState { state ->
             state.copy(
                 title = title,
@@ -39,7 +50,7 @@ internal class TripFormViewModel @Inject constructor(
         }
     }
 
-    fun updateStartDate(startDate: LocalDate?) {
+    private fun updateStartDate(startDate: LocalDate?) {
         setState { state ->
             state.copy(
                 startDate = startDate,
@@ -48,7 +59,7 @@ internal class TripFormViewModel @Inject constructor(
         }
     }
 
-    fun updateEndDate(endDate: LocalDate?) {
+    private fun updateEndDate(endDate: LocalDate?) {
         setState { state ->
             state.copy(
                 endDate = endDate,
@@ -57,7 +68,7 @@ internal class TripFormViewModel @Inject constructor(
         }
     }
 
-    fun updateDestination(destination: String) {
+    private fun updateDestination(destination: String) {
         setState { state ->
             state.copy(
                 destination = destination,
@@ -66,7 +77,7 @@ internal class TripFormViewModel @Inject constructor(
         }
     }
 
-    fun submit() = viewModelScope.launch(dispatcher) {
+    private fun submit() = viewModelScope.launch(dispatcher) {
         val state = getCurrentState()
 
         setState { it.copy(isLoading = true) }

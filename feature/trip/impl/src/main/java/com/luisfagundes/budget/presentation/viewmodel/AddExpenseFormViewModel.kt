@@ -6,6 +6,7 @@ import com.luisfagundes.budget.domain.model.ExpenseCategory
 import com.luisfagundes.budget.domain.usecase.AddExpenseUseCase
 import com.luisfagundes.budget.domain.usecase.GetBudgetCurrencyUseCase
 import com.luisfagundes.budget.presentation.viewmodel.effect.AddExpenseFormUiEffect
+import com.luisfagundes.budget.presentation.viewmodel.event.AddExpenseFormUiEvent
 import com.luisfagundes.budget.presentation.viewmodel.state.AddExpenseFormUiState
 import com.luisfagundes.common.domain.model.errorOrNull
 import com.luisfagundes.core.common.di.IoDispatcher
@@ -24,12 +25,24 @@ internal class AddExpenseFormViewModel @Inject constructor(
     private val validateDateUseCase: ValidateDateUseCase,
     private val getBudgetCurrencyUseCase: GetBudgetCurrencyUseCase,
     @param:IoDispatcher private val dispatcher: CoroutineDispatcher = Dispatchers.IO
-) : ViewModel<AddExpenseFormUiState, AddExpenseFormUiEffect>(
+) : ViewModel<AddExpenseFormUiState, AddExpenseFormUiEvent, AddExpenseFormUiEffect>(
     initialState = AddExpenseFormUiState()
 ) {
     private var tripId: Int = 0
 
-    fun setTripId(tripId: Int) {
+    override fun dispatchEvent(event: AddExpenseFormUiEvent) {
+        when (event) {
+            is AddExpenseFormUiEvent.SetTripId -> setTripId(event.tripId)
+            is AddExpenseFormUiEvent.UpdateAmount -> updateAmount(event.amount)
+            is AddExpenseFormUiEvent.UpdateCategory -> updateCategory(event.category)
+            is AddExpenseFormUiEvent.UpdateDate -> updateDate(event.date)
+            is AddExpenseFormUiEvent.UpdateDescription -> updateDescription(event.description)
+            is AddExpenseFormUiEvent.AddExpense -> addExpense()
+            is AddExpenseFormUiEvent.NavigateBack -> navigateBack()
+        }
+    }
+
+    private fun setTripId(tripId: Int) {
         this.tripId = tripId
         viewModelScope.launch(dispatcher) {
             getBudgetCurrencyUseCase(tripId).fold(
@@ -41,19 +54,19 @@ internal class AddExpenseFormViewModel @Inject constructor(
         }
     }
 
-    fun updateAmount(text: String) {
+    private fun updateAmount(text: String) {
         setState { currentState ->
             currentState.copy(amountText = text)
         }
     }
 
-    fun updateCategory(category: ExpenseCategory) {
+    private fun updateCategory(category: ExpenseCategory) {
         setState { currentState ->
             currentState.copy(selectedCategory = category)
         }
     }
 
-    fun updateDate(date: LocalDate?) {
+    private fun updateDate(date: LocalDate?) {
         setState { currentState ->
             currentState.copy(
                 selectedDate = date,
@@ -62,20 +75,20 @@ internal class AddExpenseFormViewModel @Inject constructor(
         }
     }
 
-    fun updateDescription(description: String) {
+    private fun updateDescription(description: String) {
         setState { currentState ->
             currentState.copy(description = description)
         }
     }
 
-    fun addExpense() = viewModelScope.launch(dispatcher) {
+    private fun addExpense() = viewModelScope.launch(dispatcher) {
         addExpenseUseCase(tripId, createExpense()).fold(
             onSuccess = { sendEffect { AddExpenseFormUiEffect.NavigateBack } },
             onFailure = { sendEffect { AddExpenseFormUiEffect.ShowErrorToast(it.toString()) }}
         )
     }
 
-    fun navigateBack() {
+    private fun navigateBack() {
         sendEffect { AddExpenseFormUiEffect.NavigateBack }
     }
 

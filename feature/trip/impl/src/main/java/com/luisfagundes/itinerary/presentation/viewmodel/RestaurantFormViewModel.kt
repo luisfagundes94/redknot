@@ -13,6 +13,7 @@ import com.luisfagundes.itinerary.domain.usecase.ItineraryItemFormUseCase
 import com.luisfagundes.common.domain.usecase.ValidateNameUseCase
 import com.luisfagundes.common.domain.usecase.ValidateTimeUseCase
 import com.luisfagundes.itinerary.presentation.viewmodel.effect.RestaurantFormUiEffect
+import com.luisfagundes.itinerary.presentation.viewmodel.event.RestaurantFormUiEvent
 import com.luisfagundes.itinerary.presentation.viewmodel.state.RestaurantFormUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -30,10 +31,24 @@ internal class RestaurantFormViewModel @Inject constructor(
     private val validateAddressUseCase: ValidateAddressUseCase,
     private val formUseCase: ItineraryItemFormUseCase,
     @param:IoDispatcher private val dispatcher: CoroutineDispatcher
-) : ViewModel<RestaurantFormUiState, RestaurantFormUiEffect>(
+) : ViewModel<RestaurantFormUiState, RestaurantFormUiEvent, RestaurantFormUiEffect>(
     initialState = RestaurantFormUiState.Loading
 ) {
-    fun initForm(tripId: Int, itemId: String?) {
+    override fun dispatchEvent(event: RestaurantFormUiEvent) {
+        when (event) {
+            is RestaurantFormUiEvent.InitForm -> initForm(event.tripId, event.itemId)
+            is RestaurantFormUiEvent.UpdateName -> updateName(event.name)
+            is RestaurantFormUiEvent.UpdateAddress -> updateAddress(event.address)
+            is RestaurantFormUiEvent.UpdateMealType -> updateMealType(event.mealType)
+            is RestaurantFormUiEvent.UpdateDate -> updateDate(event.date)
+            is RestaurantFormUiEvent.UpdateTime -> updateTime(event.time)
+            is RestaurantFormUiEvent.NavigateBack -> navigateBack()
+            is RestaurantFormUiEvent.Submit -> submit(event.tripId)
+            is RestaurantFormUiEvent.DeleteRestaurant -> deleteRestaurant()
+        }
+    }
+
+    private fun initForm(tripId: Int, itemId: String?) {
         viewModelScope.launch(dispatcher) {
             val tripStartDate = formUseCase.getTripStartDate(tripId)
 
@@ -64,7 +79,7 @@ internal class RestaurantFormViewModel @Inject constructor(
         }
     }
 
-    fun updateName(name: String) {
+    private fun updateName(name: String) {
         setStateOf<RestaurantFormUiState.Content> {
             it.copy(
                 name = name,
@@ -73,7 +88,7 @@ internal class RestaurantFormViewModel @Inject constructor(
         }
     }
 
-    fun updateAddress(address: String) {
+    private fun updateAddress(address: String) {
         setStateOf<RestaurantFormUiState.Content> {
             it.copy(
                 address = address,
@@ -82,11 +97,11 @@ internal class RestaurantFormViewModel @Inject constructor(
         }
     }
 
-    fun updateMealType(mealType: MealType) {
+    private fun updateMealType(mealType: MealType) {
         setStateOf<RestaurantFormUiState.Content> { it.copy(mealType = mealType) }
     }
 
-    fun updateDate(date: LocalDate?) {
+    private fun updateDate(date: LocalDate?) {
         setStateOf<RestaurantFormUiState.Content> {
             it.copy(
                 date = date,
@@ -95,7 +110,7 @@ internal class RestaurantFormViewModel @Inject constructor(
         }
     }
 
-    fun updateTime(time: LocalTime) {
+    private fun updateTime(time: LocalTime) {
         setStateOf<RestaurantFormUiState.Content> {
             it.copy(
                 time = time,
@@ -104,7 +119,7 @@ internal class RestaurantFormViewModel @Inject constructor(
         }
     }
 
-    fun submit(tripId: Int) = viewModelScope.launch(dispatcher) {
+    private fun submit(tripId: Int) = viewModelScope.launch(dispatcher) {
         val content = getCurrentState() as? RestaurantFormUiState.Content ?: return@launch
         setStateOf<RestaurantFormUiState.Content> { it.copy(isLoading = true) }
 
@@ -118,7 +133,7 @@ internal class RestaurantFormViewModel @Inject constructor(
         setStateOf<RestaurantFormUiState.Content> { it.copy(isLoading = false) }
     }
 
-    fun deleteRestaurant() = viewModelScope.launch(dispatcher) {
+    private fun deleteRestaurant() = viewModelScope.launch(dispatcher) {
         val content = getCurrentState() as? RestaurantFormUiState.Content ?: return@launch
         val itemId = content.editingItemId ?: return@launch
 
@@ -130,6 +145,10 @@ internal class RestaurantFormViewModel @Inject constructor(
         )
 
         setStateOf<RestaurantFormUiState.Content> { it.copy(isLoading = false) }
+    }
+
+    private fun navigateBack() {
+        sendEffect { RestaurantFormUiEffect.NavigateBack }
     }
 
     private fun buildRestaurant(tripId: Int, content: RestaurantFormUiState.Content) = Restaurant(

@@ -47,6 +47,8 @@ import com.luisfagundes.designsystem.theme.spacing
 import com.luisfagundes.trip.R
 import java.time.LocalDate
 
+import com.luisfagundes.budget.presentation.viewmodel.event.AddExpenseFormUiEvent
+
 @Composable
 internal fun AddExpenseFormScreen(
     tripId: Int,
@@ -57,7 +59,7 @@ internal fun AddExpenseFormScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
-        viewModel.setTripId(tripId)
+        viewModel.dispatchEvent(AddExpenseFormUiEvent.SetTripId(tripId))
     }
 
     CollectUiEffects(viewModel.uiEffect) { effect ->
@@ -71,12 +73,7 @@ internal fun AddExpenseFormScreen(
 
     AddExpenseFormContent(
         uiState = uiState,
-        onAmountChange = viewModel::updateAmount,
-        onCategorySelect = viewModel::updateCategory,
-        onDateSelect = viewModel::updateDate,
-        onDescriptionChange = viewModel::updateDescription,
-        onSaveExpense = viewModel::addExpense,
-        onBackClick = viewModel::navigateBack
+        onEvent = viewModel::dispatchEvent
     )
 }
 
@@ -84,34 +81,25 @@ internal fun AddExpenseFormScreen(
 @Composable
 private fun AddExpenseFormContent(
     uiState: AddExpenseFormUiState,
-    onAmountChange: (String) -> Unit,
-    onCategorySelect: (ExpenseCategory) -> Unit,
-    onDateSelect: (LocalDate?) -> Unit,
-    onDescriptionChange: (String) -> Unit,
-    onSaveExpense: () -> Unit,
-    onBackClick: () -> Unit
+    onEvent: (AddExpenseFormUiEvent) -> Unit
 ) {
     Scaffold(
         topBar = {
             RedknotTopBar(
                 title = stringResource(R.string.add_expense),
-                onBackClick = onBackClick
+                onBackClick = { onEvent(AddExpenseFormUiEvent.NavigateBack) }
             )
         },
         bottomBar = {
             AddExpenseFormBottomButtonBundle(
                 isFormValid = uiState.isFormValid,
-                onAddExpense = onSaveExpense,
-                onBackClick = onBackClick
+                onEvent = onEvent
             )
         }
     ) { innerPadding ->
         AddExpenseForm(
             uiState = uiState,
-            onAmountChange = onAmountChange,
-            onCategorySelect = onCategorySelect,
-            onDateSelect = onDateSelect,
-            onDescriptionChange = onDescriptionChange,
+            onEvent = onEvent,
             modifier = Modifier
                 .padding(innerPadding)
                 .fillMaxSize()
@@ -122,14 +110,13 @@ private fun AddExpenseFormContent(
 @Composable
 private fun AddExpenseFormBottomButtonBundle(
     isFormValid: Boolean,
-    onAddExpense: () -> Unit,
-    onBackClick: () -> Unit
+    onEvent: (AddExpenseFormUiEvent) -> Unit
 ) {
     Column(
         modifier = Modifier.padding(MaterialTheme.spacing.default)
     ) {
         Button(
-            onClick = onAddExpense,
+            onClick = { onEvent(AddExpenseFormUiEvent.AddExpense) },
             enabled = isFormValid,
             modifier = Modifier.fillMaxWidth()
         ) {
@@ -138,7 +125,7 @@ private fun AddExpenseFormBottomButtonBundle(
             Text(stringResource(R.string.add_expense))
         }
         TextButton(
-            onClick = onBackClick,
+            onClick = { onEvent(AddExpenseFormUiEvent.NavigateBack) },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(stringResource(R.string.cancel))
@@ -149,10 +136,7 @@ private fun AddExpenseFormBottomButtonBundle(
 @Composable
 private fun AddExpenseForm(
     uiState: AddExpenseFormUiState,
-    onAmountChange: (String) -> Unit,
-    onCategorySelect: (ExpenseCategory) -> Unit,
-    onDateSelect: (LocalDate?) -> Unit,
-    onDescriptionChange: (String) -> Unit,
+    onEvent: (AddExpenseFormUiEvent) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
@@ -166,12 +150,12 @@ private fun AddExpenseForm(
         AmountSection(
             amount = uiState.amountText,
             currencySymbol = uiState.currencySymbol,
-            onAmountChange = onAmountChange,
+            onAmountChange = { onEvent(AddExpenseFormUiEvent.UpdateAmount(it)) },
             modifier = Modifier.fillMaxWidth()
         )
         CategorySection(
             selectedCategory = uiState.selectedCategory,
-            onCategorySelect = onCategorySelect,
+            onCategorySelect = { onEvent(AddExpenseFormUiEvent.UpdateCategory(it)) },
             modifier = Modifier.fillMaxWidth()
         )
         RedknotDateSelectionField(
@@ -184,7 +168,7 @@ private fun AddExpenseForm(
                     Text(error.toMessage(context))
                 }
             },
-            onDateSelect = onDateSelect,
+            onDateSelect = { onEvent(AddExpenseFormUiEvent.UpdateDate(it)) },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = MaterialTheme.spacing.default)
@@ -192,7 +176,7 @@ private fun AddExpenseForm(
         OutlinedTextField(
             value = uiState.description,
             label = { Text(stringResource(R.string.optional_description)) },
-            onValueChange = onDescriptionChange,
+            onValueChange = { onEvent(AddExpenseFormUiEvent.UpdateDescription(it)) },
             placeholder = { Text(stringResource(R.string.expense_description_placeholder)) },
             minLines = 3,
             modifier = Modifier.fillMaxWidth()
@@ -209,11 +193,6 @@ private fun AddExpenseFormContentPreview(
 ) {
     AddExpenseFormContent(
         uiState = uiState,
-        onAmountChange = {},
-        onCategorySelect = {},
-        onDateSelect = {},
-        onDescriptionChange = {},
-        onSaveExpense = {},
-        onBackClick = {}
+        onEvent = {}
     )
 }

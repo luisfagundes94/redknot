@@ -47,6 +47,8 @@ import com.luisfagundes.designsystem.components.RedknotLoadingTemplate
 import com.luisfagundes.designsystem.theme.spacing
 import com.luisfagundes.trip.R
 
+import com.luisfagundes.budget.presentation.viewmodel.event.BudgetUiEvent
+
 @Composable
 internal fun BudgetScreen(
     tripId: Int,
@@ -58,7 +60,7 @@ internal fun BudgetScreen(
     val showBottomSheet by viewModel.showBudgetBottomSheet.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
-        viewModel.loadBudget(tripId)
+        viewModel.dispatchEvent(BudgetUiEvent.LoadBudget(tripId))
     }
 
     CollectUiEffects(viewModel.uiEffect) { effect ->
@@ -73,30 +75,32 @@ internal fun BudgetScreen(
     if (showBottomSheet) {
         SetBudgetBottomSheet(
             onConfirm = { amount, currency ->
-                viewModel.confirmBudgetAmount(
-                    tripId,
-                    amount,
-                    currency
+                viewModel.dispatchEvent(
+                    BudgetUiEvent.ConfirmBudgetAmount(
+                        tripId = tripId,
+                        amount = amount,
+                        currency = currency
+                    )
                 )
             },
-            onDismiss = viewModel::dismissBudgetBottomSheet
+            onDismiss = {
+                viewModel.dispatchEvent(BudgetUiEvent.DismissBudgetBottomSheet)
+            }
         )
     }
 
     BudgetContent(
+        tripId = tripId,
         uiState = uiState,
-        onSetBudgetClick = viewModel::openSetBudget,
-        onAddExpenseClick = viewModel::navigateToAddExpense,
-        onDeleteExpense = { expense -> viewModel.deleteExpense(tripId, expense) }
+        onEvent = viewModel::dispatchEvent
     )
 }
 
 @Composable
 private fun BudgetContent(
+    tripId: Int,
     uiState: BudgetUiState,
-    onSetBudgetClick: () -> Unit,
-    onAddExpenseClick: () -> Unit,
-    onDeleteExpense: (Expense) -> Unit
+    onEvent: (BudgetUiEvent) -> Unit
 ) {
     when (uiState) {
         is BudgetUiState.Loading -> RedknotLoadingTemplate(
@@ -107,15 +111,15 @@ private fun BudgetContent(
             title = stringResource(R.string.budget_onboarding_message),
             primaryButtonLabel = stringResource(R.string.set_budget),
             primaryButtonIcon = Icons.Default.AttachMoney,
-            onPrimaryButtonClick = onSetBudgetClick,
+            onPrimaryButtonClick = { onEvent(BudgetUiEvent.OpenSetBudget) },
             modifier = Modifier.fillMaxSize().padding(MaterialTheme.spacing.default)
         )
 
         is BudgetUiState.Dashboard -> BudgetDashboardContent(
+            tripId = tripId,
             uiState = uiState,
             currencySymbol = uiState.budget.currency.symbol,
-            onAddExpenseClick = onAddExpenseClick,
-            onDeleteExpense = { expense -> onDeleteExpense(expense) },
+            onEvent = onEvent,
             modifier = Modifier.fillMaxSize()
         )
     }
@@ -123,17 +127,17 @@ private fun BudgetContent(
 
 @Composable
 private fun BudgetDashboardContent(
+    tripId: Int,
     uiState: BudgetUiState.Dashboard,
     currencySymbol: String,
-    onAddExpenseClick: () -> Unit,
-    onDeleteExpense: (Expense) -> Unit,
+    onEvent: (BudgetUiEvent) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Scaffold(
         modifier = modifier,
         contentWindowInsets = WindowInsets(),
         floatingActionButton = {
-            FloatingActionButton(onClick = onAddExpenseClick) {
+            FloatingActionButton(onClick = { onEvent(BudgetUiEvent.NavigateToAddExpense) }) {
                 Icon(
                     imageVector = Icons.Default.Add,
                     contentDescription = stringResource(R.string.add_expense)
@@ -165,10 +169,11 @@ private fun BudgetDashboardContent(
                 uiState.expensesByCategory.forEach { (category, expenses) ->
                     item(key = category.name) {
                         ExpenseCategorySection(
+                            tripId = tripId,
                             category = category,
                             expenses = expenses,
                             currencySymbol = currencySymbol,
-                            onDeleteExpense = onDeleteExpense,
+                            onEvent = onEvent,
                             modifier = Modifier.fillParentMaxWidth()
                         )
                     }
@@ -180,10 +185,11 @@ private fun BudgetDashboardContent(
 
 @Composable
 private fun ExpenseCategorySection(
+    tripId: Int,
     category: ExpenseCategory,
     expenses: List<Expense>,
     currencySymbol: String,
-    onDeleteExpense: (Expense) -> Unit,
+    onEvent: (BudgetUiEvent) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -198,9 +204,10 @@ private fun ExpenseCategorySection(
         )
         expenses.forEach { expense ->
             SwipeToDeleteExpenseItem(
+                tripId = tripId,
                 expense = expense,
                 currencySymbol = currencySymbol,
-                onDelete = { onDeleteExpense(expense) }
+                onEvent = onEvent
             )
         }
     }
@@ -209,9 +216,10 @@ private fun ExpenseCategorySection(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun SwipeToDeleteExpenseItem(
+    tripId: Int,
     expense: Expense,
     currencySymbol: String,
-    onDelete: () -> Unit,
+    onEvent: (BudgetUiEvent) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val dismissState = rememberSwipeToDismissBoxState(
@@ -220,7 +228,7 @@ private fun SwipeToDeleteExpenseItem(
 
     LaunchedEffect(dismissState.currentValue) {
         if (dismissState.currentValue == SwipeToDismissBoxValue.EndToStart) {
-            onDelete()
+            onEvent(BudgetUiEvent.DeleteExpense(tripId, expense))
         }
     }
 

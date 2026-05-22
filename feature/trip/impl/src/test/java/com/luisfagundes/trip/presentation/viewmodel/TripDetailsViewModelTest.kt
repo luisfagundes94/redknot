@@ -6,6 +6,7 @@ import com.luisfagundes.trip.domain.usecase.DeleteTripUseCase
 import com.luisfagundes.trip.domain.usecase.GetTripByIdUseCase
 import com.luisfagundes.trip.presentation.fixtures.fakeTrip
 import com.luisfagundes.trip.presentation.viewmodel.effect.TripDetailsUiEffect
+import com.luisfagundes.trip.presentation.viewmodel.event.TripDetailsUiEvent
 import com.luisfagundes.trip.presentation.viewmodel.state.TripDetailsUiState
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -49,7 +50,7 @@ internal class TripDetailsViewModelTest {
             awaitItem() // consume initial Loading
 
             // When
-            viewModel.getTripById(tripId)
+            viewModel.dispatchEvent(TripDetailsUiEvent.GetTripById(tripId))
 
             // Then
             assertEquals(TripDetailsUiState.Success(fakeTrip), awaitItem())
@@ -69,7 +70,7 @@ internal class TripDetailsViewModelTest {
             awaitItem() // consume initial Loading
 
             // When
-            viewModel.getTripById(tripId)
+            viewModel.dispatchEvent(TripDetailsUiEvent.GetTripById(tripId))
 
             // Then
             assertEquals(TripDetailsUiState.Error(errorMessage), awaitItem())
@@ -89,7 +90,7 @@ internal class TripDetailsViewModelTest {
             assertEquals(TripDetailsUiState.Loading, awaitItem())
 
             // When
-            viewModel.getTripById(tripId)
+            viewModel.dispatchEvent(TripDetailsUiEvent.GetTripById(tripId))
 
             // Then
             assertEquals(TripDetailsUiState.Success(fakeTrip), awaitItem())
@@ -105,7 +106,7 @@ internal class TripDetailsViewModelTest {
 
         viewModel.uiEffect.test {
             // When
-            viewModel.deleteTrip(tripId)
+            viewModel.dispatchEvent(TripDetailsUiEvent.DeleteTrip(tripId))
 
             // Then
             assertEquals(TripDetailsUiEffect.NavigateBack, awaitItem())
@@ -122,7 +123,7 @@ internal class TripDetailsViewModelTest {
 
         viewModel.uiEffect.test {
             // When
-            viewModel.deleteTrip(tripId)
+            viewModel.dispatchEvent(TripDetailsUiEvent.DeleteTrip(tripId))
 
             // Then
             val effect = awaitItem() as TripDetailsUiEffect.ShowErrorToast

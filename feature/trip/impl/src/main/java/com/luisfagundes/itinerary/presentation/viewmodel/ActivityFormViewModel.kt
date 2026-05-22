@@ -10,6 +10,7 @@ import com.luisfagundes.itinerary.domain.usecase.ItineraryItemFormUseCase
 import com.luisfagundes.common.domain.usecase.ValidateTitleUseCase
 import com.luisfagundes.common.domain.usecase.ValidateTimeUseCase
 import com.luisfagundes.itinerary.presentation.viewmodel.effect.ActivityFormUiEffect
+import com.luisfagundes.itinerary.presentation.viewmodel.event.ActivityFormUiEvent
 import com.luisfagundes.itinerary.presentation.viewmodel.state.ActivityFormUiState
 import com.luisfagundes.common.domain.usecase.ValidateDateUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -27,10 +28,24 @@ internal class ActivityFormViewModel @Inject constructor(
     private val validateTimeUseCase: ValidateTimeUseCase,
     private val formUseCase: ItineraryItemFormUseCase,
     @param:IoDispatcher private val dispatcher: CoroutineDispatcher
-) : ViewModel<ActivityFormUiState, ActivityFormUiEffect>(
+) : ViewModel<ActivityFormUiState, ActivityFormUiEvent, ActivityFormUiEffect>(
     initialState = ActivityFormUiState.Loading
 ) {
-    fun initForm(tripId: Int, itemId: String?) {
+    override fun dispatchEvent(event: ActivityFormUiEvent) {
+        when (event) {
+            is ActivityFormUiEvent.InitForm -> initForm(event.tripId, event.itemId)
+            is ActivityFormUiEvent.UpdateTitle -> updateTitle(event.title)
+            is ActivityFormUiEvent.UpdateDescription -> updateDescription(event.description)
+            is ActivityFormUiEvent.UpdateLocation -> updateLocation(event.location)
+            is ActivityFormUiEvent.UpdateDate -> updateDate(event.date)
+            is ActivityFormUiEvent.UpdateTime -> updateTime(event.time)
+            is ActivityFormUiEvent.NavigateBack -> navigateBack()
+            is ActivityFormUiEvent.Submit -> submit(event.tripId)
+            is ActivityFormUiEvent.DeleteActivity -> deleteActivity()
+        }
+    }
+
+    private fun initForm(tripId: Int, itemId: String?) {
         viewModelScope.launch(dispatcher) {
             val tripStartDate = formUseCase.getTripStartDate(tripId)
 
@@ -61,7 +76,7 @@ internal class ActivityFormViewModel @Inject constructor(
         }
     }
 
-    fun updateTitle(title: String) {
+    private fun updateTitle(title: String) {
         setStateOf<ActivityFormUiState.Content> {
             it.copy(
                 title = title,
@@ -70,15 +85,15 @@ internal class ActivityFormViewModel @Inject constructor(
         }
     }
 
-    fun updateDescription(description: String) {
+    private fun updateDescription(description: String) {
         setStateOf<ActivityFormUiState.Content> { it.copy(description = description) }
     }
 
-    fun updateLocation(location: String) {
+    private fun updateLocation(location: String) {
         setStateOf<ActivityFormUiState.Content> { it.copy(location = location) }
     }
 
-    fun updateDate(date: LocalDate?) {
+    private fun updateDate(date: LocalDate?) {
         setStateOf<ActivityFormUiState.Content> {
             it.copy(
                 date = date,
@@ -87,7 +102,7 @@ internal class ActivityFormViewModel @Inject constructor(
         }
     }
 
-    fun updateTime(time: LocalTime) {
+    private fun updateTime(time: LocalTime) {
         setStateOf<ActivityFormUiState.Content> {
             it.copy(
                 time = time,
@@ -96,11 +111,11 @@ internal class ActivityFormViewModel @Inject constructor(
         }
     }
 
-    fun navigateBack() {
+    private fun navigateBack() {
         sendEffect { ActivityFormUiEffect.NavigateBack }
     }
 
-    fun submit(tripId: Int) = viewModelScope.launch(dispatcher) {
+    private fun submit(tripId: Int) = viewModelScope.launch(dispatcher) {
         val content = getCurrentState() as? ActivityFormUiState.Content ?: return@launch
         setStateOf<ActivityFormUiState.Content> { it.copy(isLoading = true) }
 
@@ -114,7 +129,7 @@ internal class ActivityFormViewModel @Inject constructor(
         setStateOf<ActivityFormUiState.Content> { it.copy(isLoading = false) }
     }
 
-    fun deleteActivity() = viewModelScope.launch(dispatcher) {
+    private fun deleteActivity() = viewModelScope.launch(dispatcher) {
         val content = getCurrentState() as? ActivityFormUiState.Content ?: return@launch
         val itemId = content.editingItemId ?: return@launch
 

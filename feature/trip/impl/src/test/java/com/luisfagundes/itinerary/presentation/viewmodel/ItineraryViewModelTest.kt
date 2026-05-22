@@ -17,6 +17,8 @@ import org.junit.jupiter.api.extension.RegisterExtension
 import java.time.LocalDate
 import java.time.LocalTime
 
+import com.luisfagundes.itinerary.presentation.viewmodel.event.ItineraryUiEvent
+
 @OptIn(ExperimentalCoroutinesApi::class)
 internal class ItineraryViewModelTest {
 
@@ -51,7 +53,7 @@ internal class ItineraryViewModelTest {
             awaitItem() // consume Loading
 
             // When
-            viewModel.getItineraryItemsByDay(tripId)
+            viewModel.dispatchEvent(ItineraryUiEvent.GetItineraryItems(tripId))
 
             // Then
             assertEquals(ItineraryUiState.Content(itemsByDay), awaitItem())
@@ -70,7 +72,7 @@ internal class ItineraryViewModelTest {
             awaitItem() // consume Loading
 
             // When
-            viewModel.getItineraryItemsByDay(tripId)
+            viewModel.dispatchEvent(ItineraryUiEvent.GetItineraryItems(tripId))
 
             // Then
             assertEquals(ItineraryUiState.Empty, awaitItem())
@@ -90,7 +92,7 @@ internal class ItineraryViewModelTest {
             awaitItem() // consume Loading
 
             // When
-            viewModel.getItineraryItemsByDay(tripId)
+            viewModel.dispatchEvent(ItineraryUiEvent.GetItineraryItems(tripId))
 
             // Then
             expectNoEvents()
@@ -101,7 +103,7 @@ internal class ItineraryViewModelTest {
     fun `navigateToAddItineraryItem sends NavigateToItineraryItemForm effect`() = runTest {
         viewModel.uiEffect.test {
             // When
-            viewModel.navigateToAddItineraryItem()
+            viewModel.dispatchEvent(ItineraryUiEvent.NavigateToAddItineraryItem)
 
             // Then
             assertEquals(ItineraryUiEffect.NavigateToItineraryItemForm, awaitItem())

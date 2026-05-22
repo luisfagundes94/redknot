@@ -32,6 +32,8 @@ import com.luisfagundes.documents.presentation.viewmodel.effect.AddDocumentFormU
 import com.luisfagundes.documents.presentation.viewmodel.state.AddDocumentFormUiState
 import com.luisfagundes.trip.R
 
+import com.luisfagundes.documents.presentation.viewmodel.event.AddDocumentFormUiEvent
+
 @Composable
 internal fun AddDocumentFormScreen(
     tripId: Int,
@@ -41,12 +43,16 @@ internal fun AddDocumentFormScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
-        viewModel.initForm(tripId)
+        viewModel.dispatchEvent(AddDocumentFormUiEvent.InitForm(tripId))
     }
 
     val attachmentLaunchers = rememberDocumentAttachmentLaunchers(
-        onPhotoTaken = viewModel::handlePhoto,
-        onFilePicked = viewModel::handleFile,
+        onPhotoTaken = { uri ->
+            viewModel.dispatchEvent(AddDocumentFormUiEvent.HandlePhoto(uri))
+        },
+        onFilePicked = { uri ->
+            viewModel.dispatchEvent(AddDocumentFormUiEvent.HandleFile(uri))
+        },
     )
 
     CollectUiEffects(viewModel.uiEffect) { effect ->
@@ -59,14 +65,7 @@ internal fun AddDocumentFormScreen(
 
     AddDocumentFormContent(
         uiState = uiState,
-        onCategorySelect = viewModel::updateCategory,
-        onTitleChange = viewModel::updateTitle,
-        onDescriptionChange = viewModel::updateDescription,
-        onTakePhotoClick = viewModel::takePhoto,
-        onUploadFileClick = viewModel::uploadFile,
-        onAttachmentRemove = viewModel::removeAttachment,
-        onSaveDocumentClick = viewModel::saveDocument,
-        onBackClick = viewModel::navigateBack
+        onEvent = viewModel::dispatchEvent
     )
 }
 
@@ -74,14 +73,7 @@ internal fun AddDocumentFormScreen(
 @Composable
 private fun AddDocumentFormContent(
     uiState: AddDocumentFormUiState,
-    onCategorySelect: (DocumentCategory) -> Unit,
-    onTitleChange: (String) -> Unit,
-    onDescriptionChange: (String) -> Unit,
-    onTakePhotoClick: () -> Unit,
-    onUploadFileClick: () -> Unit,
-    onAttachmentRemove: () -> Unit,
-    onSaveDocumentClick: () -> Unit,
-    onBackClick: () -> Unit,
+    onEvent: (AddDocumentFormUiEvent) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Scaffold(
@@ -89,13 +81,13 @@ private fun AddDocumentFormContent(
         topBar = {
             RedknotTopBar(
                 title = stringResource(R.string.add_document_title),
-                onBackClick = onBackClick
+                onBackClick = { onEvent(AddDocumentFormUiEvent.NavigateBack) }
             )
         },
         bottomBar = {
             Button(
                 modifier = Modifier.fillMaxWidth().padding(MaterialTheme.spacing.default),
-                onClick = onSaveDocumentClick
+                onClick = { onEvent(AddDocumentFormUiEvent.SaveDocument) }
             ) {
                 Text(
                     text = stringResource(R.string.save_document)
@@ -111,12 +103,16 @@ private fun AddDocumentFormContent(
         ) {
             DocumentCategorySection(
                 selectedCategory = uiState.category,
-                onCategorySelect = onCategorySelect,
+                onCategorySelect = { category ->
+                    onEvent(AddDocumentFormUiEvent.UpdateCategory(category))
+                },
                 modifier = Modifier.fillMaxWidth()
             )
             OutlinedTextField(
                 value = uiState.title,
-                onValueChange = onTitleChange,
+                onValueChange = { title ->
+                    onEvent(AddDocumentFormUiEvent.UpdateTitle(title))
+                },
                 label = { Text(stringResource(R.string.title)) },
                 placeholder = { Text(stringResource(R.string.document_placeholder_title)) },
                 singleLine = true,
@@ -124,7 +120,9 @@ private fun AddDocumentFormContent(
             )
             OutlinedTextField(
                 value = uiState.description,
-                onValueChange = onDescriptionChange,
+                onValueChange = { description ->
+                    onEvent(AddDocumentFormUiEvent.UpdateDescription(description))
+                },
                 label = { Text(stringResource(R.string.optional_description)) },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth()
@@ -133,13 +131,13 @@ private fun AddDocumentFormContent(
                 AttachmentChip(
                     fileName = uiState.attachment.displayName(),
                     fileSize = uiState.attachment.displaySize(),
-                    onRemoveClick = onAttachmentRemove,
+                    onRemoveClick = { onEvent(AddDocumentFormUiEvent.RemoveAttachment) },
                     modifier = Modifier.fillMaxWidth()
                 )
             } else {
                 AttachmentSection(
-                    onTakePhotoClick = onTakePhotoClick,
-                    onUploadFileClick = onUploadFileClick,
+                    onTakePhotoClick = { onEvent(AddDocumentFormUiEvent.TakePhoto) },
+                    onUploadFileClick = { onEvent(AddDocumentFormUiEvent.UploadFile) },
                     modifier = Modifier.fillMaxWidth()
                 )
             }

@@ -5,6 +5,7 @@ import com.luisfagundes.core.common.di.IoDispatcher
 import com.luisfagundes.core.common.presentation.arch.viewmodel.ViewModel
 import com.luisfagundes.trip.domain.usecase.GetTripListUseCase
 import com.luisfagundes.trip.presentation.viewmodel.effect.TripListUiEffect
+import com.luisfagundes.trip.presentation.viewmodel.event.TripListUiEvent
 import com.luisfagundes.trip.presentation.viewmodel.state.TripListUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -16,10 +17,18 @@ import javax.inject.Inject
 internal class TripListViewModel @Inject constructor(
     private val getTripListUseCase: GetTripListUseCase,
     @param:IoDispatcher private val dispatcher: CoroutineDispatcher = Dispatchers.IO
-) : ViewModel<TripListUiState, TripListUiEffect>(
+) : ViewModel<TripListUiState, TripListUiEvent, TripListUiEffect>(
     initialState = TripListUiState.Loading
 ) {
-    fun getTripList() = viewModelScope.launch(dispatcher) {
+    override fun dispatchEvent(event: TripListUiEvent) {
+        when (event) {
+            is TripListUiEvent.GetTripList -> getTripList()
+            is TripListUiEvent.NavigateToTripForm -> navigateToTripForm()
+            is TripListUiEvent.NavigateToTripDetails -> navigateToTripDetails(event.id)
+        }
+    }
+
+    private fun getTripList() = viewModelScope.launch(dispatcher) {
         setState { TripListUiState.Loading }
 
         getTripListUseCase.invoke().fold(
@@ -38,11 +47,11 @@ internal class TripListViewModel @Inject constructor(
         )
     }
 
-    fun navigateToTripForm() {
+    private fun navigateToTripForm() {
         sendEffect { TripListUiEffect.NavigateToTripForm }
     }
 
-    fun navigateToTripDetails(id: Int) {
+    private fun navigateToTripDetails(id: Int) {
         sendEffect { TripListUiEffect.NavigateToTripDetails(id = id) }
     }
 }
