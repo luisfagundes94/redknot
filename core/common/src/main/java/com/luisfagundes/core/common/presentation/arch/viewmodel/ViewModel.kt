@@ -17,8 +17,8 @@ abstract class ViewModel<State : UiState, Event : UiEvent, Effect : UiEffect>(
     initialState: State
 ) : ViewModel() {
 
-    protected val _uiState = MutableStateFlow(initialState)
-    val uiState = _uiState.asStateFlow()
+    protected val state = MutableStateFlow(initialState)
+    val uiState = state.asStateFlow()
 
     private val _uiEffect = Channel<Effect>()
     val uiEffect = _uiEffect.receiveAsFlow()
@@ -28,13 +28,13 @@ abstract class ViewModel<State : UiState, Event : UiEvent, Effect : UiEffect>(
     protected fun getCurrentState(): State = uiState.value
 
     protected fun setState(reducer: (State) -> State) {
-        _uiState.update(reducer)
+        state.update(reducer)
     }
 
     protected inline fun <reified UiStateType : State> setStateOf(
         noinline reducer: (UiStateType) -> State
     ) {
-        _uiState.update { current ->
+        state.update { current ->
             if (current is UiStateType) reducer(current) else current
         }
     }
