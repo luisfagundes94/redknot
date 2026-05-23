@@ -1,6 +1,5 @@
 package com.luisfagundes.documents.presentation.screen
 
-import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
 import android.widget.Toast
@@ -37,9 +36,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import com.luisfagundes.core.common.presentation.arch.compose.CollectUiEffects
 import com.luisfagundes.designsystem.components.RedknotLoadingTemplate
 import com.luisfagundes.designsystem.components.RedknotTopBar
@@ -51,11 +47,13 @@ import com.luisfagundes.documents.presentation.extensions.displaySize
 import com.luisfagundes.documents.presentation.extensions.resolveShareableUri
 import com.luisfagundes.documents.presentation.viewmodel.DocumentDetailsViewModel
 import com.luisfagundes.documents.presentation.viewmodel.effect.DocumentDetailUiEffect
+import com.luisfagundes.documents.presentation.viewmodel.event.DocumentDetailsUiEvent
 import com.luisfagundes.documents.presentation.viewmodel.state.DocumentDetailUiState
 import com.luisfagundes.trip.R
 import com.luisfagundes.trip.presentation.components.DeleteConfirmationDialog
-
-import com.luisfagundes.documents.presentation.viewmodel.event.DocumentDetailsUiEvent
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @Composable
 internal fun DocumentDetailsScreen(
@@ -256,9 +254,9 @@ private fun DocumentFileViewer(
                             setDataAndType(shareableUri, mimeType)
                             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                         }
-                        try {
+                        runCatching {
                             context.startActivity(intent)
-                        } catch (e: ActivityNotFoundException) {
+                        }.onFailure {
                             Toast.makeText(context, noAppMessage, Toast.LENGTH_SHORT).show()
                         }
                     } else {
