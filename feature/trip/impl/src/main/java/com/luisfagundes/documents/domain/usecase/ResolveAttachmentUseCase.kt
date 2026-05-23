@@ -12,7 +12,7 @@ internal class ResolveAttachmentUseCase @Inject constructor(
     @param:ApplicationContext private val context: Context
 ) {
     operator fun invoke(uri: Uri, source: AttachmentSource): Attachment {
-        return try {
+        return runCatching {
             var fileName = ""
             var sizeInBytes = 0L
 
@@ -34,7 +34,7 @@ internal class ResolveAttachmentUseCase @Inject constructor(
                 mimeType = mimeType,
                 source = source
             )
-        } catch (e: Exception) {
+        }.getOrElse {
             Attachment.Pending(uri = uri, source = source)
         }
     }
