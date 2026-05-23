@@ -145,7 +145,7 @@ private fun DocumentDetails(
 
     Scaffold(
         modifier = modifier,
-        contentWindowInsets = WindowInsets(0, 0, 0, 0),
+        contentWindowInsets = WindowInsets(),
         topBar = {
             RedknotTopBar(
                 title = document.title,
