@@ -39,7 +39,7 @@ internal fun resolveShareableUri(
 ): Uri? {
     if (sourceUri.authority == "${context.packageName}.fileprovider") return sourceUri
 
-    return try {
+    return runCatching {
         val cacheDir = File(context.cacheDir, "documents").also { it.mkdirs() }
         val destName = fileName.ifBlank { "document_${System.currentTimeMillis()}" }
         val destFile = File(cacheDir, destName)
@@ -49,9 +49,7 @@ internal fun resolveShareableUri(
             }
         }
         FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", destFile)
-    } catch (e: Exception) {
-        null
-    }
+    }.getOrNull()
 }
 
 private fun formatBytes(bytes: Long): String {
