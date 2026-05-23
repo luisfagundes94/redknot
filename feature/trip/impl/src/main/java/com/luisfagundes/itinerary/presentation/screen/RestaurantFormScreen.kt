@@ -42,7 +42,6 @@ import com.luisfagundes.designsystem.components.RedknotDateSelectionField
 import com.luisfagundes.designsystem.components.RedknotLoadingTemplate
 import com.luisfagundes.designsystem.components.RedknotTopBar
 import com.luisfagundes.designsystem.theme.spacing
-import com.luisfagundes.itinerary.domain.model.MealType
 import com.luisfagundes.itinerary.presentation.components.MealTypeComboBox
 import com.luisfagundes.itinerary.presentation.viewmodel.RestaurantFormViewModel
 import com.luisfagundes.itinerary.presentation.viewmodel.effect.RestaurantFormUiEffect
@@ -50,8 +49,6 @@ import com.luisfagundes.itinerary.presentation.viewmodel.event.RestaurantFormUiE
 import com.luisfagundes.itinerary.presentation.viewmodel.state.RestaurantFormUiState
 import com.luisfagundes.trip.R
 import com.luisfagundes.trip.presentation.components.DeleteConfirmationDialog
-import java.time.LocalDate
-import java.time.LocalTime
 
 @Composable
 internal fun RestaurantFormScreen(

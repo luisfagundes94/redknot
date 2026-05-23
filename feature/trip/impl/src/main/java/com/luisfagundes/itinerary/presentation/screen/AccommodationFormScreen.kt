@@ -49,13 +49,10 @@ import com.luisfagundes.designsystem.theme.spacing
 import com.luisfagundes.itinerary.domain.model.CheckInType
 import com.luisfagundes.itinerary.presentation.viewmodel.AccommodationFormViewModel
 import com.luisfagundes.itinerary.presentation.viewmodel.effect.AccommodationFormUiEffect
+import com.luisfagundes.itinerary.presentation.viewmodel.event.AccommodationFormUiEvent
 import com.luisfagundes.itinerary.presentation.viewmodel.state.AccommodationFormUiState
 import com.luisfagundes.trip.R
 import com.luisfagundes.trip.presentation.components.DeleteConfirmationDialog
-import java.time.LocalDate
-import java.time.LocalTime
-
-import com.luisfagundes.itinerary.presentation.viewmodel.event.AccommodationFormUiEvent
 
 @Composable
 internal fun AccommodationFormScreen(

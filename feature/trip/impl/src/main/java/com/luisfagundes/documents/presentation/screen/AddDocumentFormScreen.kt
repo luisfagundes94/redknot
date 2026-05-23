@@ -20,7 +20,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.luisfagundes.core.common.presentation.arch.compose.CollectUiEffects
 import com.luisfagundes.designsystem.components.RedknotTopBar
 import com.luisfagundes.designsystem.theme.spacing
-import com.luisfagundes.documents.domain.model.DocumentCategory
 import com.luisfagundes.documents.presentation.components.AttachmentChip
 import com.luisfagundes.documents.presentation.components.AttachmentSection
 import com.luisfagundes.documents.presentation.components.DocumentCategorySection
@@ -29,10 +28,9 @@ import com.luisfagundes.documents.presentation.extensions.displaySize
 import com.luisfagundes.documents.presentation.tools.rememberDocumentAttachmentLaunchers
 import com.luisfagundes.documents.presentation.viewmodel.AddDocumentFormViewModel
 import com.luisfagundes.documents.presentation.viewmodel.effect.AddDocumentFormUiEffect
+import com.luisfagundes.documents.presentation.viewmodel.event.AddDocumentFormUiEvent
 import com.luisfagundes.documents.presentation.viewmodel.state.AddDocumentFormUiState
 import com.luisfagundes.trip.R
-
-import com.luisfagundes.documents.presentation.viewmodel.event.AddDocumentFormUiEvent
 
 @Composable
 internal fun AddDocumentFormScreen(

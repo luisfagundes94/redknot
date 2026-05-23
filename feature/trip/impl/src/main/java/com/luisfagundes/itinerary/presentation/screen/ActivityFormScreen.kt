@@ -48,8 +48,6 @@ import com.luisfagundes.itinerary.presentation.viewmodel.event.ActivityFormUiEve
 import com.luisfagundes.itinerary.presentation.viewmodel.state.ActivityFormUiState
 import com.luisfagundes.trip.R
 import com.luisfagundes.trip.presentation.components.DeleteConfirmationDialog
-import java.time.LocalDate
-import java.time.LocalTime
 
 @Composable
 internal fun ActivityFormScreen(

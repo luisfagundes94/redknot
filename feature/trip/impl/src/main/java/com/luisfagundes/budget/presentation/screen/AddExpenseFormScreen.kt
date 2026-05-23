@@ -30,12 +30,12 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.luisfagundes.budget.domain.model.ExpenseCategory
 import com.luisfagundes.budget.presentation.components.AmountSection
 import com.luisfagundes.budget.presentation.components.CategorySection
 import com.luisfagundes.budget.presentation.provider.AddExpenseFormPreviewParameterProvider
 import com.luisfagundes.budget.presentation.viewmodel.AddExpenseFormViewModel
 import com.luisfagundes.budget.presentation.viewmodel.effect.AddExpenseFormUiEffect
+import com.luisfagundes.budget.presentation.viewmodel.event.AddExpenseFormUiEvent
 import com.luisfagundes.budget.presentation.viewmodel.state.AddExpenseFormUiState
 import com.luisfagundes.common.presentation.mapper.toMessage
 import com.luisfagundes.core.common.presentation.arch.compose.CollectUiEffects
@@ -45,9 +45,6 @@ import com.luisfagundes.designsystem.theme.RedknotPreview
 import com.luisfagundes.designsystem.theme.RedknotThemeWrapper
 import com.luisfagundes.designsystem.theme.spacing
 import com.luisfagundes.trip.R
-import java.time.LocalDate
-
-import com.luisfagundes.budget.presentation.viewmodel.event.AddExpenseFormUiEvent
 
 @Composable
 internal fun AddExpenseFormScreen(
