@@ -23,6 +23,9 @@ private val ColorGreen = Color(0xFF4CAF50)
 private val ColorYellow = Color(0xFFFFC107)
 private val ColorRed = Color(0xFFF44336)
 
+private const val PROGRESS_THRESHOLD_LOW = 0.5f
+private const val PROGRESS_THRESHOLD_MEDIUM = 0.85f
+
 @Composable
 internal fun BudgetOverviewCard(
     budget: Budget,
@@ -33,11 +36,10 @@ internal fun BudgetOverviewCard(
         else (budget.spent.toFloat() / budget.total.toFloat()).coerceIn(0f, 1f)
     }
     val progressColor = when {
-        progress < 0.5f -> ColorGreen
-        progress < 0.85f -> ColorYellow
+        progress < PROGRESS_THRESHOLD_LOW -> ColorGreen
+        progress < PROGRESS_THRESHOLD_MEDIUM -> ColorYellow
         else -> ColorRed
     }
-
     ElevatedCard(modifier = modifier) {
         Column(
             modifier = Modifier.padding(MaterialTheme.spacing.default),
