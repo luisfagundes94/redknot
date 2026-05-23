@@ -129,15 +129,15 @@ private fun DocumentDetails(
     onEvent: (DocumentDetailsUiEvent) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var showDeleteDialog by rememberSaveable { mutableStateOf(false) }
+    val showDeleteDialog = rememberSaveable { mutableStateOf(false) }
 
-    if (showDeleteDialog) {
+    if (showDeleteDialog.value) {
         DeleteConfirmationDialog(
             title = stringResource(R.string.delete_document_dialog_title),
             message = stringResource(R.string.delete_document_dialog_message),
-            onDismissRequest = { showDeleteDialog = false },
+            onDismissRequest = { showDeleteDialog.value = false },
             onDeleteClick = {
-                showDeleteDialog = false
+                showDeleteDialog.value = false
                 onEvent(DocumentDetailsUiEvent.DeleteDocument(document))
             }
         )
@@ -151,7 +151,7 @@ private fun DocumentDetails(
                 title = document.title,
                 onBackClick = { onEvent(DocumentDetailsUiEvent.NavigateBack) },
                 actions = {
-                    IconButton(onClick = { showDeleteDialog = true }) {
+                    IconButton(onClick = { showDeleteDialog.value = true }) {
                         Icon(
                             imageVector = Icons.Default.Delete,
                             contentDescription = stringResource(R.string.delete_document_description)
